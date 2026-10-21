@@ -20,11 +20,14 @@ jobs:
   update:
     runs-on: ubuntu-24.04
     timeout-minutes: 25
+    outputs:
+      publish: ${{ steps.save.outputs.publish }}
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v6
         with:
+          ref: main
           fetch-depth: 2
       - uses: actions/setup-python@v6
         with:
@@ -61,19 +64,18 @@ jobs:
       - name: Refresh browser asset versions
         run: python scripts/version_assets.py
       - name: Save history
+        id: save
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add site/index.html site/data site/feed.xml site/sources.opml x-watchlist.json imports/0xaptx-following.json
-          if ! git diff --cached --quiet; then
-            git commit -m "Refresh public AI sources"
-            git push
-          fi
+          python scripts/save_history.py
       - uses: actions/upload-pages-artifact@v4
+        if: steps.save.outputs.publish == 'true'
         with:
           path: site
   deploy:
     needs: update
+    if: needs.update.outputs.publish == 'true'
     runs-on: ubuntu-latest
     permissions:
       pages: write
