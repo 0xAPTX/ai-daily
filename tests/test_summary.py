@@ -5,7 +5,7 @@ import unittest
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-from summary_utils import choose_candidates, enrich, fingerprint, valid_summary
+from summary_utils import choose_candidates, enrich, evidence_valid, fingerprint, protected_names, valid_summary
 import summarize
 
 
@@ -40,8 +40,19 @@ class SummaryTests(unittest.TestCase):
             summarize.translate(self.article)
         payload = request.call_args.args[1]
         evidence = json.loads(payload["messages"][1]["content"])
-        self.assertEqual(evidence, {"title": self.article["title"], "publisher_excerpt": self.article["excerpt"]})
+        self.assertEqual(evidence, {"title": self.article["title"], "publisher_excerpt": self.article["excerpt"], "preserve_names": []})
         self.assertEqual(payload["temperature"], 0)
+
+    def test_changed_amounts_and_lost_company_names_are_rejected(self):
+        article = dict(self.article, title="Shinhan, SBI send $109M in 2 days", excerpt="")
+        self.assertFalse(evidence_valid(article, {"titleZh": "银行在2天内转账1090万美元", "summaryZh": "银行转账"}))
+        self.assertTrue(evidence_valid(article, {"titleZh": "Shinhan、SBI在2天内转账$109M", "summaryZh": "转账$109M"}))
+
+    def test_title_only_has_no_model_added_paragraph(self):
+        response = {"choices": [{"finish_reason": "stop", "message": {"content": json.dumps(dict(self.entry, summaryZh="模型添加的解释不应保留"))}}]}
+        with patch.object(summarize, "request_json", return_value=response):
+            result = summarize.translate(dict(self.article, excerpt=""))
+        self.assertEqual(result["summaryZh"], result["titleZh"])
 
 
 if __name__ == "__main__":

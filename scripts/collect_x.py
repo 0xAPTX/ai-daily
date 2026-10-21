@@ -111,6 +111,7 @@ def collect(config, previous, ledger, token, now, api=request_api, root=ROOT):
     try:
         reserve(ledger, len(names) * USER_COST, budget, root)
         lookup = api("users/by", {"usernames": ",".join(names), "user.fields": "id,name,username,public_metrics,protected"}, token)
+        partial_errors = bool(lookup.get("errors"))
         users = {str(u["id"]): u for u in lookup.get("data", []) if u.get("username", "").lower() in names}
         output["accounts"] = [{"username": name, "eligible": eligible(next((u for u in users.values() if u["username"].lower() == name), {}), config),
                                "followersCount": next((u.get("public_metrics", {}).get("followers_count") for u in users.values() if u["username"].lower() == name), None), "observedAt": now.isoformat()} for name in names]
@@ -130,6 +131,7 @@ def collect(config, previous, ledger, token, now, api=request_api, root=ROOT):
                 # Count every requested expanded author as billable; don't assume daily dedup discounts.
                 reserve(ledger, limit * (POST_COST + USER_COST), budget, root)
                 response = api("tweets/search/recent", params, token)
+                partial_errors = partial_errors or bool(response.get("errors"))
                 expanded = {str(u["id"]): u for u in response.get("includes", {}).get("users", []) if str(u.get("id")) in allowed}
                 for uid, user in expanded.items():
                     if not eligible(user, config):
@@ -148,7 +150,7 @@ def collect(config, previous, ledger, token, now, api=request_api, root=ROOT):
                     break
                 params["next_token"] = next_token
                 truncated = page == max_pages - 1
-        output.update(status="partial" if truncated or lookup.get("errors") else "ok", lastSuccessAt=now.isoformat(), capped=truncated)
+        output.update(status="partial" if truncated or partial_errors else "ok", lastSuccessAt=now.isoformat(), capped=truncated)
     except BudgetExceeded:
         output["status"] = "budget_limited"
     except HTTPError as error:

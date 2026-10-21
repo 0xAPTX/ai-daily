@@ -64,6 +64,12 @@ class XTests(unittest.TestCase):
         self.assertEqual(output["posts"], [])
         self.assertEqual(api.call_count, 1)
 
+    def test_partial_search_errors_are_not_reported_as_complete(self):
+        api = Mock(side_effect=[{"data": [USER]}, {"errors": [{"detail": "partial result"}]}])
+        with tempfile.TemporaryDirectory() as folder:
+            output = collect(CONFIG, {}, {}, "token", NOW, api=api, root=Path(folder))
+        self.assertEqual(output["status"], "partial")
+
 
 if __name__ == "__main__":
     unittest.main()

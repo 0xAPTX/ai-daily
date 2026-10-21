@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     permissions:
       contents: write
@@ -32,7 +32,7 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: .cache/summary
-          key: summary-qwen15-q4-91cad511-llama-b11788-v1
+          key: summary-qwen3-4b-bc640142-llama-b11788-v2
       - name: Generate Chinese briefs on the runner (no API key)
         run: python scripts/summarize.py --limit 64 --max-seconds 540
       - name: Check configured X watchlist

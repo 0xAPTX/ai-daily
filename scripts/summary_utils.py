@@ -3,8 +3,34 @@ import hashlib
 import json
 import re
 
-MODEL = "Qwen2.5-1.5B-Instruct Q4_K_M"
-PROMPT_VERSION = "zh-brief-v1"
+MODEL = "Qwen3-4B Q4_K_M"
+PROMPT_VERSION = "zh-brief-v2-evidence"
+
+
+def numeric_tokens(text):
+    return set(re.findall(r"\d+(?:\.\d+)*", re.sub(r"(?<=\d),(?=\d{3}(?:\D|$))", "", text)))
+
+
+def protected_names(title):
+    # Preserve company/product acronyms and mixed-case names instead of inventing Chinese entities.
+    return sorted(set(re.findall(r"\b(?:[A-Z]{2,}[A-Za-z0-9]*|[A-Za-z]*[a-z][A-Z][A-Za-z0-9]*)\b", title)))
+
+
+def evidence_valid(article, value):
+    title = article["title"]
+    original_numbers = numeric_tokens(title)
+    # Omission or conversion of critical headline numbers is rejected; original text remains available.
+    if numeric_tokens(value["titleZh"]) != original_numbers:
+        return False
+    if any(name.lower() not in value["titleZh"].lower() for name in protected_names(title)):
+        return False
+    allowed = numeric_tokens(title + " " + article.get("excerpt", ""))
+    # Allow explicit month-name rendering, but no new quantities.
+    months = "January February March April May June July August September October November December".split()
+    for index, month in enumerate(months, 1):
+        if re.search(r"\b" + month[:3] + r"(?:" + month[3:] + r")?\b", title + " " + article.get("excerpt", ""), re.I):
+            allowed.add(str(index))
+    return numeric_tokens(value["summaryZh"]).issubset(allowed)
 
 
 def fingerprint(article):
@@ -30,7 +56,7 @@ def enrich(articles, cache):
         for key in ("titleZh", "summaryZh", "summaryModel", "summarizedAt", "summaryBasis"):
             article.pop(key, None)
         value = entries.get(article["id"], {})
-        if value.get("inputHash") == fingerprint(article) and valid_summary(value):
+        if value.get("inputHash") == fingerprint(article) and valid_summary(value) and evidence_valid(article, value):
             article.update({k: value[k] for k in ("titleZh", "summaryZh", "summarizedAt")})
             article.update(summaryModel=MODEL, summaryBasis="title_and_excerpt" if article.get("excerpt") else "title_only")
     return articles
