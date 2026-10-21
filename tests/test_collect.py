@@ -14,6 +14,19 @@ NOW = datetime(2026, 10, 21, 10, tzinfo=timezone.utc)
 
 
 class FeedTests(unittest.TestCase):
+    def test_us_channel_separates_global_equities_and_preserves_ai_overlap(self):
+        mixed = dict(SOURCE, topic='invest')
+        for title in ['S&P 500 futures rise before earnings', 'Netflix posts earnings beat', '英伟达股价上涨', 'AT&T reports subscriber and revenue growth']:
+            with self.subTest(title=title):
+                self.assertIn('stocks', decorate({'title':title},mixed)['topics'])
+        for title in ['French supermarket shares plunge after guidance cut', 'Japanese stocks rise as yen falls', '中国A股公司公布季度财报', 'Apple releases an accessibility feature']:
+            with self.subTest(title=title):
+                self.assertNotIn('stocks',decorate({'title':title},mixed)['topics'])
+        article = decorate({'title':'AMD announces agentic AI compute'},dict(SOURCE,topic='stocks'))
+        self.assertEqual(article['topics'],['stocks','invest','ai'])
+        for source_id in ['fed','sec']:
+            self.assertIn('stocks',decorate({'title':'New regulatory announcement'},dict(mixed,id=source_id))['topics'])
+
     def test_day_only_dates_do_not_invent_clock_time(self):
         payload = b'<rss><channel><item><title>Day only</title><link>https://example.com/day</link><pubDate>2026-10-21</pubDate></item></channel></rss>'
         article = parse_feed(payload, SOURCE, NOW)[0]

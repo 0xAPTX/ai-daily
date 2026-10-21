@@ -4,10 +4,11 @@
 
 ## 当前功能
 
-- 首页时间线按北京时间倒序，另保留六频道浏览：AI、投资市场、产品商业、开发工具、学术研究、加密 Web3。
+- 首页时间线按北京时间倒序，另保留七频道浏览：AI、投资市场、美股资讯、产品商业、开发工具、学术研究、加密 Web3。
 - 资讯流按发布时间排序，可筛中文、来源类型、关键词、主题和日期。
 - 每日日报按真实发布时间倒序，每个频道最多六条；来源仅提供日期时不补造时分。
 - 中文标题和摘要：GitHub runner 内运行开源 Qwen 模型，增量生成，保留原文与覆盖进度。
+- X 关注名单：已导入 @0xAPTX 的 27 个已关注账号，保留 6 个补充候选；全部名单与热帖资格分开，来源与导入时间可核对。
 - X 热帖监测页及官方 API 接入程序：低于 10 万粉丝的指定账号、互动门槛、采样时间和原帖时间线。默认未启用，见 [接入说明](docs/x-setup.md)。
 - 站内热点按过去 24 小时标题关键词计数；不代表全网热度。
 - 信源目录显示配置数、读取结果、最近活跃、语言和类型，可在当前浏览器隐藏来源。
@@ -17,11 +18,12 @@
 
 ## 来源与覆盖
 
-首批扩充至 **86 个订阅入口**，其中 **11 个中文来源**。入口数量与独立发布方数量不同；每次构建会重新计算实际状态。
+首批扩充至 **91 个订阅入口**，其中 **11 个中文来源**。入口数量与独立发布方数量不同；每次构建会重新计算实际状态。
 
 - 国内：DeepSeek 官方更新、量子位、雷峰网、少数派、36氪、钛媒体、爱范儿、InfoQ 中文、Solidot、人人都是产品经理、PANews。
 - AI 与研究：OpenAI、Anthropic、Google、Microsoft Research、Apple ML、Ai2、Berkeley、MIT、arXiv 等。
 - 工具：Ollama、vLLM、llama.cpp、LangChain、LlamaIndex、Transformers、Diffusers、MLX、Dify、n8n、ComfyUI 等官方版本订阅。
+- 美股独立频道：Yahoo Finance 指数新闻、CNBC 财报、WSJ Markets、AMD 与 Intel 投资者公告，以及既有来源中的美股相关报道和美国政策监管。详见 [来源与归类规则](docs/us-stocks.md)。
 - 市场与 Web3：美联储、美国 SEC、欧洲央行、日本央行、英格兰银行、CNBC、FT、MarketWatch、CoinDesk、Ethereum、Vitalik、a16z crypto 等。
 
 信息源配置在 `sources.json`。`rss` 适配器支持 RSS/Atom/RDF；Anthropic 从新闻列表发现文章并读取 `NewsArticle.datePublished`，DeepSeek 从中文官方更新页的明确日期 H2 拆分条目。不会拿 sitemap 修改日期当作发布时间。
@@ -51,7 +53,7 @@ X 官方 API 适配器已准备，需要配置凭证、关注账号及预算，�
 
 ## 更新与部署
 
-`.github/workflows/daily.yml` 计划每两小时在第 17 分钟采集，提交生成的数据并部署到 GitHub Pages。GitHub 调度可能延迟，公开仓库长期无活动时可能暂停；请查看 Actions 实际结果。
+`.github/workflows/daily.yml` 计划每两小时在第 17 分钟采集、补充中文摘要，提交生成的数据并部署到 GitHub Pages。手动触发也会补充摘要；仅页面或关注名单变更的 push 复用已有摘要，避免阻塞发布；采集或摘要脚本、来源配置变更的 push 会重新运行摘要。GitHub 调度可能延迟，公开仓库长期无活动时可能暂停；请查看 Actions 实际结果。
 
 单源失败保留历史并展示失败状态；正常但没有近 90 天有效内容显示“暂无近期内容”；全部来源失败时中止当次发布。仅 `site/` 目录发布到 Pages。
 

@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 UTC = timezone.utc
 SHANGHAI = timezone(timedelta(hours=8))
 ATOM = "{http://www.w3.org/2005/Atom}"
-TOPICS = {"ai":"AI 动态", "invest":"投资市场", "biz":"产品商业", "ship":"开发工具", "research":"学术研究", "crypto":"加密 Web3"}
+TOPICS = {"ai":"AI 动态", "invest":"投资市场", "stocks":"美股资讯", "biz":"产品商业", "ship":"开发工具", "research":"学术研究", "crypto":"加密 Web3"}
 TAGS = {
  "OpenAI":r"openai|chatgpt|gpt[- ]?\d|codex", "Anthropic":r"anthropic|claude", "Google":r"google|gemini|deepmind|谷歌",
  "DeepSeek":r"deepseek|深度求索", "Qwen":r"qwen|千问|通义", "Meta":r"\bmeta\b|\bllama\b", "NVIDIA":r"nvidia|英伟达|cuda",
@@ -29,6 +29,7 @@ TAGS = {
  "机器人":r"robot|机器人|具身", "推理":r"reasoning|inference|推理", "多模态":r"multimodal|vision|多模态|图像生成|视频生成",
  "融资并购":r"funding|acqui\w*|融资|收购|并购", "算力":r"data.center|datacenter|compute|算力|数据中心|gpu",
  "产品增长":r"growth|subscription|增长|订阅|运营", "美联储":r"federal.reserve|\bfed\b|美联储", "利率":r"interest.rate|利率|降息|加息",
+ "美股指数":r"s&p.?500|nasdaq|dow.jones|标普|纳斯达克|道琼斯", "财报":r"earnings|financial.results|quarterly.results|财报|业绩",
  "Bitcoin":r"bitcoin|比特币|\bbtc\b", "Ethereum":r"ethereum|以太坊|\beth\b", "ETF":r"\betf\b", "稳定币":r"stablecoin|稳定币",
  "安全":r"security|vulnerability|\bcve[- ]|安全|漏洞", "更新":r"release|changelog|更新|升级|发布新版本",
  "AI 编程":r"coding|codegen|编程|代码生成", "大模型":r"\bllm\b|language.model|大模型",
@@ -71,6 +72,15 @@ def classify(title,source):
  return source["category"]
 
 
+# Require a US market/company signal for mixed global feeds. Generic "shares" or
+# "earnings" alone must not turn French, Chinese or Japanese equities into US news.
+US_MARKET = re.compile(r"美股|美国股市|标普|纳斯达克|道琼斯|\bwall.street\b|s&p.?500|\bnasdaq\b|\bdow(?:.jones)?\b|\bu\.?s\.? (?:stock|equit|market|futur)|\b(?:nyse|premarket|pre-market)\b",re.I)
+US_COMPANY = re.compile(r"\b(?:apple|microsoft|nvidia|amazon|alphabet|google|meta|tesla|spacex|netflix|amd|intel|broadcom|qualcomm|micron|palantir|oracle|salesforce|adobe|berkshire|jpmorgan|goldman.sachs|morgan.stanley|bank.of.america|walmart|costco|target|disney|boeing|caterpillar|exxon|chevron|pfizer|unitedhealth|eli.lilly|coca.cola|pepsico|mcdonald|starbucks|nike|visa|mastercard|paypal|coinbase|robinhood|webull|capital.one|at&t)\b|英伟达|微软|特斯拉|亚马逊|苹果|谷歌|伯克希尔",re.I)
+EQUITY_EVENT = re.compile(r"\b(?:stocks?|shares?|earnings|revenues?|profits?|dividends?|buybacks?|guidance|ipo|acqui\w*|merger|investors?|valuations?|market.cap|financial.results|quarterly.results)\b|财报|业绩|股价|美股|股票|回购|分红|市值|上市|收购|合并",re.I)
+
+def is_us_stock_news(title,source):
+ return source.get("topic")=="stocks" or source["id"] in ("fed","sec") or bool(US_MARKET.search(title) or (US_COMPANY.search(title) and EQUITY_EVENT.search(title)))
+
 def decorate(article,source):
  title=article.get("originalTitle",article["title"])
  ai_context=bool(re.search(r"(?<![a-z])ai(?![a-z])|人工智能|大模型|智能体|机器学习|深度学习|llm|openai|anthropic|deepseek|chatgpt|claude|gemini|qwen|具身|机器人|language.model|neural.network",title+" "+article.get("excerpt",""),re.I))
@@ -87,6 +97,9 @@ def decorate(article,source):
  if source["id"] in ("qbitai","leiphone") and not ai_context:topics=["biz"]
  if topic in ("biz","ship","invest") and re.search(r"(?<![a-z])ai(?![a-z])|llm|openai|anthropic|deepseek|人工智能|大模型|智能体",title,re.I):topics.append("ai")
  if topic=="crypto" and re.search(r"etf|监管|\bsec\b|利率|美联储|institutional",title,re.I):topics.append("invest")
+ if topic=="stocks":topics.append("invest")
+ if is_us_stock_news(title,source):topics.append("stocks")
+ if topic=="stocks" and ai_context:topics.append("ai")
  article["topics"]=list(dict.fromkeys(topics))
  article["sourceGroup"]=source.get("group",source["name"])
  article["category"]=classify(title,source)
@@ -236,7 +249,7 @@ def write_json(path,value):
 
 def export_rss(articles,sources):
  root=ET.Element("rss",version="2.0");channel=ET.SubElement(root,"channel")
- for key,value in (("title","知新 · 多源资讯"),("link","https://0xaptx.github.io/ai-daily/"),("description","AI、投资、商业、工具、研究与 Web3 的公开来源标题。")):ET.SubElement(channel,key).text=value
+ for key,value in (("title","知新 · 多源资讯"),("link","https://0xaptx.github.io/ai-daily/"),("description","AI、投资、美股、商业、工具、研究与 Web3 的公开来源标题。")):ET.SubElement(channel,key).text=value
  for article in articles[:80]:
   item=ET.SubElement(channel,"item")
   for key,value in (("title",article["title"]),("link",article["url"]),("guid",article["url"]),("pubDate",format_datetime(parse_date(article["publishedAt"]))),("description","来源："+article["source"])):ET.SubElement(item,key).text=value

@@ -22,6 +22,8 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
@@ -29,11 +31,21 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Collect publisher feeds
         run: python scripts/collect.py
+      - name: Decide whether Chinese briefs need refreshing
+        id: summaries
+        run: |
+          if [ "$GITHUB_EVENT_NAME" != "push" ] || ! git diff --quiet HEAD^ HEAD -- scripts/summarize.py scripts/summary_utils.py scripts/collect.py sources.json; then
+            echo "refresh=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "refresh=false" >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/cache@v4
+        if: steps.summaries.outputs.refresh == 'true'
         with:
           path: .cache/summary
           key: summary-qwen3-4b-instruct-a06e946b-llama-b11788-v3
       - name: Generate Chinese briefs on the runner (no API key)
+        if: steps.summaries.outputs.refresh == 'true'
         run: python scripts/summarize.py --limit 64 --max-seconds 540
       - name: Check configured X watchlist
         env:

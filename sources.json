@@ -1122,5 +1122,70 @@
     "region": "CN",
     "language": "zh",
     "group": "DeepSeek"
+  },
+  {
+    "id": "yahoo-us-markets",
+    "name": "Yahoo Finance · 美股指数",
+    "url": "https://finance.yahoo.com/",
+    "feed": "https://feeds.finance.yahoo.com/rss/2.0/headline?s=%5EGSPC&region=US&lang=en-US",
+    "topic": "stocks",
+    "category": "美股市场",
+    "kind": "media",
+    "region": "US",
+    "language": "en",
+    "group": "Yahoo Finance",
+    "adapter": "rss"
+  },
+  {
+    "id": "cnbc-earnings",
+    "name": "CNBC · 财报",
+    "url": "https://www.cnbc.com/earnings/",
+    "feed": "https://www.cnbc.com/id/15839135/device/rss/rss.html",
+    "topic": "invest",
+    "category": "公司财报",
+    "kind": "media",
+    "region": "Global",
+    "language": "en",
+    "group": "CNBC",
+    "adapter": "rss"
+  },
+  {
+    "id": "wsj-markets",
+    "name": "WSJ · Markets",
+    "url": "https://www.wsj.com/finance",
+    "feed": "https://feeds.content.dowjones.io/public/rss/RSSMarketsMain",
+    "topic": "invest",
+    "category": "市场报道",
+    "kind": "media",
+    "region": "Global",
+    "language": "en",
+    "group": "Wall Street Journal",
+    "adapter": "rss"
+  },
+  {
+    "id": "amd-ir",
+    "name": "AMD · 投资者公告",
+    "url": "https://ir.amd.com/",
+    "feed": "https://ir.amd.com/rss/news-releases.xml",
+    "topic": "stocks",
+    "category": "公司公告",
+    "kind": "official",
+    "region": "US",
+    "language": "en",
+    "group": "AMD",
+    "adapter": "rss"
+  },
+  {
+    "id": "intel-ir",
+    "name": "Intel · 投资者公告",
+    "url": "https://www.intc.com/",
+    "feed": "https://www.intc.com/news-events/press-releases/rss",
+    "topic": "stocks",
+    "category": "公司公告",
+    "kind": "official",
+    "region": "US",
+    "language": "en",
+    "group": "Intel",
+    "adapter": "rss"
   }
 ]
