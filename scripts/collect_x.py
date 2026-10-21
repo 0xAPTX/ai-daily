@@ -94,6 +94,7 @@ def collect(config, previous, ledger, token, now, api=request_api, root=ROOT):
               "rule": {"maxFollowersExclusive": min(int(config.get("maxFollowers", 100000)), 100000), "lookbackHours": hours,
                        "minScore": int(config.get("minScore", 50)), "followerScoreRatio": float(config.get("followerScoreRatio", .005)),
                        "formula": "点赞 + 2×转发 + 回复 + 2×引用"}}
+    output["candidates"] = [p for p in config.get("candidates", []) if p.get("username", "").lower() in names]
     retained = [p for p in previous.get("posts", []) if p.get("username", "").lower() in names and
                 isinstance(p.get("followersCount"), int) and 0 <= p["followersCount"] < output["rule"]["maxFollowersExclusive"] and
                 parse_date(p.get("createdAt")) and now - parse_date(p["createdAt"]) <= timedelta(hours=hours)]

@@ -1,6 +1,13 @@
 {
   "enabled": false,
-  "usernames": [],
+  "usernames": [
+    "hamelhusain",
+    "eugeneyan",
+    "tsoh_investing",
+    "tominvesting",
+    "safetyth1rd",
+    "mhonkasalo"
+  ],
   "maxFollowers": 100000,
   "lookbackHours": 48,
   "minScore": 50,
@@ -8,5 +15,50 @@
   "maxResults": 20,
   "maxPages": 1,
   "monthlyBudgetUsd": 0,
-  "legacyFields": false
+  "legacyFields": false,
+  "candidates": [
+    {
+      "username": "hamelhusain",
+      "name": "Hamel Husain",
+      "topic": "ai",
+      "focus": "AI 评估、LLM 应用实践",
+      "referenceUrl": "https://hamel.dev/"
+    },
+    {
+      "username": "eugeneyan",
+      "name": "Eugene Yan",
+      "topic": "ai",
+      "focus": "AI 系统、检索与工程实践",
+      "referenceUrl": "https://eugeneyan.com/"
+    },
+    {
+      "username": "tsoh_investing",
+      "name": "Alex Morris",
+      "topic": "invest",
+      "focus": "公司财报、商业模式与长期投资研究",
+      "referenceUrl": "https://acquirersmultiple.com/2025/02/value-after-hours-s07-e04alex-morris-on-buffett-and-munger-unscripted-msft-meta-goog-aapl-big-tech-cap-ex/"
+    },
+    {
+      "username": "tominvesting",
+      "name": "Investing with Tom",
+      "topic": "invest",
+      "focus": "价值投资、公司分析与投资访谈",
+      "referenceUrl": "https://linktr.ee/investingwithtom"
+    },
+    {
+      "username": "safetyth1rd",
+      "name": "Danger",
+      "topic": "crypto",
+      "focus": "DeFi 协议、收益机制与生态动态",
+      "referenceUrl": "https://x.com/safetyth1rd"
+    },
+    {
+      "username": "mhonkasalo",
+      "name": "Mikko Honkasalo",
+      "topic": "crypto",
+      "focus": "加密研究、链上数据与市场结构",
+      "referenceUrl": "https://x.com/mhonkasalo"
+    }
+  ],
+  "candidateNote": "内容方向已初选；粉丝数与可用性尚未通过官方 API 核验，接入后严格排除达到 10 万粉丝的账号。"
 }

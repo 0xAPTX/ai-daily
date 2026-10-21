@@ -2,6 +2,21 @@
 
 页面：<https://0xaptx.github.io/ai-daily/#/x>。目前默认关闭，不会产生 X API 费用。
 
+## 当前候选名单
+
+已按用户选择初选 6 个账号，每类 2 个；这些是内容候选，不是已经核验粉丝数的合格监测账号。中文摘要继续使用免费模型，X 预算另议：`enabled: false`、`monthlyBudgetUsd: 0`，不会调用付费接口。
+
+| 方向 | 候选账号 | 内容重点 | 公开资料依据 |
+| --- | --- | --- | --- |
+| AI | [@hamelhusain](https://x.com/hamelhusain) | AI 评估与 LLM 应用 | [本人博客](https://hamel.dev/) |
+| AI | [@eugeneyan](https://x.com/eugeneyan) | AI 系统、检索与工程 | [本人网站](https://eugeneyan.com/) |
+| 投资 | [@tsoh_investing](https://x.com/tsoh_investing) | 财报、商业模式与长期研究 | [本人访谈](https://acquirersmultiple.com/2025/02/value-after-hours-s07-e04alex-morris-on-buffett-and-munger-unscripted-msft-meta-goog-aapl-big-tech-cap-ex/) |
+| 投资 | [@tominvesting](https://x.com/tominvesting) | 价值投资与公司分析 | [本人链接页](https://linktr.ee/investingwithtom) |
+| 加密 | [@safetyth1rd](https://x.com/safetyth1rd) | DeFi 协议及生态 | [公开账号](https://x.com/safetyth1rd) |
+| 加密 | [@mhonkasalo](https://x.com/mhonkasalo) | 链上研究与市场结构 | [公开账号](https://x.com/mhonkasalo) |
+
+公开页面及搜索快照只用于初选，不写入实时粉丝数。正式启用时仍必须经过官方 API 核验，达到 100,000 粉丝、无法读取指标或受保护的账号都会排除。个人账号也会发布与主题无关的内容；热度门槛不等于观点正确。
+
 ## 配置
 
 1. 在 [X Developer Console](https://console.x.com/) 创建有公开用户查询和最近搜索权限的开发者应用，获取 Bearer Token。购买额度前先确认当前价格及权限。
