@@ -1,4 +1,4 @@
-"""Daily official X following sync. Disabled/no token/zero budget => no API calls.
+"""Twice-daily official X following sync. Disabled/no token/zero budget => no API calls.
 
 Only a fully validated, complete snapshot replaces the prior list. Failed or
 capped pagination preserves all prior follow relationships. No browser cookies.
@@ -19,12 +19,19 @@ ROOT = Path(__file__).resolve().parents[1]
 SHANGHAI = timezone(timedelta(hours=8))
 
 
+def sync_window(value):
+    # Anchor half-day windows to the scheduled 07:43 / 19:43 Beijing runs.
+    # A delayed morning run must not suppress the evening run.
+    shifted = value.astimezone(SHANGHAI) - timedelta(hours=7, minutes=43)
+    return shifted.date(), shifted.hour // 12
+
+
 def sync_following(config, previous, ledger, token, now, api=request_api, root=ROOT):
     settings = config.get('followingSync', {})
     owner = str(settings.get('owner', '0xAPTX')).lstrip('@')
     status = {'schemaVersion': 1, 'owner': owner, 'checkedAt': now.isoformat(),
               'lastSuccessAt': previous.get('lastSuccessAt'), 'status': 'disabled',
-              'schedule': '每天北京时间 07:43，GitHub 调度可能延迟',
+              'schedule': '每天北京时间 07:43、19:43（每 12 小时），GitHub 调度可能延迟',
               'count': config.get('followingImport', {}).get('count', 0)}
     result = {'status': status, 'config': config, 'snapshot': None}
     if not settings.get('enabled'):
@@ -37,8 +44,8 @@ def sync_following(config, previous, ledger, token, now, api=request_api, root=R
         status['status'] = 'invalid_config'
         return result
     last = parse_date(previous.get('lastSuccessAt'))
-    if last and last.astimezone(SHANGHAI).date() == now.astimezone(SHANGHAI).date():
-        status['status'] = 'ok'  # Avoid a second paid sync on the same Beijing day.
+    if last and sync_window(last) == sync_window(now):
+        status['status'] = 'ok'  # Avoid duplicate paid syncs within the same scheduled half-day.
         status['skippedAlreadySynced'] = True
         return result
     month = now.strftime('%Y-%m')

@@ -6,8 +6,8 @@ on:
   schedule:
     # Every half hour at minutes 17 and 47; GitHub may delay scheduled runs.
     - cron: '17,47 * * * *'
-    # Daily following-list sync at 07:43 Beijing (23:43 UTC on the prior date).
-    - cron: '43 23 * * *'
+    # Following-list sync every 12 hours at 07:43 and 19:43 Beijing.
+    - cron: '43 11,23 * * *'
 
 concurrency:
   group: ai-daily-pages
@@ -31,8 +31,8 @@ jobs:
           python-version: '3.12'
       - name: Test feed processing
         run: python -m unittest discover -s tests -v
-      - name: Sync X following once daily (opt-in, budget guarded)
-        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '43 23 * * *'
+      - name: Sync X following twice daily (opt-in, budget guarded)
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '43 11,23 * * *'
         env:
           X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
         run: python scripts/sync_x_following.py

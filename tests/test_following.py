@@ -50,7 +50,7 @@ class FollowingTests(unittest.TestCase):
                 self.assertIsNone(result['snapshot'])
                 self.assertEqual(result['config']['usernames'],['old','extra'])
 
-    def test_budget_guard_and_one_sync_per_beijing_date(self):
+    def test_budget_guard_and_one_sync_per_half_day(self):
         api=Mock(return_value=OWNER)
         with tempfile.TemporaryDirectory() as folder:
             result=sync_following(dict(CONFIG,monthlyBudgetUsd=.01),{}, {},'token',NOW,api=api,root=Path(folder))
@@ -58,6 +58,22 @@ class FollowingTests(unittest.TestCase):
         self.assertEqual(api.call_count,1)  # Owner reserved; following page never called.
         api.reset_mock()
         result=sync_following(CONFIG,{'lastSuccessAt':'2026-10-20T23:43:00+00:00'}, {},'token',NOW,api=api)
+        self.assertTrue(result['status']['skippedAlreadySynced'])
+        api.assert_not_called()
+
+    def test_delayed_morning_run_does_not_skip_evening_and_midnight_does_not_repeat(self):
+        # 09:00 Beijing morning success; the 19:43 evening run must execute.
+        morning={'lastSuccessAt':'2026-10-21T01:00:00+00:00'}
+        evening=datetime(2026,10,21,11,43,tzinfo=timezone.utc)
+        api=Mock(side_effect=[OWNER,PAGE1,PAGE2])
+        with tempfile.TemporaryDirectory() as folder:
+            result=sync_following(CONFIG,morning,{},'token',evening,api=api,root=Path(folder))
+        self.assertEqual(result['status']['status'],'ok')
+        self.assertEqual(api.call_count,3)
+        # 00:10 next calendar day is still in the same evening window.
+        api.reset_mock()
+        midnight=datetime(2026,10,21,16,10,tzinfo=timezone.utc)
+        result=sync_following(CONFIG,{'lastSuccessAt':evening.isoformat()}, {},'token',midnight,api=api)
         self.assertTrue(result['status']['skippedAlreadySynced'])
         api.assert_not_called()
 
