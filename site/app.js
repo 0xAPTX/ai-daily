@@ -60,36 +60,87 @@ function empty(title,text,link=newsLink()){return `<div class="empty"><strong>${
 function heading(title,subtitle,action=''){return `<div class="page-heading"><div><h1>${e(title)}</h1><p>${e(subtitle)}</p></div>${action}</div>`;}
 function topicTabs(topic='all'){return `<div class="topic-tabs" role="group" aria-label="资讯频道"><button class="topic-tab ${topic==='all'?'active':''}" data-topic="all" aria-pressed="${topic==='all'}">全部</button>${Object.entries(TOPICS).map(([id,t])=>`<button class="topic-tab ${topic===id?'active':''}" data-topic="${id}" aria-pressed="${topic===id}">${t.name}<span class="sr-only"> · ${t.zh}</span></button>`).join('')}</div>`;}
 function hotTags(){if(data.hotTags)return data.hotTags;const m=new Map();for(const a of recentItems().filter(a=>Date.now()-new Date(a.publishedAt)<86400000))for(const tag of a.tags||[]){if(!m.has(tag))m.set(tag,[]);m.get(tag).push(a);}return [...m].map(([tag,articles])=>({tag,count:articles.length,sourceCount:new Set(articles.map(a=>a.sourceId)).size,articles:articles.slice(0,4)})).sort((a,b)=>b.count-a.count);}
-function renderHome(){
-  const stats=data.stats,all=recentItems(),today=chinaDate(),todayInfo=data.archives.find(x=>x.date===today);
-  const channels=Object.entries(TOPICS).map(([id,t])=>{
-    const pool=all.filter(a=>matchesTopic(a,id));const recent=pool.filter(a=>Date.now()-new Date(a.publishedAt)<7*86400000);const candidates=recent.length?recent:pool;const selected=candidates.slice().sort(byDate).slice(0,6);const lead=selected[0];
-    return `<section class="channel" aria-label="${t.name} ${t.zh}"><div class="channel-heading"><h2>${t.name}<small>${t.zh}</small></h2><a href="${e(newsLink({topic:id}))}" aria-label="进入${t.zh}">↗</a></div><div class="mini-label"><span>${todayInfo?.topics?.[id]?`今日收录 ${num(todayInfo.topics[id])} 条`:'最新可读'}</span><a href="${linkFor('daily',{topic:id})}">日报 →</a></div>${lead?`<div class="daily-preview"><h3><a href="${e(articleLink(lead))}">${e(displayTitle(lead))}</a></h3><p>${e(summary(lead))}</p><div class="preview-meta">${e(lead.source)} · ${e(shortTime(lead))}${lead.summaryZh?' · AI 中文摘要':lead.language!=='zh'?' · EN':''}</div></div><ul class="mini-news">${selected.slice(1).map(miniItem).join('')}</ul>`:'<div class="daily-preview"><p>该频道暂时没有近期收录。</p></div>'}<a class="channel-more" href="${e(newsLink({topic:id}))}">进入 ${t.name} <span aria-hidden="true">→</span></a></section>`;
-  }).join('');
-  return `<section class="opening"><div><div class="eyebrow">YOUR DAILY SIGNAL, FROM MORE PERSPECTIVES</div><h1>AI、投资与商业，<br><span>一站看见，更广一点。</span></h1><p class="lead">跨越语言与平台，把值得追踪的变化放在一起。</p><p class="fine">GitHub 自动更新 · 中文摘要 · 按日留档 · 免登录阅读</p></div><div class="coverage-box"><div class="coverage-head">A BROADER VIEW</div><div class="coverage-numbers"><div><b>${stats.configuredSources}</b><span>个订阅入口</span></div><div><b>${stats.chineseSources}</b><span>个中文信源</span></div><div><b>${Object.keys(TOPICS).length}</b><span>个主题频道</span></div></div><a href="#/sources">官方、媒体、研究与社区 <span>↗</span></a></div></section><div class="quick-topics"><div>${Object.entries(TOPICS).map(([id,t])=>`<a href="${e(newsLink({topic:id}))}">${t.zh}</a>`).join('')}</div><span class="date-label">${e(today)} / BEIJING</span></div>${summaryStatus()}${renderHomeTimeline()}<details class="channel-overview"><summary>按频道浏览 <span>${Object.values(TOPICS).map(t=>e(t.name)).join(" / ")}</span></summary><div class="channel-grid">${channels}</div></details><div class="home-bottom"><section class="subpanel"><h2>过去 24 小时，哪些话题被收录最多？</h2><p>按站内已收录标题的关键词计数；这是阅读线索。</p><div class="tag-cloud">${hotTags().slice(0,8).map(t=>`<a class="tag" href="${e(newsLink({tag:t.tag}))}">#${e(t.tag)}<b>${t.count}</b></a>`).join('')||'<span class="method-note">暂时没有匹配的话题。</span>'}</div><a class="text-link" href="#/hot">查看站内热点 →</a></section><section class="subpanel"><h2>信息更丰富，出处也要更清楚。</h2><p>官方公告、媒体报道、原始论文和社区观点分别标识。英文逐批生成中文摘要，同时保留原文与发布方摘录。多读一份原始材料，多一个判断的角度。</p><div class="tag-cloud">${Object.entries(KIND).map(([k,v])=>`<span class="kind ${k}">${v}</span>`).join('')}</div><a class="text-link" href="#/about">了解收录与编排规则 →</a></section></div>`;
-}
+function renderHome(){return renderNews({home:true});}
 function summaryStatus(){const s=data.summaryService;if(!s)return '<p class="method-note">中文摘要服务等待首次运行。</p>';return `<div class="summary-status"><span class="summary-badge">中文摘要</span><span>近期英文资讯已覆盖 ${num(s.recentSummarized)} / ${num(s.recentEnglish)} 条 · 分批补充${s.status==='error'?' · 最近生成失败，保留已有摘要':''}</span><a href="#/about">生成规则 ↗</a></div>`;}
-function renderHomeTimeline(){
-  const items=filteredNews(),p=route.params;
-  let previousDate='';const rows=[];
-  for(const a of items.slice(0,pageLimit)){if(a.date!==previousDate){rows.push(`<div class="list-date"><span>${e(a.date)}${a.date===chinaDate()?' · 今天':''}</span><span>北京时间 · 新到旧</span></div>`);previousDate=a.date;}rows.push(newsItem(a));}
-  return `<section class="home-timeline"><div class="timeline-heading"><h2>最新资讯</h2><span>按发布时间倒序 · 北京时间</span></div>${topicTabs(p.get('topic')||'all')}<div class="news-layout"><div class="news-main"><div class="toolbar"><label class="check-label"><input type="checkbox" id="chinese-only" ${p.get('zh')==='1'?'checked':''}>中文可读</label><span class="method-note">${items.length} 条近期索引 · 仅有日期的来源不补造时分</span></div>${rows.join('')||empty('暂时没有匹配资讯。','请切换频道或语言筛选。')}${items.length>pageLimit?'<button class="more-button" id="load-more">再看 24 条 ↓</button>':''}</div>${aside()}</div></section>`;
-}
 function newsPool(){const date=route.params.get('date');return date?(archiveCache.get(date)||[]):data.articles;}
 function filteredNews(){
   const p=route.params,topic=p.get('topic')||'all',kind=p.get('kind')||'',sid=p.get('source')||'',q=(p.get('q')||'').toLowerCase(),tag=p.get('tag')||'';
   let items=(route.name==='saved'?Object.values(saved):newsPool()).filter(a=>visible(a)&&matchesTopic(a,topic)&&(!kind||(a.kind||source(a.sourceId)?.kind)===kind)&&(!sid||a.sourceId===sid)&&(p.get('zh')!=='1'||a.language==='zh'||a.summaryZh)&&(!tag||(a.tags||[]).includes(tag))&&(!q||`${a.title} ${a.titleZh||''} ${a.summaryZh||''} ${a.source} ${a.excerpt||''}`.toLowerCase().includes(q)));
+  const section=p.get('section');if(section&&sectionDefinitions(topic).some(s=>s.id===section))items=items.filter(a=>sectionFor(a,topic)?.id===section);
   items=items.sort(byDate);
   if(p.get('mode')==='selected')items=pickDiverse(items,60,3).sort(byDate);
   return items;
 }
 function aside(){const counts={};for(const a of recentItems())counts[a.source]=(counts[a.source]||0)+1;return `<aside class="news-aside"><section class="aside-section"><h2>多源阅读站</h2><div class="aside-number">${num(data.stats.totalArticles)}<small>条已留档</small></div><p>最近 90 天已采集记录。近期索引按频道保留；选择日期可查看当日完整留档。</p></section><section class="aside-section"><h2>近期收录较多的来源</h2>${Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([name,count])=>`<div class="aside-source"><span>${e(name)}</span><span>${count}</span></div>`).join('')}<a class="aside-link" href="#/sources">查看全部 ${data.sources.length} 个信源 →</a></section><section class="aside-section"><h2>阅读提示</h2><p>“多源编排”优先中文、时效和来源多样性，并隐藏预发布版本。它不代表人工审核或模型判断。<br><br>标有“AI 中文摘要”的条目由开源模型生成，仅依据标题和来源短摘录；未覆盖条目保留原文。</p><a class="aside-link" href="#/about">编排规则 →</a></section></aside>`;}
-function renderNews(){
+function renderSavedNews(){
   const p=route.params,topic=p.get('topic')||'all',isSaved=route.name==='saved',date=p.get('date')||'',mode=p.get('mode')||'latest',items=filteredNews();
   const parts=[];let previousDate='';
   for(const a of items.slice(0,pageLimit)){if(a.date!==previousDate){parts.push(`<div class="list-date"><span>${e(a.date)}${a.date===chinaDate()?' · 今天':''}</span><span>北京时间</span></div>`);previousDate=a.date;}parts.push(newsItem(a));}
   return heading(isSaved?'我的收藏':topic==='hk'?'港股资讯':topic==='stocks'?'美股资讯':'资讯，按你的节奏读。',isSaved?'收藏包含文章快照，保存在当前浏览器，不跨设备同步。':topic==='hk'?'恒生指数、港股公司动态、港交所公告与互联互通 · 按北京时间倒序。':topic==='stocks'?'市场新闻、公司财报与公告、美国政策监管 · 按北京时间倒序。':'AI、市场、美股、港股、产品、工具、研究与 Web3，回到原始出处。',`<button class="quiet-button" id="refresh-data">↻ 刷新数据</button>`)+topicTabs(topic)+`<div class="news-layout"><div class="news-main"><div class="toolbar">${!isSaved?`<div class="segmented" role="group" aria-label="编排方式"><button data-mode="latest" class="${mode==='latest'?'active':''}" aria-pressed="${mode==='latest'}">最新</button><button data-mode="selected" class="${mode==='selected'?'active':''}" aria-pressed="${mode==='selected'}">多源编排</button></div>`:''}<label class="check-label"><input type="checkbox" id="chinese-only" ${p.get('zh')==='1'?'checked':''}>中文可读</label><label class="sr-only" for="news-kind">来源类型</label><select id="news-kind"><option value="">全部类型</option>${Object.entries(KIND).map(([k,v])=>`<option value="${k}" ${p.get('kind')===k?'selected':''}>${v}</option>`).join('')}</select>${!isSaved?`<label class="sr-only" for="news-date">查看历史日期</label><input type="date" id="news-date" value="${e(date)}" max="${chinaDate()}" min="${e(data.archives.at(-1)?.date||'')}">`:''}<span class="count-label">当前 ${num(items.length)} 条</span></div><div class="inline-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><input id="list-search" type="search" aria-label="搜索当前列表" placeholder="搜索当前列表，按 Enter 确认" value="${e(p.get('q')||'')}"></div>${p.get('tag')?`<div class="notice">当前话题：#${e(p.get('tag'))} <a class="text-link" href="${e(newsLink({topic}))}">清除筛选 ×</a></div>`:''}<p class="method-note">${date?e(date)+' 的完整收录。':'当前为各频道近期索引；历史完整内容请按日期查阅。'}分类来自关键词规则。AI 中文摘要单独标记，其余为发布方摘录。</p>${topic==='hk'?'<p class="method-note">港交所来源为交易所新闻稿和市场通告，暂未接入全部上市公司披露。香港电台财经按关键词归入港股；香港来源保留繁体中文。</p>':''}${topic==='stocks'?'<p class="method-note stock-note">公司公告标注官方来源；全球财经来源按美股关键词归类。部分原文可能需要订阅，本站保留标题、短摘录与原文入口。</p>':''}${parts.length?parts.join(''):empty(isSaved?'好内容，慢慢留下来。':'当前条件下没有资讯。',isSaved?'点击任意资讯旁的 ☆ 收藏。':'可以切换日期、语言或来源类型。')}${items.length>pageLimit?'<button class="more-button" id="load-more">再看 24 条 ↓</button>':''}</div>${aside()}</div>`;
 }
+// Module membership is exclusive; the latest panel is taken out of category rows.
+const boardText = a => `${a.originalTitle||a.title} ${a.titleZh||''}`;
+function sectionDefinitions(topic){
+  const match=pattern=>a=>pattern.test(boardText(a));
+  const official=a=>(a.kind||source(a.sourceId)?.kind)==='official';
+  const market=match(/股市|恒指|恆指|恒生|恆生|恒科|科指|南向|北水|收市|收盘|收盤|开盘|開市|盘后|盤後|盘前|標普|标普|纳斯达克|納斯達克|道琼斯|道瓊斯|s&p|nasdaq|dow jones|stock market|futures|premarket|pre-market|market today/i);
+  const company=match(/股價|股价|控股|集團|集团|騰訊|腾讯|美團|美团|阿里|中人壽|中國人壽|中国人寿|國泰|国泰|聯想|联想|小米|股份|财报|財報|业绩|業績|盈利|營收|营收|股權|股权|配股|招股|新股|上市|收购|收購|并购|併購|回购|回購|分红|派息|earnings|revenue|profit|dividend|buyback|guidance|acqui\w*|merger|\bipo\b/i);
+  const definitions={
+    hk:[['market','盘面与资金',a=>!official(a)&&market(a)],['companies','公司与财报',a=>!String(a.sourceId||'').startsWith('hkex-')&&company(a)],['official','交易所与市场公告',official],['context','宏观与市场观察',()=>true]],
+    stocks:[['market','指数与盘前动态',market],['companies','财报与公司动态',company],['official','政策与官方公告',official],['context','行业与市场观察',()=>true]],
+    ai:[['models','模型与技术进展',match(/模型|model|reasoning|推理|multimodal|多模态|benchmark|训练|training/i)],['products','产品与智能体',match(/agent|智能体|工具|产品|coding|code|编程|launch|发布|release/i)],['official','官方动态',official],['context','产业与观点',()=>true]],
+    invest:[['policy','政策与监管',official],['market','市场与资金',market],['companies','公司与财报',company],['context','宏观与投资观察',()=>true]],
+    biz:[['companies','融资与公司动态',match(/融资|收购|财报|营收|公司|funding|acqui\w*|revenue|earnings|startup/i)],['products','产品与增长',match(/产品|增长|用户|运营|product|growth|launch|subscription/i)],['views','商业观点',a=>a.kind==='community'],['context','行业观察',()=>true]],
+    ship:[['security','安全与漏洞',a=>a.changeType==='安全'||/security|vulnerability|\bcve\b|漏洞|安全/.test(boardText(a).toLowerCase())],['releases','版本与更新',a=>!!a.changeType||/release|版本|更新|升级/i.test(boardText(a))],['official','官方工具动态',official],['context','工程与实践',()=>true]],
+    research:[['papers','论文与预印本',a=>a.kind==='research'],['labs','实验室与机构',official],['context','研究解读',()=>true]],
+    crypto:[['policy','监管与机构',match(/监管|監管|\bsec\b|regulat|institution|\betf\b/i)],['protocols','协议与官方动态',official],['market','市场与资金',match(/价格|资金|上涨|下跌|bitcoin|\bbtc\b|market|price|fund|million|billion/i)],['context','生态与研究',()=>true]],
+  };
+  return (definitions[topic]||[]).map(([id,title,test])=>({id,title,test}));
+}
+function sectionFor(article,topic){return sectionDefinitions(topic).find(section=>section.test(article));}
+function boardLink(values={}){const p=Object.fromEntries(route.params);delete p.section;delete p.view;return newsLink({...p,...values});}
+function moduleRow(a,{lead=false}={}){
+  return `<li class="module-row ${reads.includes(a.id)?'read':''}"><div class="module-row-meta"><time datetime="${e(a.publishedAt)}">${e(shortTime(a))}${a.dateType==='updated'?' · 更新':''}</time><span>${e(a.source)}</span>${a.summaryZh?'<span class="module-zh">中文摘要</span>':''}</div><h3><a href="${e(articleLink(a))}">${e(displayTitle(a))}</a></h3>${lead&&(a.summaryZh||a.excerpt)?`<p>${e(summary(a))}</p>`:''}<div class="module-row-actions"><button data-save="${e(a.id)}" class="${saved[a.id]?'saved':''}" aria-label="${saved[a.id]?'取消收藏':'收藏'}：${e(displayTitle(a))}" aria-pressed="${!!saved[a.id]}">${saved[a.id]?'★':'☆'}</button><a href="${e(safeURL(a.url))}" target="_blank" rel="noopener noreferrer" data-read="${e(a.id)}">原文 ↗</a></div></li>`;
+}
+function newsModule({id,title,subtitle='',items,total,href,lead=false}){
+  return `<section class="news-module ${lead?'module-lead':''}" id="module-${e(id)}" aria-label="${e(title)}"><header><div><h2>${e(title)}</h2>${subtitle?`<span>${e(subtitle)}</span>`:''}</div><span class="module-total">${num(total)} 条</span></header>${items.length?`<ul class="module-rows">${items.map(a=>moduleRow(a,{lead})).join('')}</ul>`:'<p class="module-empty">当前筛选下暂无本类内容。</p>'}<a class="module-more" aria-label="${e(lead?'查看完整时间线':'查看'+title+'全部资讯')}" href="${e(href)}">${lead?'完整时间线':'查看全部'} <span aria-hidden="true">→</span></a></section>`;
+}
+function renderNewsBoard(items,topic){
+  const seen=new Set(),take=(pool,n)=>pool.filter(a=>!seen.has(a.id)).slice(0,n).map(a=>{seen.add(a.id);return a;});
+  if(topic==='all'||!TOPICS[topic]){
+    const order=['ai','stocks','hk','invest','biz','ship','research','crypto'];
+    const modules=order.map(id=>{const pool=items.filter(a=>matchesTopic(a,id));return newsModule({id,title:TOPICS[id].zh,subtitle:TOPICS[id].intro,items:take(pool,6),total:pool.length,href:boardLink({topic:id})});});
+    const latest=take(items,6);
+    return `<div class="news-board all-channels">${modules.join('')}${newsModule({id:'latest',title:'更多动态',subtitle:'其他近期收录 · 北京时间',items:latest,total:items.length,href:boardLink({view:'timeline',topic:''})})}</div>`;
+  }
+  const latest=take(items,4),defs=sectionDefinitions(topic);
+  const lead=newsModule({id:'latest',title:'最新动态',subtitle:'北京时间 · 新到旧',items:latest,total:items.length,href:boardLink({view:'timeline'}),lead:true});
+  const modules=defs.map(def=>{const pool=items.filter(a=>sectionFor(a,topic)?.id===def.id);return newsModule({id:def.id,title:def.title,subtitle:'按时间倒序',items:take(pool,5),total:pool.length,href:boardLink({view:'timeline',section:def.id})});});
+  return `<div class="news-board channel-board">${lead}${modules.join('')}</div>`;
+}
+function renderNews({home=false}={}){
+  if(route.name==='saved')return renderSavedNews();
+  const p=route.params,topic=p.get('topic')||'all',date=p.get('date')||'',items=filteredNews(),timeline=p.get('view')==='timeline',mode=p.get('mode')||'latest';
+  const title=home?'今天，值得看什么。':topic==='all'?'资讯总览':(TOPICS[topic]?.zh||'资讯总览');
+  const intro=home?'AI、市场与商业，分区浏览，一页看全。':TOPICS[topic]?.intro||'八个频道，同一页看见不同领域的变化。';
+  const kpis=home?`<div class="board-kpis"><span><b>${Object.keys(TOPICS).length}</b> 个频道</span><span><b>${num(data.sources.length)}</b> 个订阅入口</span><span><b>${num(data.archives.find(a=>a.date===chinaDate())?.count)}</b> 条今日收录</span><span>每半小时更新 · 北京时间</span></div>`:'';
+  const controls=`<div class="board-controls"><div class="board-controls-main"><div class="segmented" role="group" aria-label="展示方式"><button data-view="modules" class="${!timeline?'active':''}" aria-pressed="${!timeline}">模块总览</button><button data-view="timeline" class="${timeline?'active':''}" aria-pressed="${timeline}">时间线</button></div><details class="board-filter-details" ${window.matchMedia('(min-width:761px)').matches?'open':''}><summary>筛选${p.get('kind')||p.get('date')||p.get('zh')?' · 已选':''}</summary><div class="board-advanced"><label class="check-label"><input type="checkbox" id="chinese-only" ${p.get('zh')==='1'?'checked':''}>中文可读</label><label class="sr-only" for="news-kind">来源类型</label><select id="news-kind"><option value="">全部类型</option>${Object.entries(KIND).map(([k,v])=>`<option value="${k}" ${p.get('kind')===k?'selected':''}>${v}</option>`).join('')}</select><label class="sr-only" for="news-date">查看历史日期</label><input type="date" id="news-date" value="${e(date)}" max="${chinaDate()}" min="${e(data.archives.at(-1)?.date||'')}"></div></details><span class="count-label">当前 ${num(items.length)} 条</span></div><div class="inline-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><input id="list-search" type="search" aria-label="搜索当前列表" placeholder="搜索当前页所有模块，按 Enter 确认" value="${e(p.get('q')||'')}"></div></div>`;
+  const section=sectionDefinitions(topic).find(s=>s.id===p.get('section'));
+  const filterNote=p.get('tag')||section?`<div class="notice">当前筛选：${e(section?.title||'#'+p.get('tag'))} <a class="text-link" href="${e(boardLink({view:timeline?'timeline':'',tag:''}))}">清除筛选 ×</a></div>`:'';
+  const notes=`<div class="board-note"><span>${date?e(date)+' 完整归档':'近期索引 · 历史内容可按日期查看'} · 模块内按时间倒序</span><span>AI 中文摘要单独标记 · 仅有日期时不补造时分</span></div>`;
+  let content;
+  if(!items.length)content=empty('当前条件下没有资讯。','可以切换频道、日期、语言或关键词。');
+  else if(!timeline)content=renderNewsBoard(items,topic);
+  else{
+    let previousDate='';const rows=[];
+    for(const a of items.slice(0,pageLimit)){if(a.date!==previousDate){rows.push(`<div class="list-date"><span>${e(a.date)}${a.date===chinaDate()?' · 今天':''}</span><span>北京时间</span></div>`);previousDate=a.date;}rows.push(newsItem(a));}
+    content=`<div class="news-layout"><div class="news-main"><div class="toolbar"><div class="segmented" role="group" aria-label="编排方式"><button data-mode="latest" class="${mode==='latest'?'active':''}" aria-pressed="${mode==='latest'}">最新</button><button data-mode="selected" class="${mode==='selected'?'active':''}" aria-pressed="${mode==='selected'}">多源编排</button></div><span class="method-note">按发布方时间由新到旧</span></div>${rows.join('')}${items.length>pageLimit?'<button class="more-button" id="load-more">再看 24 条 ↓</button>':''}</div>${aside()}</div>`;
+  }
+  const jumps=!timeline&&topic!=='all'?`<nav class="module-jumps" aria-label="模块导航"><button data-module-jump="latest">最新</button>${sectionDefinitions(topic).map(def=>`<button data-module-jump="${e(def.id)}">${e(def.title)}</button>`).join('')}</nav>`:'';
+  const coverage=topic==='hk'?'<p class="board-coverage">港交所模块收录交易所新闻稿及市场通告；上市公司信息来自已接入媒体，暂未覆盖全部披露易公告。</p>':topic==='stocks'?'<p class="board-coverage">公司公告、政策与媒体报道分区展示；部分原文可能需要订阅。</p>':'';
+  return `<div class="modular-page">${heading(title,intro,'<button class="quiet-button" id="refresh-data">↻ 刷新数据</button>')}${kpis}${topicTabs(topic)}${controls}${filterNote}${notes}${jumps}${content}${coverage}<div class="board-footer"><a href="#/daily">按日查看简报 →</a><a href="#/sources">查看全部信源与状态 →</a><a href="#/about">收录与摘要规则 →</a></div></div>`;
+}
+
 function renderDaily(){
   const date=route.params.get('date')||chinaDate(),topic=route.params.get('topic')||'all',items=(archiveCache.get(date)||[]).filter(visible),info=data.archives.find(a=>a.date===date);
   const controls=`<div class="daily-controls"><button class="quiet-button" data-day="prev" aria-label="前一天">←</button><label class="sr-only" for="daily-date">日报日期</label><input type="date" id="daily-date" value="${e(date)}" max="${chinaDate()}" min="${e(data.archives.at(-1)?.date||'')}"><button class="quiet-button" data-day="next" aria-label="后一天" ${date>=chinaDate()?'disabled':''}>→</button><button class="quiet-button" data-today>今天</button></div>`;
@@ -171,7 +222,9 @@ function shiftDay(direction){const date=route.params.get('date')||chinaDate();co
 document.addEventListener('click',async event=>{
   const t=event.target;
   if(t.closest('.skip')){event.preventDefault();$('#main').focus();$('#main').scrollIntoView({behavior:'instant'});return;}
-  const topic=t.closest('[data-topic]');if(topic){updateParams({topic:topic.dataset.topic==='all'?'':topic.dataset.topic});return;}
+  const topic=t.closest('[data-topic]');if(topic){pageLimit=24;updateParams({topic:topic.dataset.topic==='all'?'':topic.dataset.topic,section:''});return;}
+  const jump=t.closest('[data-module-jump]');if(jump){document.getElementById('module-'+jump.dataset.moduleJump)?.scrollIntoView({behavior:'smooth',block:'start'});return;}
+  const view=t.closest('[data-view]');if(view){pageLimit=24;updateParams({view:view.dataset.view==='modules'?'':'timeline',section:''});return;}
   const mode=t.closest('[data-mode]');if(mode){updateParams({mode:mode.dataset.mode==='latest'?'':mode.dataset.mode});return;}
   const save=t.closest('[data-save]');if(save){const id=save.dataset.save;if(saved[id]){delete saved[id];toast('已取消收藏');}else{const a=findArticle(id);if(a)saved[id]=a;toast(storageOK?'已收藏 · 保存在当前浏览器':'已加入本次收藏');}persist();await renderRoute({keepScroll:true});return;}
   const copy=t.closest('[data-copy]');if(copy){const a=findArticle(copy.dataset.copy);if(a){const url=new URL(location.href);url.hash=articleLink(a).slice(1);try{await navigator.clipboard.writeText(url.href);toast('链接已复制');}catch{toast('复制不可用，可打开详情后复制浏览器地址。');}}return;}
