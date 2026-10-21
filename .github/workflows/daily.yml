@@ -4,8 +4,8 @@ on:
     branches: [main]
   workflow_dispatch:
   schedule:
-    # Every two hours at minute 17; GitHub may delay scheduled runs.
-    - cron: '17 */2 * * *'
+    # Every half hour at minutes 17 and 47; GitHub may delay scheduled runs.
+    - cron: '17,47 * * * *'
     # Daily following-list sync at 07:43 Beijing (23:43 UTC on the prior date).
     - cron: '43 23 * * *'
 
