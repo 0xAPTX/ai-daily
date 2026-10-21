@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#163c34">
+  <meta name="description" content="你的 AI 一手资讯阅读站。关注模型技术、产品应用和行业商业，直接回到原始来源。">
+  <title>知新 · AI 每日阅读</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23163c34'/%3E%3Ctext x='12' y='46' font-size='42' fill='%23eef1ce'%3E知%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">跳到内容</a>
+  <aside class="sidebar">
+    <a class="brand" href="./"><span class="brand-icon">知</span><span>知新<small>AI DAILY</small></span></a>
+    <div class="nav-label">我的阅读空间</div>
+    <nav aria-label="主导航">
+      <button class="nav-item active" data-view="brief"><span aria-hidden="true">◫</span>每日简报<i>01</i></button>
+      <button class="nav-item" data-view="all"><span aria-hidden="true">☷</span>全部资讯<i id="all-count">—</i></button>
+      <button class="nav-item" data-view="saved"><span aria-hidden="true">☆</span>我的收藏<i id="saved-count">0</i></button>
+      <button class="nav-item" data-view="sources"><span aria-hidden="true">◎</span>订阅来源<i>06</i></button>
+    </nav>
+    <div class="side-note"><span class="tiny-dot"></span>让信息回到源头<p>少一点噪音，<br>多一点值得关注的变化。</p></div>
+    <div class="sidebar-bottom"><span class="avatar">T</span><div>我的资讯站<small>为每天的好奇心留个位置</small></div></div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar"><div class="breadcrumb">我的资讯站 <span>/</span> <b id="breadcrumb-view">每日简报</b></div><div class="top-date" id="today-label"></div></header>
+    <main id="main">
+      <div class="heading-row"><div><div class="eyebrow">A LITTLE MORE INFORMED, EVERY DAY</div><h1 id="page-title">每天，知新一点。</h1><p class="intro" id="page-intro">追踪 AI 的真实进展，把时间留给值得读的内容。</p></div><button class="outline-button" id="refresh"><span aria-hidden="true">↻</span> 刷新内容</button></div>
+      <section class="hero" id="hero" aria-label="简报概览">
+        <div class="hero-copy"><div class="edition">YOUR AI READING DESK <span>一手来源 · 持续更新</span></div><h2>看见变化，<br>从原始信息开始。</h2><p>模型与技术、产品与应用、行业与商业。<br>三个方向，一份日常阅读。</p><a href="#reading-list" class="hero-link">开始今天的阅读 <span>↗</span></a></div>
+        <div class="orbit-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit orbit-three"></div><span class="planet p1"></span><span class="planet p2"></span><span class="planet p3"></span><div class="orbit-center">新<span>FRESH PERSPECTIVES</span></div><span class="art-coordinate">EXPLORE / CONNECT / DISCOVER</span></div>
+      </section>
+      <div class="status-strip" id="status-strip"><span><i class="tiny-dot"></i><b id="source-health">正在读取来源</b></span><span id="update-time">—</span><span class="status-end">北京时间 · <span id="next-info">计划每日 08:17 / 18:17 更新</span></span></div>
+      <div class="metric-grid" id="metrics"><div><span>近 24 小时收录</span><b id="new-count">—</b><small>条新资讯</small></div><div><span>本期简报</span><b id="brief-count">—</b><small>条 · 每类最多 3 条</small></div><div><span>已连接来源</span><b id="source-count">—</b><small>个订阅入口</small></div><div><span>我的阅读</span><b id="read-count">0</b><small>条已读 · 当前浏览器</small></div></div>
+      <section id="reading-list" class="reading-section" aria-label="资讯列表">
+        <div class="section-heading"><div><h2 id="list-title">今日阅读</h2><span id="list-subtitle">最近 7 天，按发布日期选取各类最新内容</span></div><label class="search"><span aria-hidden="true">⌕</span><input type="search" id="search" aria-label="搜索资讯" placeholder="搜索标题、来源…"><kbd>/</kbd></label></div>
+        <div class="filter-row"><div class="tabs" role="group" aria-label="资讯分类"><button class="tab active" data-category="all">全部</button><button class="tab" data-category="模型与技术">模型与技术</button><button class="tab" data-category="产品与应用">产品与应用</button><button class="tab" data-category="行业与商业">行业与商业</button></div><div class="date-tools"><label for="period" class="sr-only">时间范围</label><select id="period"><option value="7">最近 7 天</option><option value="today">今天发布</option><option value="all">全部留档</option><option value="date">指定日期</option></select><label for="archive-date" class="sr-only">选择历史日期</label><input type="date" id="archive-date" hidden></div></div>
+        <p class="content-note" id="content-note">当前展示来源原文标题与来源摘录；尚未启用 AI 中文摘要。分类由关键词规则生成，可打开原文核对。</p>
+        <div id="results" aria-live="polite"><div class="empty">正在读取一手资讯…</div></div>
+        <button class="outline-button load-more" id="load-more" hidden>再看 18 条 ↓</button>
+      </section>
+      <footer><div><span class="footer-brand">知新</span> 信息的价值，在于你的判断。</div><span>保留原始链接 · 收藏保存在当前浏览器</span></footer>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>

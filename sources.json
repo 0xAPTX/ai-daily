@@ -1,0 +1,8 @@
+[
+  {"id":"openai","name":"OpenAI","url":"https://openai.com/news/","feed":"https://openai.com/news/rss.xml","category":"产品与应用","color":"#217766"},
+  {"id":"deepmind","name":"Google DeepMind","url":"https://deepmind.google/blog/","feed":"https://deepmind.google/blog/rss.xml","category":"模型与技术","color":"#4e6bcb"},
+  {"id":"huggingface","name":"Hugging Face Blog","url":"https://huggingface.co/blog","feed":"https://huggingface.co/blog/feed.xml","category":"模型与技术","color":"#b48622"},
+  {"id":"google","name":"Google AI","url":"https://blog.google/technology/ai/","feed":"https://blog.google/technology/ai/rss/","category":"产品与应用","color":"#478bb0"},
+  {"id":"nvidia","name":"NVIDIA Newsroom","url":"https://nvidianews.nvidia.com/","feed":"https://nvidianews.nvidia.com/releases.xml","category":"行业与商业","color":"#6c862e"},
+  {"id":"github","name":"GitHub AI","url":"https://github.blog/ai-and-ml/","feed":"https://github.blog/ai-and-ml/feed/","category":"产品与应用","color":"#6b5f9c"}
+]

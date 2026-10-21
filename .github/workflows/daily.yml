@@ -1,0 +1,54 @@
+name: Update AI Daily
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    # 08:17 and 18:17 in Asia/Shanghai; GitHub may delay scheduled runs.
+    - cron: '17 0,10 * * *'
+
+concurrency:
+  group: ai-daily-pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Test feed processing
+        run: python -m unittest discover -s tests -v
+      - name: Collect publisher feeds
+        run: python scripts/collect.py
+      - name: Save history
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/data/feed.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Refresh public AI sources"
+            git push
+          fi
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+  deploy:
+    needs: update
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment
