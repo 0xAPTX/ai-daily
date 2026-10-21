@@ -16,6 +16,17 @@ POST = {"id": "123", "author_id": "1", "text": "An original post", "created_at":
 
 
 class XTests(unittest.TestCase):
+    def test_large_following_list_is_preserved_without_oversized_lookup(self):
+        names=[f'account{i}' for i in range(120)]
+        config=dict(CONFIG,usernames=names,monthlyBudgetUsd=3)
+        api=Mock(return_value={'data':[]})
+        with tempfile.TemporaryDirectory() as folder:
+            result=collect(config,{}, {},'token',NOW,api=api,root=Path(folder))
+        self.assertEqual(len(result['watchlist']),120)
+        self.assertTrue(result['monitoringCapped'])
+        self.assertEqual(result['status'],'partial')
+        self.assertEqual(len(api.call_args.args[1]['usernames'].split(',')),100)
+
     def test_follower_limit_is_strict_and_unknown_is_excluded(self):
         self.assertTrue(eligible(USER, CONFIG))
         for metrics in ({"followers_count": 100000}, {}, {"followers_count": -1}, {"followers_count": True}):

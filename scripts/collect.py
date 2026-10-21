@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 UTC = timezone.utc
 SHANGHAI = timezone(timedelta(hours=8))
 ATOM = "{http://www.w3.org/2005/Atom}"
-TOPICS = {"ai":"AI 动态", "invest":"投资市场", "stocks":"美股资讯", "biz":"产品商业", "ship":"开发工具", "research":"学术研究", "crypto":"加密 Web3"}
+TOPICS = {"ai":"AI 动态", "invest":"投资市场", "stocks":"美股资讯", "hk":"港股资讯", "biz":"产品商业", "ship":"开发工具", "research":"学术研究", "crypto":"加密 Web3"}
 TAGS = {
  "OpenAI":r"openai|chatgpt|gpt[- ]?\d|codex", "Anthropic":r"anthropic|claude", "Google":r"google|gemini|deepmind|谷歌",
  "DeepSeek":r"deepseek|深度求索", "Qwen":r"qwen|千问|通义", "Meta":r"\bmeta\b|\bllama\b", "NVIDIA":r"nvidia|英伟达|cuda",
@@ -30,6 +30,7 @@ TAGS = {
  "融资并购":r"funding|acqui\w*|融资|收购|并购", "算力":r"data.center|datacenter|compute|算力|数据中心|gpu",
  "产品增长":r"growth|subscription|增长|订阅|运营", "美联储":r"federal.reserve|\bfed\b|美联储", "利率":r"interest.rate|利率|降息|加息",
  "美股指数":r"s&p.?500|nasdaq|dow.jones|标普|纳斯达克|道琼斯", "财报":r"earnings|financial.results|quarterly.results|财报|业绩",
+ "港股指数":r"恒生|恆生|恒指|恆指|恒科|科指|hang.seng", "港股通":r"港股通|南向|北水|stock.connect",
  "Bitcoin":r"bitcoin|比特币|\bbtc\b", "Ethereum":r"ethereum|以太坊|\beth\b", "ETF":r"\betf\b", "稳定币":r"stablecoin|稳定币",
  "安全":r"security|vulnerability|\bcve[- ]|安全|漏洞", "更新":r"release|changelog|更新|升级|发布新版本",
  "AI 编程":r"coding|codegen|编程|代码生成", "大模型":r"\bllm\b|language.model|大模型",
@@ -81,6 +82,12 @@ EQUITY_EVENT = re.compile(r"\b(?:stocks?|shares?|earnings|revenues?|profits?|div
 def is_us_stock_news(title,source):
  return source.get("topic")=="stocks" or source["id"] in ("fed","sec") or bool(US_MARKET.search(title) or (US_COMPANY.search(title) and EQUITY_EVENT.search(title)))
 
+HK_MARKET = re.compile(r"港股|恒生|恆生|恒指|恆指|恒科|科指|香港|港交所|港股通|南向|北水|\bhang.seng\b|\bhong.kong\b|\bhkex\b",re.I)
+HK_COMPANY = re.compile(r"騰訊|腾讯|阿里巴巴|美團|美团|小米|京東|京东|快手|嗶哩嗶哩|哔哩哔哩|泡泡瑪特|泡泡玛特|友邦|中人壽|中国人寿|中國人壽|中海油|中移動|中移动|\btencent\b|\balibaba\b|\bmeituan\b|\bxiaomi\b",re.I)
+
+def is_hk_stock_news(title,source):
+ return source.get("topic")=="hk" or bool(HK_MARKET.search(title) or (HK_COMPANY.search(title) and re.search(EQUITY_EVENT.pattern+r"|股份|股權|股权|收益|盈利|收入|成交|認購|认购|融資|融资",title,re.I)))
+
 def decorate(article,source):
  title=article.get("originalTitle",article["title"])
  ai_context=bool(re.search(r"(?<![a-z])ai(?![a-z])|人工智能|大模型|智能体|机器学习|深度学习|llm|openai|anthropic|deepseek|chatgpt|claude|gemini|qwen|具身|机器人|language.model|neural.network",title+" "+article.get("excerpt",""),re.I))
@@ -97,9 +104,10 @@ def decorate(article,source):
  if source["id"] in ("qbitai","leiphone") and not ai_context:topics=["biz"]
  if topic in ("biz","ship","invest") and re.search(r"(?<![a-z])ai(?![a-z])|llm|openai|anthropic|deepseek|人工智能|大模型|智能体",title,re.I):topics.append("ai")
  if topic=="crypto" and re.search(r"etf|监管|\bsec\b|利率|美联储|institutional",title,re.I):topics.append("invest")
- if topic=="stocks":topics.append("invest")
+ if topic in ("stocks","hk"):topics.append("invest")
  if is_us_stock_news(title,source):topics.append("stocks")
- if topic=="stocks" and ai_context:topics.append("ai")
+ if is_hk_stock_news(title,source):topics.append("hk")
+ if topic in ("stocks","hk") and ai_context:topics.append("ai")
  article["topics"]=list(dict.fromkeys(topics))
  article["sourceGroup"]=source.get("group",source["name"])
  article["category"]=classify(title,source)
@@ -249,7 +257,7 @@ def write_json(path,value):
 
 def export_rss(articles,sources):
  root=ET.Element("rss",version="2.0");channel=ET.SubElement(root,"channel")
- for key,value in (("title","知新 · 多源资讯"),("link","https://0xaptx.github.io/ai-daily/"),("description","AI、投资、美股、商业、工具、研究与 Web3 的公开来源标题。")):ET.SubElement(channel,key).text=value
+ for key,value in (("title","知新 · 多源资讯"),("link","https://0xaptx.github.io/ai-daily/"),("description","AI、投资、美股、港股、商业、工具、研究与 Web3 的公开来源标题。")):ET.SubElement(channel,key).text=value
  for article in articles[:80]:
   item=ET.SubElement(channel,"item")
   for key,value in (("title",article["title"]),("link",article["url"]),("guid",article["url"]),("pubDate",format_datetime(parse_date(article["publishedAt"]))),("description","来源："+article["source"])):ET.SubElement(item,key).text=value

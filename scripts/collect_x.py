@@ -28,8 +28,8 @@ class BudgetExceeded(Exception):
 
 def usernames(config):
     names = list(dict.fromkeys(str(n).lstrip("@").lower() for n in config.get("usernames", [])))
-    if len(names) > 100 or any(not re.fullmatch(r"[A-Za-z0-9_]{1,15}", n) for n in names):
-        raise ValueError("Watchlist must contain at most 100 valid usernames")
+    if len(names) > 10000 or any(not re.fullmatch(r"[A-Za-z0-9_]{1,15}", n) for n in names):
+        raise ValueError("Watchlist must contain at most 10000 valid usernames")
     return names
 
 
@@ -86,15 +86,16 @@ def reserve(ledger, maximum, budget, root):
 
 
 def collect(config, previous, ledger, token, now, api=request_api, root=ROOT):
-    names = usernames(config)
+    all_names = usernames(config)
+    names = all_names[:100]  # One official batch lookup; preserve the full list in the UI.
     hours = max(1, min(168, int(config.get("lookbackHours", 48))))
     config = dict(config, lookbackHours=hours)
     output = {"schemaVersion": 1, "checkedAt": now.isoformat(), "lastSuccessAt": previous.get("lastSuccessAt"),
-              "status": "not_configured", "watchlist": names, "accounts": [], "posts": [],
+              "status": "not_configured", "watchlist": all_names, "monitoringCapped": len(all_names) > len(names), "accounts": [], "posts": [],
               "rule": {"maxFollowersExclusive": min(int(config.get("maxFollowers", 100000)), 100000), "lookbackHours": hours,
                        "minScore": int(config.get("minScore", 50)), "followerScoreRatio": float(config.get("followerScoreRatio", .005)),
                        "formula": "点赞 + 2×转发 + 回复 + 2×引用"}}
-    output["candidates"] = [p for p in config.get("candidates", []) if p.get("username", "").lower() in names]
+    output["candidates"] = [p for p in config.get("candidates", []) if p.get("username", "").lower() in all_names]
     if config.get("followingImport"):
         output["followingImport"] = config["followingImport"]
     retained = [p for p in previous.get("posts", []) if p.get("username", "").lower() in names and
@@ -114,7 +115,7 @@ def collect(config, previous, ledger, token, now, api=request_api, root=ROOT):
     try:
         reserve(ledger, len(names) * USER_COST, budget, root)
         lookup = api("users/by", {"usernames": ",".join(names), "user.fields": "id,name,username,public_metrics,protected"}, token)
-        partial_errors = bool(lookup.get("errors"))
+        partial_errors = bool(lookup.get("errors")) or len(all_names) > len(names)
         users = {str(u["id"]): u for u in lookup.get("data", []) if u.get("username", "").lower() in names}
         output["accounts"] = [{"username": name, "eligible": eligible(next((u for u in users.values() if u["username"].lower() == name), {}), config),
                                "followersCount": next((u.get("public_metrics", {}).get("followers_count") for u in users.values() if u["username"].lower() == name), None), "observedAt": now.isoformat()} for name in names]
@@ -174,6 +175,9 @@ def main():
     previous = json.loads(path.read_text()) if path.exists() else {}
     ledger = json.loads(budget_path.read_text()) if budget_path.exists() else {}
     output = collect(config, previous, ledger, os.environ.get("X_BEARER_TOKEN", ""), datetime.now(timezone.utc))
+    sync_path = ROOT / "site/data/x-following-status.json"
+    if sync_path.exists():
+        output["followingSync"] = json.loads(sync_path.read_text())
     write_json(path, output)
     print(json.dumps({"status": output["status"], "accounts": len(output["accounts"]), "posts": len(output["posts"])}, ensure_ascii=False))
 

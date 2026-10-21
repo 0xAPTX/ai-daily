@@ -27,6 +27,14 @@ class FeedTests(unittest.TestCase):
         for source_id in ['fed','sec']:
             self.assertIn('stocks',decorate({'title':'New regulatory announcement'},dict(mixed,id=source_id))['topics'])
 
+    def test_hk_channel_keeps_global_finance_separate_and_handles_traditional_chinese(self):
+        mixed = dict(SOURCE,topic='invest')
+        for title in ['恒指收市下跌', '騰訊公布季度盈利', '南向资金净流入', 'Hong Kong stocks rise']:
+            self.assertIn('hk',decorate({'title':title},mixed)['topics'])
+        for title in ['French shares fall after profit warning','日本央行宣布利率决议','美股标普500指数上涨']:
+            self.assertNotIn('hk',decorate({'title':title},mixed)['topics'])
+        self.assertEqual(decorate({'title':'市場通告'},dict(SOURCE,topic='hk'))['topics'],['hk','invest'])
+
     def test_day_only_dates_do_not_invent_clock_time(self):
         payload = b'<rss><channel><item><title>Day only</title><link>https://example.com/day</link><pubDate>2026-10-21</pubDate></item></channel></rss>'
         article = parse_feed(payload, SOURCE, NOW)[0]

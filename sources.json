@@ -1187,5 +1187,57 @@
     "language": "en",
     "group": "Intel",
     "adapter": "rss"
+  },
+  {
+    "id": "hkex-news",
+    "name": "香港交易所 · 新聞稿",
+    "url": "https://www.hkex.com.hk/?sc_lang=zh-hk",
+    "feed": "https://www.hkex.com.hk/Services/RSS-Feeds/News-Releases?sc_lang=zh-hk",
+    "topic": "hk",
+    "category": "交易所公告",
+    "kind": "official",
+    "region": "HK",
+    "language": "zh",
+    "group": "香港交易所",
+    "adapter": "rss"
+  },
+  {
+    "id": "hkex-circulars",
+    "name": "香港交易所 · 證券市場通告",
+    "url": "https://www.hkex.com.hk/Services/Circulars-and-Notices?sc_lang=zh-hk",
+    "feed": "https://www.hkex.com.hk/Services/RSS-Feeds/The-Stock-Exchange-of-Hong-Kong-Limited?sc_lang=zh-hk",
+    "topic": "hk",
+    "category": "市場規則與互聯互通",
+    "kind": "official",
+    "region": "HK",
+    "language": "zh",
+    "group": "香港交易所",
+    "adapter": "rss"
+  },
+  {
+    "id": "rthk-finance",
+    "name": "香港電台 · 財經",
+    "url": "https://news.rthk.hk/rthk/ch/latest-news/finance.htm",
+    "feed": "https://rthk.hk/rthk/news/rss/c_expressnews_cfinance.xml",
+    "topic": "invest",
+    "category": "財經新聞",
+    "kind": "media",
+    "region": "HK",
+    "language": "zh",
+    "group": "香港電台",
+    "adapter": "rss"
+  },
+  {
+    "id": "yahoo-hk-markets",
+    "name": "Yahoo 財經 · 恒生指數",
+    "url": "https://hk.finance.yahoo.com/",
+    "feed": "https://feeds.finance.yahoo.com/rss/2.0/headline?s=%5EHSI&region=HK&lang=zh-Hant-HK",
+    "topic": "hk",
+    "category": "港股市場",
+    "kind": "media",
+    "region": "HK",
+    "language": "zh",
+    "group": "Yahoo Finance",
+    "adapter": "rss"
   }
 ]

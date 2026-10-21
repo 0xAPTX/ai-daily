@@ -8,7 +8,26 @@
 
 名单完整保留所有账号，包括大型机构和超过 10 万粉丝的账号。**“低于 10 万”只用于热帖检测的资格筛选，不会删除关注名单里的账号**。仍保留原来的 6 个补充候选，目前共 33 个观察账号。
 
-这是一份本次导入的快照，后续在 X 新增或取消关注不会自动同步。当前没有启用付费采集，也不会定时访问浏览器登录会话。
+这是一份本次导入的快照，已增加每日同步程序与 GitHub 定时任务；目前按用户选择保持未启用，因此后续新增或取消关注尚不会自动同步。不会访问浏览器登录会话。
+
+## 每日自动同步关注名单
+
+GitHub Actions 每天计划在**北京时间 07:43**运行（UTC 前一天 23:43，调度可能延迟），也可手动运行工作流检查。当前 `followingSync.enabled: false`，预算仍为 0，不会调用接口；页面明确显示未启用。
+
+以后启用时：
+
+1. 在 GitHub 仓库 Secrets 配置 `X_BEARER_TOKEN`，应用需要公开用户查询及读取 following 的权限。凭证只通过环境变量使用，不写入生成文件。
+2. 在 `x-watchlist.json` 将 `followingSync.enabled` 改为 `true`，确认 `followingSync.owner` 为 `0xAPTX`，设置获批准的 `monthlyBudgetUsd` 并在 X 控制台配置硬性消费限额。
+3. 根级 `enabled` 只控制热帖，可继续保持 `false`，因此可以只同步关注而不采集帖子。两个功能共用 `site/data/x-budget.json` 月度预留账本。
+4. 手动运行 Update AI Daily，检查 `Sync X following once daily (opt-in, budget guarded)`，再查看网站每日同步状态。
+
+程序通过官方用户查询解析账号 ID，再按页读取 `GET /2/users/{id}/following`。默认每页 100、最多 50 页；所有页完整、账号合法无重复且数量与 API 报告的关注数一致时才替换名单。新增关注自动加入，取消关注自动移除；原有 6 个补充候选独立保留。读取失败、分页截断或数量不一致时，保留上次完整名单，公开页面标记原因。同一北京时间日期成功后不再重复付费同步。
+
+完整关注名单最多支持该分页上限；热帖一次最多核验前 100 个观察账号，超过时明确标为部分结果。关注名单本身不会因超过 10 万粉丝而删除账号。同步结果更新 `imports/0xaptx-following.json`、`x-watchlist.json` 及页面数据，并提交到已获授权的公开仓库。
+
+[官方价格](https://docs.x.com/x-api/getting-started/pricing)目前 Following/Followers Read 为 $0.010/资源。按 27 个关注加 1 次用户查询，粗略约 $0.28/天、30 天 $8.40；实际取决于资源数与官方账单。程序先按整页 100 个预留，因此一页加用户查询保守预留 $1.01/天，不应把预留额当实际支出。符合官方 Owned Reads 条件的自有账号读取可能有较低单价，本程序不假定符合折扣。预算不足时停止调用，未配置时零调用。
+
+官方接口示例：[X 官方 following 读取示例](https://github.com/xdevplatform/samples/blob/main/python/users/follow/get_following.py)。尚无凭证，当前验证覆盖程序与测试夹具，未验证实际账号 API 权限。
 
 ## 补充候选名单
 
