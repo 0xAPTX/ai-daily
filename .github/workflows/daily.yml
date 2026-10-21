@@ -32,7 +32,7 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: .cache/summary
-          key: summary-qwen3-4b-bc640142-llama-b11788-v2
+          key: summary-qwen3-4b-instruct-a06e946b-llama-b11788-v3
       - name: Generate Chinese briefs on the runner (no API key)
         run: python scripts/summarize.py --limit 64 --max-seconds 540
       - name: Check configured X watchlist

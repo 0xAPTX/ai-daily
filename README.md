@@ -30,13 +30,13 @@ X 官方 API 适配器已准备，需要配置凭证、关注账号及预算，�
 
 ## 编排与数据边界
 
-中文摘要 **不需要模型 API Key**：`scripts/summarize.py` 在 GitHub 公开标准 runner 上通过 llama.cpp 运行官方 Apache 2.0 Qwen3-4B Q4_K_M，只向本机回环服务发送公开标题和来源短摘录，生成中文标题及短摘要。模型未读取全文，结果可能有误，不提供投资建议或重要性判断。原始文本始终保留，页面标识 AI 摘要及生成依据。
+中文摘要 **不需要模型 API Key**：`scripts/summarize.py` 在 GitHub 公开标准 runner 上通过 llama.cpp 运行 Apache 2.0 Qwen3-4B-Instruct-2507（Unsloth Q4_K_M 量化），只向本机回环服务发送公开标题和来源短摘录，生成中文标题及短摘要。模型只翻译标题及摘录中的完整句子；残句弃用并退回标题转述。模型未读取全文，结果可能有误，不提供投资建议或重要性判断。原始文本始终保留，页面标识 AI 摘要及生成依据。
 
-每次最多处理 64 条、推理约 9 分钟，优先近期并兼顾不同发布方；未覆盖及失败内容保留原文。摘要按输入指纹缓存，来源修改时失效重做。模型失败不影响原文采集和已有摘要。页面显示近期覆盖数；不承诺全部历史即时翻译。
+首次最多处理 24 条，之后每次最多 64 条、推理约 9 分钟，优先近期并兼顾不同发布方；未覆盖及失败内容保留原文。摘要按输入指纹缓存，来源修改时失效重做。模型失败不影响原文采集和已有摘要。页面显示近期覆盖数；不承诺全部历史即时翻译。
 
 模型权重约 2.50GB，仅在 runner 的 Actions Cache 中保存，Git 与 Pages 不包含权重。下载内容固定版本及 SHA256 校验：
 
-- [Qwen 官方模型](https://huggingface.co/Qwen/Qwen3-4B-GGUF/tree/bc640142c66e1fdd12af0bd68f40445458f3869b)：`Qwen3-4B-Q4_K_M.gguf`，SHA256 `7485fe6f11af29433bc51cab58009521f205840f5b4ae3a32fa7f92e8534fdf5`。
+- [Qwen 官方上游模型](https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507)，使用 [Unsloth 量化发布](https://huggingface.co/unsloth/Qwen3-4B-Instruct-2507-GGUF/tree/a06e946bb6b655725eafa393f4a9745d460374c9)：`Qwen3-4B-Instruct-2507-Q4_K_M.gguf`，SHA256 `3605803b982cb64aead44f6c1b2ae36e3acdb41d8e46c8a94c6533bc4c67e597`。
 - [llama.cpp 官方运行器 b11788](https://github.com/ggml-org/llama.cpp/releases/tag/b11788)：Linux x64 CPU 二进制，SHA256 `1a1aea87636985bd078e1f6040b03cfee7f985abc580c39a42324fb0137ddc2a`。
 
 公开仓库标准 GitHub-hosted runner 目前免费，GitHub 定时调度和免费政策仍由平台决定。无需 Codex 定时任务，不消耗此对话的模型额度。若以后迁移私有仓库或其他 runner，先核对 Actions 计费。

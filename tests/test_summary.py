@@ -5,7 +5,7 @@ import unittest
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-from summary_utils import choose_candidates, enrich, evidence_valid, fingerprint, protected_names, valid_summary
+from summary_utils import choose_candidates, enrich, evidence_excerpt, evidence_valid, fingerprint, protected_names, valid_summary
 import summarize
 
 
@@ -53,6 +53,12 @@ class SummaryTests(unittest.TestCase):
         with patch.object(summarize, "request_json", return_value=response):
             result = summarize.translate(dict(self.article, excerpt=""))
         self.assertEqual(result["summaryZh"], result["titleZh"])
+
+    def test_incomplete_publisher_sentence_is_not_sent_to_model(self):
+        self.assertEqual(evidence_excerpt({"excerpt": "A complete sentence. The rest is"}), "A complete sentence.")
+        self.assertEqual(evidence_excerpt({"excerpt": "NVIDIA announced new tools, along"}), "")
+        self.assertEqual(evidence_excerpt({"excerpt": "The U.S. government plans to"}), "")
+        self.assertEqual(evidence_excerpt({"excerpt": "Nov. 5 is the target."}), "Nov. 5 is the target.")
 
 
 if __name__ == "__main__":

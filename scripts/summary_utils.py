@@ -3,8 +3,19 @@ import hashlib
 import json
 import re
 
-MODEL = "Qwen3-4B Q4_K_M"
-PROMPT_VERSION = "zh-brief-v2-evidence"
+MODEL = "Qwen3-4B-Instruct-2507 Q4_K_M"
+PROMPT_VERSION = "zh-brief-v3-complete-excerpt"
+
+
+def evidence_excerpt(article):
+    text = article.get("excerpt", "")
+    end = 0
+    for match in re.finditer(r"[.!?。！？][\"'’”]?(?=\s|$)", text):
+        prefix = text[:match.end()].rstrip("\"'’”")
+        if re.search(r"(?:\b(?:Mr|Mrs|Ms|Dr|Prof|Inc|Corp|Ltd|vs|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec|U\.S|U\.K)|\b[A-Z])\.$", prefix):
+            continue
+        end = match.end()
+    return text[:end].strip()
 
 
 def numeric_tokens(text):
@@ -58,7 +69,7 @@ def enrich(articles, cache):
         value = entries.get(article["id"], {})
         if value.get("inputHash") == fingerprint(article) and valid_summary(value) and evidence_valid(article, value):
             article.update({k: value[k] for k in ("titleZh", "summaryZh", "summarizedAt")})
-            article.update(summaryModel=MODEL, summaryBasis="title_and_excerpt" if article.get("excerpt") else "title_only")
+            article.update(summaryModel=MODEL, summaryBasis="title_and_excerpt" if evidence_excerpt(article) else "title_only")
     return articles
 
 
