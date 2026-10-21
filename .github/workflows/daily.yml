@@ -17,6 +17,7 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     permissions:
       contents: write
     steps:
@@ -28,6 +29,16 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Collect publisher feeds
         run: python scripts/collect.py
+      - uses: actions/cache@v4
+        with:
+          path: .cache/summary
+          key: summary-qwen15-q4-91cad511-llama-b11788-v1
+      - name: Generate Chinese briefs on the runner (no API key)
+        run: python scripts/summarize.py --limit 64 --max-seconds 540
+      - name: Check configured X watchlist
+        env:
+          X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
+        run: python scripts/collect_x.py
       - name: Save history
         run: |
           git config user.name "github-actions[bot]"

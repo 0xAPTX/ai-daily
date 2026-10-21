@@ -14,6 +14,11 @@ NOW = datetime(2026, 10, 21, 10, tzinfo=timezone.utc)
 
 
 class FeedTests(unittest.TestCase):
+    def test_day_only_dates_do_not_invent_clock_time(self):
+        payload = b'<rss><channel><item><title>Day only</title><link>https://example.com/day</link><pubDate>2026-10-21</pubDate></item></channel></rss>'
+        article = parse_feed(payload, SOURCE, NOW)[0]
+        self.assertEqual(article["datePrecision"], "day")
+
     def test_rss_dates_html_and_unsafe_urls(self):
         payload = b'''<rss><channel>
         <item><title>New &amp; useful</title><link>https://example.com/post?utm_source=rss</link><pubDate>Wed, 21 Oct 2026 01:00:00 GMT</pubDate><description>&lt;p&gt;Publisher excerpt&lt;/p&gt;</description></item>

@@ -1,0 +1,12 @@
+{
+  "enabled": false,
+  "usernames": [],
+  "maxFollowers": 100000,
+  "lookbackHours": 48,
+  "minScore": 50,
+  "followerScoreRatio": 0.005,
+  "maxResults": 20,
+  "maxPages": 1,
+  "monthlyBudgetUsd": 0,
+  "legacyFields": false
+}

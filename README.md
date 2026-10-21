@@ -4,9 +4,11 @@
 
 ## 当前功能
 
-- 六频道首页：AI、投资市场、产品商业、开发工具、学术研究、加密 Web3。
+- 首页时间线按北京时间倒序，另保留六频道浏览：AI、投资市场、产品商业、开发工具、学术研究、加密 Web3。
 - 资讯流按发布时间排序，可筛中文、来源类型、关键词、主题和日期。
-- 每日日报按真实发布日期编排，每个频道最多六条，优先中文与不同发布方。
+- 每日日报按真实发布时间倒序，每个频道最多六条；来源仅提供日期时不补造时分。
+- 中文标题和摘要：GitHub runner 内运行开源 Qwen 模型，增量生成，保留原文与覆盖进度。
+- X 热帖监测页及官方 API 接入程序：低于 10 万粉丝的指定账号、互动门槛、采样时间和原帖时间线。默认未启用，见 [接入说明](docs/x-setup.md)。
 - 站内热点按过去 24 小时标题关键词计数；不代表全网热度。
 - 信源目录显示配置数、读取结果、最近活跃、语言和类型，可在当前浏览器隐藏来源。
 - 来源详情和原文链接、原文摘录、更新/发布时间依据、预发布和安全更新标记。
@@ -24,13 +26,22 @@
 
 信息源配置在 `sources.json`。`rss` 适配器支持 RSS/Atom/RDF；Anthropic 从新闻列表发现文章并读取 `NewsArticle.datePublished`，DeepSeek 从中文官方更新页的明确日期 H2 拆分条目。不会拿 sitemap 修改日期当作发布时间。
 
-X、微信公众号、Telegram、登录或付费墙后的内容未接入。Qwen 当前博客未找到可读取的稳定日期接口，旧博客和空发布订阅未计入有效来源。Hugging Face 包含社区作者内容，标为社区来源。
+X 官方 API 适配器已准备，需要配置凭证、关注账号及预算，默认关闭；微信公众号、Telegram、登录或付费墙后的内容未接入。Qwen 当前博客未找到可读取的稳定日期接口，旧博客和空发布订阅未计入有效来源。Hugging Face 包含社区作者内容，标为社区来源。
 
 ## 编排与数据边界
 
-当前版本 **不调用模型、不需要密钥**。中文来自中文源，英文保留原文。摘录直接来自发布方，未生成中文翻译、重要性分析或每日叙事综述。
+中文摘要 **不需要模型 API Key**：`scripts/summarize.py` 在 GitHub 公开标准 runner 上通过 llama.cpp 运行官方 Apache 2.0 Qwen2.5-1.5B-Instruct Q4_K_M，只向本机回环服务发送公开标题和来源短摘录，生成中文标题及短摘要。模型未读取全文，结果可能有误，不提供投资建议或重要性判断。原始文本始终保留，页面标识 AI 摘要及生成依据。
 
-最新资讯按来源时间排序。“多源编排”优先时效、中文与发布方多样性，限制同一来源数量，排除预发布及明显促销标题；不代表人工精选。分类与话题使用中英文关键词规则，可能有误。
+每次最多处理 64 条、推理约 9 分钟，优先近期并兼顾不同发布方；未覆盖及失败内容保留原文。摘要按输入指纹缓存，来源修改时失效重做。模型失败不影响原文采集和已有摘要。页面显示近期覆盖数；不承诺全部历史即时翻译。
+
+模型权重约 1.12GB，仅在 runner 的 Actions Cache 中保存，Git 与 Pages 不包含权重。下载内容固定版本及 SHA256 校验：
+
+- [Qwen 官方模型](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/tree/91cad51170dc346986eccefdc2dd33a9da36ead9)：`qwen2.5-1.5b-instruct-q4_k_m.gguf`，SHA256 `6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e`。
+- [llama.cpp 官方运行器 b11788](https://github.com/ggml-org/llama.cpp/releases/tag/b11788)：Linux x64 CPU 二进制，SHA256 `1a1aea87636985bd078e1f6040b03cfee7f985abc580c39a42324fb0137ddc2a`。
+
+公开仓库标准 GitHub-hosted runner 目前免费，GitHub 定时调度和免费政策仍由平台决定。无需 Codex 定时任务，不消耗此对话的模型额度。若以后迁移私有仓库或其他 runner，先核对 Actions 计费。
+
+首页、最新资讯及频道日报按来源时间倒序，均显示北京时间时分；仅有日期时单独说明。“多源编排”先限制同一来源数量、排除预发布及明显促销标题，再按时间倒序展示；不代表人工精选。分类与话题使用中英文关键词规则，可能有误。
 
 同一 URL 去重，arXiv 同论文不同分类/版本合并；同标题且相近时间的不同发布方可归并显示。未做跨语言语义事件去重，不把多个 arXiv 分类当成多个独立发布方。
 
@@ -51,4 +62,4 @@ node --check site/app.js
 python3 -m http.server 8765 --directory site --bind 127.0.0.1
 ```
 
-只需要 Python 3.9+ 和 curl，无第三方依赖。参考 [GitHub Pages 工作流文档](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)。
+采集和测试需要 Python 3.9+、curl，无 pip 依赖。摘要任务需要 Python 3.12+ 和 Linux x64 runner；下载并缓存上述模型及运行器。GitHub 自动提交和 Pages 发布使用平台提供的短期 `GITHUB_TOKEN`，无需配置个人 token。X API Bearer Token 与此不同，仅启用 X 时需要。参考 [GitHub Pages 工作流文档](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)。

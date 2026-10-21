@@ -13,6 +13,7 @@ import subprocess
 import sys
 import unicodedata
 import xml.etree.ElementTree as ET
+from summary_utils import MODEL, enrich, read_cache
 from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode, urljoin
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -120,7 +121,9 @@ def parse_feed(payload,source,now):
   fallback=entry.findtext(ATOM+"updated")
   excerpt=entry.findtext("description") or entry.findtext(ATOM+"summary") or entry.findtext(ATOM+"content") or entry.findtext("{http://purl.org/rss/1.0/}description")
   article=make_article(title,link,parse_date(published or fallback),excerpt,source,now,"published" if published else "updated")
-  if article:articles.append(article)
+  if article:
+   if re.fullmatch(r"\d{4}-\d{2}-\d{2}", (published or fallback or "").strip()):article["datePrecision"]="day"
+   articles.append(article)
  return articles
 
 
@@ -249,6 +252,7 @@ def build_outputs(previous,incoming,sources,now,last_success):
  articles=[a for a in articles if not re.search(r"^viable/|^nightly/|^trunk/",a.get("originalTitle",a["title"]),re.I)]
  for article in articles:
   if article["sourceId"] in source_map:decorate(article,source_map[article["sourceId"]])
+ cache=read_cache(ROOT);enrich(articles,cache)
  for article in articles:
   for origin in article.get("origins",[]):origin["group"]=source_map.get(origin["sourceId"],{}).get("group",origin["sourceId"])
  groups=cluster_titles(articles);by_day=defaultdict(list)
@@ -267,6 +271,8 @@ def build_outputs(previous,incoming,sources,now,last_success):
    latest.append(article);quotas[topic]+=1;source_quotas[article["sourceId"]]+=1;group_quotas[group]+=1
  stats={"totalArticles":len(articles),"configuredSources":len(sources),"healthySources":sum(s["status"]=="ok" for s in sources),"quietSources":sum(s["status"]=="quiet" for s in sources),"activeSources7d":len({o["sourceId"] for a in articles if now-parse_date(a["publishedAt"])<timedelta(days=7) for o in a.get("origins",[{"sourceId":a["sourceId"]}])}),"chineseSources":sum(s.get("language")=="zh" for s in sources),"organizations":len({s.get("group",s["name"]) for s in sources}),"topicCounts":dict(Counter(t for a in articles for t in a.get("topics",["ai"])))}
  data={"schemaVersion":2,"generatedAt":now.isoformat(),"lastSuccessfulAt":last_success,"timezone":"Asia/Shanghai","retentionDays":90,"summaryMode":"publisher_excerpt","sources":sources,"articles":latest,"archives":archives,"groups":groups,"stats":stats,"topics":TOPICS}
+ data["summaryMode"]="local_model_incremental"
+ data["summaryService"]={"model":MODEL,"status":cache.get("status","pending"),"checkedAt":cache.get("checkedAt"),"lastSuccessAt":cache.get("lastSuccessAt"),"summarizedArticles":sum(bool(a.get("summaryZh")) for a in articles),"recentSummarized":sum(bool(a.get("summaryZh")) for a in latest),"recentEnglish":sum(a.get("language")!="zh" for a in latest),"basis":"仅基于标题和发布方短摘录；增量生成，未覆盖内容保留原文。"}
  tag_items=defaultdict(list)
  for article in articles:
   if now-parse_date(article["publishedAt"])<timedelta(days=1):
