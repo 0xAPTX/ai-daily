@@ -1,8 +1,8 @@
 # 知新 · 多源资讯站
 
-在 GitHub Pages 上运行的个人阅读站，组织方式参考 [wqu.guru](https://wqu.guru/)，直接采集各发布方公开来源。网站地址：[打开知新](https://0xaptx.github.io/ai-daily/)
+在 GitHub Pages 上运行的个人阅读站，组织方式参考 [wqu.guru](https://wqu.guru/)，直接采集各发布方公开来源。网站地址：[打开知新首页](https://aptx.dev/) · [原 GitHub Pages 入口](https://0xaptx.github.io/ai-daily/)
 
-自定义域名入口：[www.aptx.dev/newsHub/](https://www.aptx.dev/newsHub/)。浏览站内频道时保留自定义域名，原 GitHub Pages 地址继续可用。该入口通过 Cloudflare Pages Function 读取已发布的 GitHub Pages 内容，仍由原有 GitHub Actions 更新资讯；部署说明见 [cloudflare/README.md](cloudflare/README.md)。如果此前访问过旧的 301 跳转，可先使用此处末尾带 `/` 的入口避开浏览器旧缓存。
+自定义域名首页：[aptx.dev](https://aptx.dev/)；资讯入口：[www.aptx.dev/newsHub/](https://www.aptx.dev/newsHub/)。浏览站内频道时保留自定义域名，原 GitHub Pages 地址继续可用。该入口通过 Cloudflare Pages Function 读取已发布的 GitHub Pages 内容，仍由原有 GitHub Actions 更新资讯；部署说明见 [cloudflare/README.md](cloudflare/README.md)。如果此前访问过旧的 301 跳转，可先使用此处末尾带 `/` 的入口避开浏览器旧缓存。
 
 快捷入口：[美股](https://0xaptx.github.io/ai-daily/#/news?topic=stocks) · [港股](https://0xaptx.github.io/ai-daily/#/news?topic=hk) · [X 关注名单](https://0xaptx.github.io/ai-daily/#/x) · [全部信源](https://0xaptx.github.io/ai-daily/#/sources)
 
@@ -10,7 +10,7 @@
 
 - 首页直接展示各频道内容模块；资讯页默认模块总览，也可切换北京时间倒序时间线。八个频道：AI、投资市场、美股资讯、港股资讯、产品商业、开发工具、学术研究、加密 Web3。
 - 资讯流按发布时间排序，可筛中文、来源类型、关键词、主题和日期。
-- 每日日报按真实发布时间倒序，每个频道最多六条；来源仅提供日期时不补造时分。
+- 知新日报默认总结北京时间昨天的资讯，以头版、昨日总览和八个版块呈现；每版选读最多三条，并保留出处。
 - 中文标题和摘要：GitHub runner 内运行开源 Qwen 模型，增量生成，保留原文与覆盖进度。
 - X 关注名单：首次从 @0xAPTX 导入 27 个已关注账号，保留 6 个补充候选；最新数量以页面为准。全部名单与热帖资格分开，来源与导入时间可核对。
 - 每半天 X 关注同步流程：GitHub Actions 北京时间 07:43、19:43 检查，完整分页后更新名单；目前按用户选择保持未启用，缺少凭证或预算为 0 不会请求接口。
@@ -49,7 +49,7 @@ X 官方 API 适配器已准备，需要配置凭证、关注账号及预算，�
 
 公开仓库标准 GitHub-hosted runner 目前免费，GitHub 定时调度和免费政策仍由平台决定。无需 Codex 定时任务，不消耗此对话的模型额度。若以后迁移私有仓库或其他 runner，先核对 Actions 计费。
 
-首页、最新资讯及频道日报按来源时间倒序，均显示北京时间时分；仅有日期时单独说明。“多源编排”先限制同一来源数量、排除预发布及明显促销标题，再按时间倒序展示；不代表人工精选。分类与话题使用中英文关键词规则，可能有误。
+首页与资讯流按来源时间倒序；日报按完整报道日选读。资讯均显示北京时间时分，仅有日期时单独说明。“多源编排”先限制同一来源数量、排除预发布及明显促销标题，再按时间倒序展示；不代表人工精选。分类与话题使用中英文关键词规则，可能有误。
 
 同一 URL 去重，arXiv 同论文不同分类/版本合并；同标题且相近时间的不同发布方可归并显示。未做跨语言语义事件去重，不把多个 arXiv 分类当成多个独立发布方。
 
@@ -100,6 +100,6 @@ python3 -m http.server 8765 --directory site --bind 127.0.0.1
 
 - 报纸式头版、昨日总览、速读要点和八个分栏；每段保留来源编号，并可打开出处与原文。支持浏览器打印或另存 PDF。
 - 后台从完整日期归档去重，过滤预发布及推广内容，按版块与发布方分散选读，最多每版 3 条；编排顺序不是全网重要性排名。
-- 免费 Qwen 模型为昨天生成整报综述和版块摘要，基于每版选读中的 2 条标题与短摘录；没有阅读全文。引文编号或数字校验失败时保留来源摘编，不补造日报。
+- 免费 Qwen 模型为昨天生成整报综述和版块摘要，基于每版选读中的 2 条标题与短摘录；没有阅读全文。引文编号或数字校验失败时保留来源摘编，不补造日报；来源摘编也会将具体新闻内容压缩为总览与版块提要，并保留出处。
 - 摘要随来源内容变化失效重建。历史版保留已生成的 AI 综述；没有整报综述的往期显示来源摘编，按 90 天归档窗口保留。
 - `scripts/daily_edition.py` 生成 `site/data/editions/YYYY-MM-DD.json`；原有每小时 Actions 在采集后生成并发布，网页访问不调用模型。

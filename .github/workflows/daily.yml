@@ -34,6 +34,8 @@ jobs:
           python-version: '3.12'
       - name: Test feed processing
         run: python -m unittest discover -s tests -v
+      - name: Test custom-domain routing
+        run: node --test cloudflare/test_proxy.mjs
       - name: Sync X following twice daily (opt-in, budget guarded)
         if: github.event_name == 'workflow_dispatch' || github.event.schedule == '43 11,23 * * *'
         env:
@@ -44,7 +46,7 @@ jobs:
       - name: Decide whether Chinese briefs need refreshing
         id: summaries
         run: |
-          if [ "$GITHUB_EVENT_NAME" != "push" ] || ! git diff --quiet HEAD^ HEAD -- scripts/summarize.py scripts/summary_utils.py scripts/daily_edition.py scripts/collect.py sources.json; then
+          if [ "$GITHUB_EVENT_NAME" != "push" ] || ! git diff --quiet HEAD^ HEAD -- scripts/summarize.py scripts/summary_utils.py scripts/collect.py sources.json; then
             echo "refresh=true" >> "$GITHUB_OUTPUT"
           else
             echo "refresh=false" >> "$GITHUB_OUTPUT"

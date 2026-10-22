@@ -1,17 +1,16 @@
-// Cloudflare Worker: publish the existing public Pages site under /newsHub.
+// Cloudflare Pages Function: retain the custom domain at / and at /newsHub.
 const PREFIX = '/newsHub';
 const ORIGIN = 'https://0xaptx.github.io/ai-daily/';
 
 export default {
   async fetch(request) {
     const incoming = new URL(request.url);
-    if (incoming.pathname !== PREFIX && !incoming.pathname.startsWith(PREFIX + '/')) {
-      return new Response('Not found', { status: 404 });
-    }
+    const mounted = incoming.pathname === PREFIX || incoming.pathname.startsWith(PREFIX + '/');
+    const base = mounted ? PREFIX + '/' : '/';
     if (!['GET', 'HEAD'].includes(request.method)) {
       return new Response('Method not allowed', { status: 405, headers: { Allow: 'GET, HEAD' } });
     }
-    const suffix = incoming.pathname.slice(PREFIX.length).replace(/^\//, '');
+    const suffix = (mounted ? incoming.pathname.slice(PREFIX.length) : incoming.pathname).replace(/^\//, '');
     const upstream = new URL(suffix || 'index.html', ORIGIN);
     // Keep this a fixed public-site proxy, including after URL normalization.
     if (!upstream.href.startsWith(ORIGIN)) {
@@ -33,7 +32,7 @@ export default {
     }
     const headers = new Headers(origin.headers);
     headers.delete('set-cookie');
-    headers.set('X-NewsHub-Version', '2026-10-22-1');
+    headers.set('X-NewsHub-Version', '2026-10-22-2');
     headers.set('Cache-Control', 'no-cache');
     if (origin.status >= 300 && origin.status < 400) {
       const location = headers.get('location');
@@ -41,13 +40,13 @@ export default {
       if (!target || !target.href.startsWith(ORIGIN)) {
         return new Response('Unexpected upstream redirect', { status: 502 });
       }
-      headers.set('location', incoming.origin + PREFIX + '/' + target.href.slice(ORIGIN.length));
+      headers.set('location', incoming.origin + base + target.href.slice(ORIGIN.length));
     }
     const isHtml = (headers.get('content-type') || '').includes('text/html');
     if (request.method === 'GET' && origin.ok && isHtml) {
       const html = (await origin.text()).replace(/<head>/i,
-        '<head><base href="/newsHub/">' +
-        '<script>if(!location.hash){history.replaceState(null,"",location.pathname+location.search+"#/news");}</script>');
+        '<head><base href="' + base + '">' +
+        '<script>if(!location.hash){history.replaceState(null,"",location.pathname+location.search+"' + (mounted ? '#/news' : '#/') + '");}</script>');
       for (const name of ['content-length', 'content-encoding', 'etag', 'last-modified']) headers.delete(name);
       return new Response(html, { status: origin.status, headers });
     }

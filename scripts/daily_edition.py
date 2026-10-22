@@ -152,6 +152,27 @@ def read_edition(root, day):
     return json.loads(path.read_text()) if path.exists() else {}
 
 
+def source_digest(plan):
+    """Condense supplied excerpts into attributed prose when model synthesis is absent."""
+    sections = []
+    overview = []
+    overview_ids = []
+    for section in plan['sections']:
+        selected = section['stories'][:2]
+        parts = []
+        for a in selected:
+            text = a.get('text') or a.get('summaryZh') or a.get('excerpt') or a.get('titleZh') or a['title']
+            parts.append(excerpt(text, 125))
+        sections.append({'topic': section['topic'], 'text': ' '.join(parts),
+                         'sourceIds': [a['id'] for a in selected]})
+        if len(overview) < 4 and selected:
+            a = selected[0]
+            text = a.get('text') or a.get('summaryZh') or a.get('excerpt') or a.get('titleZh') or a['title']
+            overview.append(section['name'] + '：' + excerpt(text, 105))
+            overview_ids.append(a['id'])
+    return {'overview': {'text': '\n'.join(overview), 'sourceIds': overview_ids}, 'sections': sections}
+
+
 def write_edition(root, plan, synthesis=None):
     previous = read_edition(root, plan['date'])
     if synthesis is None and previous.get('inputHash') == plan['inputHash']:
@@ -159,6 +180,7 @@ def write_edition(root, plan, synthesis=None):
         if valid_synthesis(candidate, plan):
             synthesis = candidate
     output = {k: v for k, v in plan.items() if k != 'evidence'}
+    output['digest'] = source_digest(plan)
     if synthesis:
         output.update(synthesis=synthesis, summaryMode='ai_synthesis', summaryModel=MODEL,
                       summarizedAt=previous.get('summarizedAt') if synthesis == previous.get('synthesis') else datetime.now(timezone.utc).isoformat())

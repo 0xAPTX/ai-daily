@@ -24,6 +24,13 @@ def synthesis():
 
 
 class DailyEditionTests(unittest.TestCase):
+    def test_source_digest_summarizes_publisher_facts_with_article_references(self):
+        plan = daily.plan_edition('2026-10-21', [article()])
+        digest = daily.source_digest(plan)
+        self.assertIn('支持工具调用', digest['overview']['text'])
+        self.assertEqual(digest['overview']['sourceIds'], ['a'])
+        self.assertEqual(digest['sections'][0]['text'], article()['excerpt'])
+
     def test_yesterday_is_a_completed_beijing_day_at_utc_boundary(self):
         self.assertEqual(daily.yesterday(datetime(2026, 10, 21, 15, 59, tzinfo=timezone.utc)), '2026-10-20')
         self.assertEqual(daily.yesterday(datetime(2026, 10, 21, 16, 0, tzinfo=timezone.utc)), '2026-10-21')
