@@ -46,6 +46,14 @@ class DailyEditionTests(unittest.TestCase):
         self.assertEqual(len(chosen), 3)
         self.assertIn('distinct', [a['id'] for a in chosen])
 
+    def test_translation_enrichment_does_not_change_selection_or_evidence_hash(self):
+        items = [article(str(i), title='Release ' + str(i), language='en', sourceGroup=str(i)) for i in range(5)]
+        first = daily.plan_edition('2026-10-21', items)
+        items[0].update(titleZh='较早的中文翻译', summaryZh='补齐的中文摘要。')
+        second = daily.plan_edition('2026-10-21', items)
+        self.assertEqual(first['inputHash'], second['inputHash'])
+        self.assertEqual([a['id'] for a in first['sections'][0]['stories']], [a['id'] for a in second['sections'][0]['stories']])
+
     def test_unknown_cross_section_citations_and_new_numbers_are_rejected(self):
         plan = daily.plan_edition('2026-10-21', [article()])
         good = synthesis()

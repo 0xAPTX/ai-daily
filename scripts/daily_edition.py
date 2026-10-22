@@ -32,8 +32,8 @@ def excerpt(text, limit=190):
 
 def select_stories(pool, count=3):
     def rank(a):
-        return (bool(a.get('titleZh') or a.get('language') == 'zh'),
-                bool(a.get('summaryZh') or len(a.get('excerpt', '')) > 40),
+        # Derived translations must not reshuffle a finished edition or invalidate its synthesis.
+        return (a.get('language') == 'zh', len(a.get('excerpt', '')) > 40,
                 a.get('kind') == 'official', a.get('publishedAt', ''), a['id'])
     ordered = sorted(pool, key=rank, reverse=True)
     chosen, ids, groups = [], set(), Counter()
