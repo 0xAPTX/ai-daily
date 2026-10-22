@@ -10,7 +10,7 @@ Worker 仅转发 `/newsHub` 和 `/newsHub/` 下的 GET/HEAD 请求，固定读�
 页面补上 `/newsHub/` 资源基址，首次访问默认打开 `#/news`；站内导航、
 历史日期、X 数据、RSS、OPML 都由相同入口读取。原始 GitHub 地址不受影响。
 
-资讯仍由原有 GitHub Actions 每半小时采集和发布，Worker 无需每天重新部署。
+资讯仍由原有 GitHub Actions 每小时采集和发布，Worker 无需每天重新部署。
 Cloudflare 边缘缓存最多 60 秒，浏览器每次重新验证。此入口使用 Workers Free，
 不启用付费订阅；超出免费请求额度时入口可能暂时不可用，GitHub 入口仍可使用。
 

@@ -50,7 +50,7 @@ GitHub Actions 每天计划在**北京时间 07:43、19:43**运行，每 12 小�
 2. 到本仓库 Settings → Secrets and variables → Actions → New repository secret，名称填 `X_BEARER_TOKEN`，值填凭证。不要放在源码、网页或聊天里。
 3. 修改根目录 `x-watchlist.json`：`usernames` 填账号名，不带 `@`；`enabled` 改为 `true`；`monthlyBudgetUsd` 填你批准的每月美元用量预算。默认 `0`，不调用 API。
 4. 同时在 X 控制台设置消费限额。程序的 `site/data/x-budget.json` 是保守预留估计，重复读取、关联用户都按收费估计；它不是发票或账单硬限制。任务异常、手动重置文件等可能影响本地记账，硬限制以 X 控制台为准。
-5. 在 GitHub Actions 中手动运行 Update AI Daily，检查 `Check configured X watchlist`。之后随同每半小时采集任务运行。打开网页只读已发布数据，不发起付费请求。
+5. 在 GitHub Actions 中手动运行 Update AI Daily，检查 `Check configured X watchlist`。之后随同每小时采集任务运行。打开网页只读已发布数据，不发起付费请求。
 
 ## 规则
 
@@ -66,6 +66,6 @@ GitHub Actions 每天计划在**北京时间 07:43、19:43**运行，每 12 小�
 
 2026-10-21 查阅[官方价格](https://docs.x.com/x-api/getting-started/pricing)：Post 读取 $0.005/条，User 读取 $0.010/个。若每天实际计费 200 条帖子、20 个用户，30 天约 $36。此例不包含更多关联用户或跨日重复计费，不是费用承诺。
 
-默认每轮搜索 20 条及其关联用户，保守预留上限是 $0.30，再加监测账号查询：每账号 $0.01。每半小时重查时，月度预留可能比实际账单高很多；达到设置预算后会停止读取。官方同日去重仅是 soft guarantee，程序不把它当作固定折扣。
+默认每轮搜索 20 条及其关联用户，保守预留上限是 $0.30，再加监测账号查询：每账号 $0.01。每小时重查时，月度预留可能比实际账单高很多；达到设置预算后会停止读取。官方同日去重仅是 soft guarantee，程序不把它当作固定折扣。
 
 官方依据：[认证](https://docs.x.com/fundamentals/authentication/overview)、[用户查询](https://docs.x.com/x-api/users/get-users-by-usernames)、[最近搜索](https://docs.x.com/x-api/posts/search-recent-posts)、[OpenAPI](https://github.com/xdevplatform/docs/blob/main/openapi.json)。
