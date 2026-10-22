@@ -10,6 +10,12 @@ export default {
     if (!['GET', 'HEAD'].includes(request.method)) {
       return new Response('Method not allowed', { status: 405, headers: { Allow: 'GET, HEAD' } });
     }
+    if (incoming.hostname === 'www.aptx.dev') {
+      incoming.hostname = 'aptx.dev';
+      return new Response(null, {
+        status: 302, headers: { Location: incoming.href, 'Cache-Control': 'no-store' },
+      });
+    }
     const suffix = (mounted ? incoming.pathname.slice(PREFIX.length) : incoming.pathname).replace(/^\//, '');
     const upstream = new URL(suffix || 'index.html', ORIGIN);
     // Keep this a fixed public-site proxy, including after URL normalization.
@@ -32,7 +38,7 @@ export default {
     }
     const headers = new Headers(origin.headers);
     headers.delete('set-cookie');
-    headers.set('X-NewsHub-Version', '2026-10-22-2');
+    headers.set('X-NewsHub-Version', '2026-10-22-3');
     headers.set('Cache-Control', 'no-cache');
     if (origin.status >= 300 && origin.status < 400) {
       const location = headers.get('location');
@@ -46,7 +52,7 @@ export default {
     if (request.method === 'GET' && origin.ok && isHtml) {
       const html = (await origin.text()).replace(/<head>/i,
         '<head><base href="' + base + '">' +
-        '<script>if(!location.hash){history.replaceState(null,"",location.pathname+location.search+"' + (mounted ? '#/news' : '#/') + '");}</script>');
+        (mounted ? '<script>if(!location.hash){history.replaceState(null,"",location.pathname+location.search+"#/news");}</script>' : ''));
       for (const name of ['content-length', 'content-encoding', 'etag', 'last-modified']) headers.delete(name);
       return new Response(html, { status: origin.status, headers });
     }

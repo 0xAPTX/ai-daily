@@ -6,8 +6,9 @@
 `aptx-news-hub.pages.dev`，保持 Proxied。原先的 `newsHub → 知新资讯`
 Redirect Rule 必须关闭。
 
-- `https://aptx.dev/` 展示知新首页（`#/`），地址栏保留自定义域名。
-- `https://www.aptx.dev/` 同样展示首页。
+- `https://aptx.dev/` 展示知新首页，首页地址不附加 `#/`。
+- `https://www.aptx.dev/` 通过 302 跳转到 `https://aptx.dev/`，保留路径和查询参数；浏览器会保留链接中的频道或文章片段。
+- 旧的 `https://aptx.dev/#/` 首页链接仍可用，打开或点击首页后会自动收起该片段；频道筛选及深链接不受影响。
 - `/newsHub` 与 `/newsHub/` 保留资讯入口，默认打开 `#/news`。
 - 两种路径下的频道、日报、文章、历史数据、RSS 与 OPML 都从对应基址加载。
 - 原始 GitHub Pages 地址继续可用。

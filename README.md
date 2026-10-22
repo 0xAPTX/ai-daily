@@ -2,7 +2,7 @@
 
 在 GitHub Pages 上运行的个人阅读站，组织方式参考 [wqu.guru](https://wqu.guru/)，直接采集各发布方公开来源。网站地址：[打开知新首页](https://aptx.dev/) · [原 GitHub Pages 入口](https://0xaptx.github.io/ai-daily/)
 
-自定义域名首页：[aptx.dev](https://aptx.dev/)；资讯入口：[www.aptx.dev/newsHub/](https://www.aptx.dev/newsHub/)。浏览站内频道时保留自定义域名，原 GitHub Pages 地址继续可用。该入口通过 Cloudflare Pages Function 读取已发布的 GitHub Pages 内容，仍由原有 GitHub Actions 更新资讯；部署说明见 [cloudflare/README.md](cloudflare/README.md)。如果此前访问过旧的 301 跳转，可先使用此处末尾带 `/` 的入口避开浏览器旧缓存。
+自定义域名首页：[aptx.dev](https://aptx.dev/)；资讯入口：[www.aptx.dev/newsHub/](https://aptx.dev/newsHub/)。首页地址保持为 `https://aptx.dev/`；`www` 入口统一跳转到该域名，频道、日报与文章链接保持可用，原 GitHub Pages 地址继续可用。该入口通过 Cloudflare Pages Function 读取已发布的 GitHub Pages 内容，仍由原有 GitHub Actions 更新资讯；部署说明见 [cloudflare/README.md](cloudflare/README.md)。如果此前访问过旧的 301 跳转，可先使用此处末尾带 `/` 的入口避开浏览器旧缓存。
 
 快捷入口：[美股](https://0xaptx.github.io/ai-daily/#/news?topic=stocks) · [港股](https://0xaptx.github.io/ai-daily/#/news?topic=hk) · [X 关注名单](https://0xaptx.github.io/ai-daily/#/x) · [全部信源](https://0xaptx.github.io/ai-daily/#/sources)
 
@@ -96,7 +96,7 @@ python3 -m http.server 8765 --directory site --bind 127.0.0.1
 
 ## 昨日资讯报
 
-[打开知新日报](https://www.aptx.dev/newsHub/#/daily)。默认回顾北京时间昨天 00:00—23:59 的已收录资讯，可按日期翻阅往期；不把今天尚未结束的资讯当作完整日报。
+[打开知新日报](https://aptx.dev/newsHub/#/daily)。默认回顾北京时间昨天 00:00—23:59 的已收录资讯，可按日期翻阅往期；不把今天尚未结束的资讯当作完整日报。
 
 - 报纸式头版、昨日总览、速读要点和八个分栏；每段保留来源编号，并可打开出处与原文。支持浏览器打印或另存 PDF。
 - 后台从完整日期归档去重，过滤预发布及推广内容，按版块与发布方分散选读，最多每版 3 条；编排顺序不是全网重要性排名。

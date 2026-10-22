@@ -219,7 +219,12 @@ function updateShell(){
   $('#live-status').textContent=`${healthy} 个来源读取有内容${failed?' · '+failed+' 个本次未成功':''} · 最近采集 ${time(data.lastSuccessfulAt||data.generatedAt)}`;
 }
 async function renderRoute({keepScroll=false}={}){
-  if(!data)return;route=getRoute();const version=++routeVersion;updateShell();
+  if(!data)return;route=getRoute();
+  // Keep the public homepage URL clean without changing deep links or filters.
+  if(location.hostname==='aptx.dev'&&location.pathname==='/'&&route.name==='home'&&!route.params.size&&location.hash){
+    history.replaceState(history.state,'',location.pathname+location.search);
+  }
+  const version=++routeVersion;updateShell();
   try{
     let date=route.params.get('date');if(route.name==='daily'){date=dailyDate();await ensureEdition(date);}if(route.name==='article')date=route.parts[1];
     if(date&&route.name!=='daily'&&!archiveCache.has(date)){$('#main').innerHTML='<div class="loading">正在读取日期归档…</div>';await ensureArchive(date);}
