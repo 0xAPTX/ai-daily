@@ -93,3 +93,13 @@ python3 -m http.server 8765 --directory site --bind 127.0.0.1
 主要文件：`sources.json` 管理新闻来源；`x-watchlist.json` 管理关注名单、两个启用开关和共用预算；`scripts/collect.py` 收集新闻；`scripts/sync_x_following.py` 同步关注；`scripts/collect_x.py` 检测热帖；`site/data/` 存放公开生成数据。
 
 采集和测试需要 Python 3.9+、curl，无 pip 依赖。摘要任务需要 Python 3.12+ 和 Linux x64 runner；下载并缓存上述模型及运行器。GitHub 自动提交和 Pages 发布使用平台提供的短期 `GITHUB_TOKEN`，无需配置个人 token。X API Bearer Token 与此不同，仅启用 X 时需要。参考 [GitHub Pages 工作流文档](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)。
+
+## 昨日资讯报
+
+[打开知新日报](https://www.aptx.dev/newsHub/#/daily)。默认回顾北京时间昨天 00:00—23:59 的已收录资讯，可按日期翻阅往期；不把今天尚未结束的资讯当作完整日报。
+
+- 报纸式头版、昨日总览、速读要点和八个分栏；每段保留来源编号，并可打开出处与原文。支持浏览器打印或另存 PDF。
+- 后台从完整日期归档去重，过滤预发布及推广内容，按版块与发布方分散选读，最多每版 3 条；编排顺序不是全网重要性排名。
+- 免费 Qwen 模型为昨天生成整报综述和版块摘要，基于每版选读中的 2 条标题与短摘录；没有阅读全文。引文编号或数字校验失败时保留来源摘编，不补造日报。
+- 摘要随来源内容变化失效重建。历史版保留已生成的 AI 综述；没有整报综述的往期显示来源摘编，按 90 天归档窗口保留。
+- `scripts/daily_edition.py` 生成 `site/data/editions/YYYY-MM-DD.json`；原有每小时 Actions 在采集后生成并发布，网页访问不调用模型。

@@ -16,6 +16,7 @@ import time
 from urllib.request import Request, urlopen
 
 import collect
+import daily_edition
 from summary_utils import MODEL, PROMPT_VERSION, choose_candidates, evidence_excerpt, evidence_valid, fingerprint, protected_names, read_cache, valid_summary
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -95,16 +96,26 @@ def main():
     cache["entries"] = {k: v for k, v in cache["entries"].items() if k in all_articles}
     first_run = cache.get("promptVersion") != PROMPT_VERSION or not cache.get("entries")
     candidates = choose_candidates(data["articles"], cache, max(0, min(args.limit, 24 if first_run else 120)))
+    day = daily_edition.yesterday()
+    daily_plan = daily_edition.plan_edition(day, list(all_articles.values()))
+    previous_daily = daily_edition.read_edition(ROOT, day)
+    daily_needed = bool(daily_plan['sections']) and not (
+        previous_daily.get('inputHash') == daily_plan['inputHash'] and
+        daily_edition.valid_synthesis(previous_daily.get('synthesis'), daily_plan))
+    selected_ids = [a['id'] for s in daily_plan['sections'] for a in s['stories']]
+    daily_candidates = choose_candidates([all_articles[i] for i in selected_ids], cache, min(24, args.limit))
+    daily_ids = {a['id'] for a in daily_candidates}
+    candidates = (daily_candidates + [a for a in candidates if a['id'] not in daily_ids])[:args.limit]
     processed = failed = 0
     server_process = None
     log = None
     try:
-        if candidates:
+        if candidates or daily_needed:
             server, model = prepare_runtime()
             log = (ROOT / ".cache/summary/server.log").open("w")
             env = dict(os.environ)
             env["LD_LIBRARY_PATH"] = str(server.parent) + ":" + env.get("LD_LIBRARY_PATH", "")
-            server_process = subprocess.Popen([str(server), "-m", str(model), "--host", "127.0.0.1", "--port", "8099", "-c", "2048", "-t", str(min(os.cpu_count() or 2, 4)), "--parallel", "1", "--n-gpu-layers", "0"], env=env, stdout=log, stderr=log)
+            server_process = subprocess.Popen([str(server), "-m", str(model), "--host", "127.0.0.1", "--port", "8099", "-c", "8192", "-t", str(min(os.cpu_count() or 2, 4)), "--parallel", "1", "--n-gpu-layers", "0"], env=env, stdout=log, stderr=log)
             ready_by = time.monotonic() + 90
             while True:
                 if server_process.poll() is not None:
@@ -116,6 +127,14 @@ def main():
                     if time.monotonic() > ready_by:
                         raise RuntimeError("Model server startup timed out")
                     time.sleep(1)
+            if daily_needed:
+                try:
+                    synthesis = daily_edition.synthesize(daily_plan, request_json)
+                    daily_edition.write_edition(ROOT, daily_plan, synthesis)
+                    print('Yesterday newspaper synthesized: ' + day, flush=True)
+                except Exception as error:
+                    # The source digest remains publishable if synthesis is unavailable.
+                    print('Daily synthesis skipped: ' + type(error).__name__ + ': ' + str(error), flush=True)
             deadline = time.monotonic() + args.max_seconds
             for article in candidates:
                 if time.monotonic() >= deadline:
@@ -152,6 +171,7 @@ def main():
         cache["lastSuccessAt"] = cache["checkedAt"]
     collect.write_json(ROOT / "site/data/summaries.json", cache)
     updated = collect.build_outputs(list(all_articles.values()), [], data["sources"], collect.parse_date(data["generatedAt"]), data.get("lastSuccessfulAt"))
+    daily_edition.build_all(ROOT)
     print(json.dumps(updated["summaryService"], ensure_ascii=False), flush=True)
 
 

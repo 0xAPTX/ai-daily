@@ -44,7 +44,7 @@ jobs:
       - name: Decide whether Chinese briefs need refreshing
         id: summaries
         run: |
-          if [ "$GITHUB_EVENT_NAME" != "push" ] || ! git diff --quiet HEAD^ HEAD -- scripts/summarize.py scripts/summary_utils.py scripts/collect.py sources.json; then
+          if [ "$GITHUB_EVENT_NAME" != "push" ] || ! git diff --quiet HEAD^ HEAD -- scripts/summarize.py scripts/summary_utils.py scripts/daily_edition.py scripts/collect.py sources.json; then
             echo "refresh=true" >> "$GITHUB_OUTPUT"
           else
             echo "refresh=false" >> "$GITHUB_OUTPUT"
@@ -61,6 +61,8 @@ jobs:
         env:
           X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
         run: python scripts/collect_x.py
+      - name: Build yesterday newspaper and past editions
+        run: python scripts/daily_edition.py
       - name: Refresh browser asset versions
         run: python scripts/version_assets.py
       - name: Save history
