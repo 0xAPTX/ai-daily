@@ -2,6 +2,8 @@
 
 在 GitHub Pages 上运行的个人阅读站，组织方式参考 [wqu.guru](https://wqu.guru/)，直接采集各发布方公开来源。网站地址：[打开知新](https://0xaptx.github.io/ai-daily/)
 
+自定义域名入口：[www.aptx.dev/newsHub/](https://www.aptx.dev/newsHub/)。浏览站内频道时保留自定义域名，原 GitHub Pages 地址继续可用。该入口通过 Cloudflare Pages Function 读取已发布的 GitHub Pages 内容，仍由原有 GitHub Actions 更新资讯；部署说明见 [cloudflare/README.md](cloudflare/README.md)。如果此前访问过旧的 301 跳转，可先使用此处末尾带 `/` 的入口避开浏览器旧缓存。
+
 快捷入口：[美股](https://0xaptx.github.io/ai-daily/#/news?topic=stocks) · [港股](https://0xaptx.github.io/ai-daily/#/news?topic=hk) · [X 关注名单](https://0xaptx.github.io/ai-daily/#/x) · [全部信源](https://0xaptx.github.io/ai-daily/#/sources)
 
 ## 当前功能
