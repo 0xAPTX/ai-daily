@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def main():
     path = ROOT / 'site/index.html'
     original = text = path.read_text()
-    for name in ('app.js', 'style.css'):
+    for name in ('app.js', 'fx.js', 'style.css'):
         digest = hashlib.sha256((ROOT / 'site' / name).read_bytes()).hexdigest()[:12]
         pattern = r'(?P<attr>(?:src|href)=["\'])\./' + re.escape(name) + r'(?:\?v=[0-9a-f]+)?(?P<end>["\'])'
         text, count = re.subn(pattern, lambda match: match['attr'] + './' + name + '?v=' + digest + match['end'], text)

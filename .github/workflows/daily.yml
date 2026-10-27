@@ -35,7 +35,7 @@ jobs:
       - name: Test feed processing
         run: python -m unittest discover -s tests -v
       - name: Test custom-domain routing
-        run: node --test cloudflare/test_proxy.mjs
+        run: node --test cloudflare/test_proxy.mjs tests/test_fx_math.cjs
       - name: Sync X following twice daily (opt-in, budget guarded)
         if: github.event_name == 'workflow_dispatch' || github.event.schedule == '43 11,23 * * *'
         env:
@@ -43,6 +43,8 @@ jobs:
         run: python scripts/sync_x_following.py
       - name: Collect publisher feeds
         run: python scripts/collect.py
+      - name: Collect official daily exchange rates
+        run: python scripts/collect_fx.py
       - name: Decide whether Chinese briefs need refreshing
         id: summaries
         run: |

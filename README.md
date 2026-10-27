@@ -103,3 +103,13 @@ python3 -m http.server 8765 --directory site --bind 127.0.0.1
 - 免费 Qwen 模型为昨天生成整报综述和版块摘要，基于每版选读中的 2 条标题与短摘录；没有阅读全文。引文编号或数字校验失败时保留来源摘编，不补造日报；来源摘编也会将具体新闻内容压缩为总览与版块提要，并保留出处。
 - 摘要随来源内容变化失效重建。历史版保留已生成的 AI 综述；没有整报综述的往期显示来源摘编，按 90 天归档窗口保留。
 - `scripts/daily_edition.py` 生成 `site/data/editions/YYYY-MM-DD.json`；原有每小时 Actions 在采集后生成并发布，网页访问不调用模型。
+
+## 汇率观察
+
+[打开汇率板块](https://aptx.dev/#/fx)。覆盖人民币、美元、港币、欧元、日元、英镑、新加坡元、澳元、加元、瑞士法郎、韩元、新西兰元、泰铢、马来西亚林吉特和印度卢比。默认展示每 1 单位外币折合人民币，可切换折算币种、查看 30 / 90 日走势图，以及使用金额换算器。
+
+汇率直接采集[欧洲央行近 90 日官方 XML](https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml)，不需要 API 密钥。现有 GitHub Actions 每小时检查一次；ECB 通常在工作日欧洲时间约 16:00 发布，周末与休市日沿用最新公布值。页面分别标明数据日期和最近检查时间，不将每日参考价称作实时行情。
+
+所有货币对采用同一公布日的欧元汇率交叉换算。较前次变化比较前一公布日；7 / 30 日变化比较对应日期或之前最近公布日，缺少历史时显示空缺。采集失败或来源退回更早日期时保留上次有效数据并显示状态，不补造价格；超过 4 日没有新公布值时提示数据可能滞后。参考价不含银行点差、现钞/现汇价差或手续费。
+
+本地更新：`python3 scripts/collect_fx.py`。数据在 `site/data/fx.json`；换算和绘图在 `site/fx.js`。运行 `python3 -m unittest discover -s tests -v` 与 `node --test tests/test_fx_math.cjs cloudflare/test_proxy.mjs` 检查数据保留、周末基准与换算方向。

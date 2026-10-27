@@ -138,7 +138,7 @@ function renderNews({home=false}={}){
   }
   const jumps=!timeline&&topic!=='all'?`<nav class="module-jumps" aria-label="模块导航"><button data-module-jump="latest">最新</button>${sectionDefinitions(topic).map(def=>`<button data-module-jump="${e(def.id)}">${e(def.title)}</button>`).join('')}</nav>`:'';
   const coverage=topic==='hk'?'<p class="board-coverage">港交所模块收录交易所新闻稿及市场通告；上市公司信息来自已接入媒体，暂未覆盖全部披露易公告。</p>':topic==='stocks'?'<p class="board-coverage">公司公告、政策与媒体报道分区展示；部分原文可能需要订阅。</p>':'';
-  return `<div class="modular-page">${heading(title,intro,'<button class="quiet-button" id="refresh-data">↻ 刷新数据</button>')}${kpis}${topicTabs(topic)}${controls}${filterNote}${notes}${jumps}${content}${coverage}<div class="board-footer"><a href="#/daily">阅读昨日资讯报 →</a><a href="#/sources">查看全部信源与状态 →</a><a href="#/about">收录与摘要规则 →</a></div></div>`;
+  return `<div class="modular-page">${heading(title,intro,'<button class="quiet-button" id="refresh-data">↻ 刷新数据</button>')}${kpis}${topicTabs(topic)}${controls}${filterNote}${notes}${jumps}${content}${coverage}<div class="board-footer"><a href="#/fx">查看主流币种汇率 →</a><a href="#/daily">阅读昨日资讯报 →</a><a href="#/sources">查看全部信源与状态 →</a><a href="#/about">收录与摘要规则 →</a></div></div>`;
 }
 
 function yesterdayDate(now=new Date()){return chinaDate(new Date(now.getTime()-86400000));}
@@ -226,14 +226,15 @@ async function renderRoute({keepScroll=false}={}){
   }
   const version=++routeVersion;updateShell();
   try{
+    if(route.name==='fx'){try{await FX.load();}catch{}}
     let date=route.params.get('date');if(route.name==='daily'){date=dailyDate();await ensureEdition(date);}if(route.name==='article')date=route.parts[1];
     if(date&&route.name!=='daily'&&!archiveCache.has(date)){$('#main').innerHTML='<div class="loading">正在读取日期归档…</div>';await ensureArchive(date);}
     if(route.name==='x'&&!xData){try{const r=await fetch('./data/x-feed.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error();xData=await r.json();}catch{xData={status:'unavailable',posts:[],accounts:[],watchlist:[]};}}
     if(version!==routeVersion)return;
-    const renderers={home:renderHome,news:renderNews,daily:renderDaily,sources:renderSources,hot:renderHot,x:renderX,article:renderArticle,saved:renderNews,about:renderAbout};
+    const renderers={home:renderHome,news:renderNews,fx:()=>FX.render(route.params),daily:renderDaily,sources:renderSources,hot:renderHot,x:renderX,article:renderArticle,saved:renderNews,about:renderAbout};
     $('#main').innerHTML=(renderers[route.name]||(()=>heading('这个页面还没有内容。','请从首页继续阅读。')))();
     if(route.name==='saved')$('#main').insertAdjacentHTML('beforeend','<button class="more-button" id="export-saved">导出收藏备份 JSON ↓</button>');
-    document.title=({home:'知新 · 多源资讯，每日有新知',news:route.params.get('topic')==='hk'?'港股资讯 · 知新':route.params.get('topic')==='stocks'?'美股资讯 · 知新':'资讯流 · 知新',daily:dailyDate()+' · 知新日报',hot:'站内热点 · 知新',x:'X 热帖监测 · 知新',sources:'完整信源目录 · 知新',saved:'我的收藏 · 知新',article:'原文与出处 · 知新',about:'收录规则 · 知新'})[route.name]||'知新';
+    document.title=({home:'知新 · 多源资讯，每日有新知',news:route.params.get('topic')==='hk'?'港股资讯 · 知新':route.params.get('topic')==='stocks'?'美股资讯 · 知新':'资讯流 · 知新',daily:dailyDate()+' · 知新日报',fx:'主流币种汇率 · 知新',hot:'站内热点 · 知新',x:'X 热帖监测 · 知新',sources:'完整信源目录 · 知新',saved:'我的收藏 · 知新',article:'原文与出处 · 知新',about:'收录规则 · 知新'})[route.name]||'知新';
     if(!keepScroll)window.scrollTo({top:0,behavior:'instant'});
   }catch{$('#main').innerHTML=heading('这份归档暂时无法加载。','请检查网络后重试。')+'<button class="more-button" id="retry-route">重新读取</button>';}
 }
@@ -249,6 +250,10 @@ function findArticle(id){return records.get(id)||saved[id];}
 function shiftDay(direction){const date=route.name==='daily'?dailyDate():(route.params.get('date')||chinaDate());const d=new Date(date+'T12:00:00+08:00');d.setUTCDate(d.getUTCDate()+(direction==='next'?1:-1));updateParams({date:chinaDate(d)});}
 document.addEventListener('click',async event=>{
   const t=event.target;
+  const fxFrom=t.closest('[data-fx-from]');if(fxFrom){updateParams({from:fxFrom.dataset.fxFrom});return;}
+  const fxPeriod=t.closest('[data-fx-period]');if(fxPeriod){updateParams({period:fxPeriod.dataset.fxPeriod});return;}
+  if(t.closest('#fx-swap')){const a=$('#fx-convert-from'),b=$('#fx-convert-to');[a.value,b.value]=[b.value,a.value];FX.convert();return;}
+  if(t.closest('#fx-refresh')){const button=t.closest('#fx-refresh');button.disabled=true;try{await FX.load(true);await renderRoute({keepScroll:true});toast('已读取最新发布的汇率数据。');}catch{button.disabled=false;toast('汇率暂时无法读取，请稍后重试。');}return;}
   if(t.closest('.skip')){event.preventDefault();$('#main').focus();$('#main').scrollIntoView({behavior:'instant'});return;}
   const topic=t.closest('[data-topic]');if(topic){pageLimit=24;updateParams({topic:topic.dataset.topic==='all'?'':topic.dataset.topic,section:''});return;}
   const jump=t.closest('[data-module-jump]');if(jump){document.getElementById('module-'+jump.dataset.moduleJump)?.scrollIntoView({behavior:'smooth',block:'start'});return;}
@@ -271,10 +276,13 @@ document.addEventListener('click',async event=>{
 });
 document.addEventListener('change',event=>{
   const t=event.target;
+  if(t.id==='fx-quote'){updateParams({quote:t.value});return;}
+  if(t.id==='fx-convert-from'||t.id==='fx-convert-to'){FX.convert();return;}
   const mappings={'news-kind':'kind','news-date':'date','daily-date':'date','source-kind':'kind','source-language':'language','source-status':'status','x-author':'author'};
   if(mappings[t.id]){pageLimit=24;updateParams({[mappings[t.id]]:t.value});}
   if(t.id==='chinese-only')updateParams({zh:t.checked?'1':''});
 });
+document.addEventListener('input',event=>{if(event.target.id==='fx-amount')FX.convert();});
 document.addEventListener('keydown',event=>{
   if((event.metaKey||event.ctrlKey)&&event.key.toLowerCase()==='k'){event.preventDefault();openSearch();return;}
   if(event.key==='/'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){event.preventDefault();openSearch();}
