@@ -44,7 +44,7 @@ jobs:
       - name: Test feed processing
         run: python -m unittest discover -s tests -v
       - name: Test custom-domain routing
-        run: node --test cloudflare/test_proxy.mjs tests/test_fx_math.cjs
+        run: node --test cloudflare/test_proxy.mjs tests/test_fx*.cjs
       - name: Sync X following twice daily (opt-in, budget guarded)
         if: env.FX_ONLY != 'true' && (github.event_name == 'workflow_dispatch' || github.event.schedule == '43 11,23 * * *')
         env:

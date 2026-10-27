@@ -14,6 +14,7 @@ const TOPICS = {
 const KIND = {official:'官方发布',media:'媒体报道',research:'研究来源',community:'社区观点'};
 let xData = null;
 let data = null, route = null, pageLimit = 24, routeVersion = 0;
+let newsRequest = null;
 let saved = {}, reads = [], hiddenSources = [], storageOK = true;
 const records = new Map(), archiveCache = new Map(), editionCache = new Map();
 function readStorage(key, fallback) { try {return JSON.parse(localStorage.getItem(key)) ?? fallback;} catch {storageOK=false;return fallback;} }
@@ -215,18 +216,34 @@ function updateShell(){
   $('#saved-count').textContent=Object.keys(saved).length;
   document.querySelectorAll('[data-nav]').forEach(a=>{const active=a.dataset.nav===route.name;a.classList.toggle('active',active);if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
   document.querySelectorAll('[data-mobile]').forEach(a=>a.classList.toggle('active',a.dataset.mobile===route.name));
+  if(!data){$('#live-status').textContent='汇率观察 · 欧洲央行参考汇率 · 每半小时检查';return;}
   const healthy=data.stats.healthySources,quiet=data.stats.quietSources,failed=data.sources.length-healthy-quiet;
   $('#live-status').textContent=`${healthy} 个来源读取有内容${failed?' · '+failed+' 个本次未成功':''} · 最近采集 ${time(data.lastSuccessfulAt||data.generatedAt)}`;
 }
 async function renderRoute({keepScroll=false}={}){
-  if(!data)return;route=getRoute();
+  route=getRoute();
   // Keep the public homepage URL clean without changing deep links or filters.
   if(location.hostname==='aptx.dev'&&location.pathname==='/'&&route.name==='home'&&!route.params.size&&location.hash){
     history.replaceState(history.state,'',location.pathname+location.search);
   }
   const version=++routeVersion;updateShell();
   try{
-    if(route.name==='fx'){if(!FX.ready(route.params))$('#main').innerHTML='<div class="loading" role="status">正在读取汇率与历史走势，首次加载可能稍久…</div>';try{await FX.load(false,route.params);}catch{}}
+    if(route.name==='fx'){
+      const params=new URLSearchParams(route.params);
+      document.title='主流币种汇率 · 知新';
+      if(!FX.ready(new URLSearchParams()))$('#main').innerHTML='<div class="loading" role="status">正在读取汇率数据…</div>';
+      await FX.loadRecent();
+      if(version!==routeVersion)return;
+      if(!FX.ready(params)){
+        $('#main').innerHTML=FX.render(params);FX.bindChart();
+        await FX.load(false,params);
+      }
+    }else if(!data){
+      $('#main').innerHTML='<div class="loading" role="status">正在读取资讯索引…</div>';
+      await ensureNewsData();
+    }
+    if(version!==routeVersion)return;
+    updateShell();
     let date=route.params.get('date');if(route.name==='daily'){date=dailyDate();await ensureEdition(date);}if(route.name==='article')date=route.parts[1];
     if(date&&route.name!=='daily'&&!archiveCache.has(date)){$('#main').innerHTML='<div class="loading">正在读取日期归档…</div>';await ensureArchive(date);}
     if(route.name==='x'&&!xData){try{const r=await fetch('./data/x-feed.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error();xData=await r.json();}catch{xData={status:'unavailable',posts:[],accounts:[],watchlist:[]};}}
@@ -237,16 +254,25 @@ async function renderRoute({keepScroll=false}={}){
     if(route.name==='saved')$('#main').insertAdjacentHTML('beforeend','<button class="more-button" id="export-saved">导出收藏备份 JSON ↓</button>');
     document.title=({home:'知新 · 多源资讯，每日有新知',news:route.params.get('topic')==='hk'?'港股资讯 · 知新':route.params.get('topic')==='stocks'?'美股资讯 · 知新':'资讯流 · 知新',daily:dailyDate()+' · 知新日报',fx:'主流币种汇率 · 知新',hot:'站内热点 · 知新',x:'X 热帖监测 · 知新',sources:'完整信源目录 · 知新',saved:'我的收藏 · 知新',article:'原文与出处 · 知新',about:'收录规则 · 知新'})[route.name]||'知新';
     if(!keepScroll)window.scrollTo({top:0,behavior:'instant'});
-  }catch{$('#main').innerHTML=heading('这份归档暂时无法加载。','请检查网络后重试。')+'<button class="more-button" id="retry-route">重新读取</button>';}
+  }catch{
+    if(version!==routeVersion)return;
+    $('#main').innerHTML=route.name==='fx'?FX.render(route.params):heading('这份资讯暂时无法加载。','请检查网络后重试。')+'<button class="more-button" id="retry-route">重新读取</button>';
+  }
 }
-async function loadData(){
+async function fetchNewsData(){
   const response=await fetch(`./data/feed.json?t=${Date.now()}`,{cache:'no-store'});if(!response.ok)throw new Error('Data unavailable');const value=await response.json();if(value.schemaVersion!==2||!Array.isArray(value.articles)||!Array.isArray(value.sources)||!value.stats)throw new Error('Unsupported feed');
   data=value;xData=null;records.clear();archiveCache.clear();editionCache.clear();for(const a of data.articles)records.set(a.id,a);for(const t of data.hotTags||[])for(const a of t.articles||[])records.set(a.id,a);
   for(const a of Object.values(saved)){if(!a||!a.id||!a.title)continue;const fresh=records.get(a.id);if(fresh)saved[a.id]=fresh;else if(!a.topics)a.topics=[source(a.sourceId)?.topic||'ai'];records.set(a.id,saved[a.id]);}
-  await renderRoute();
 }
-function searchResults(){const q=$('#global-search').value.trim().toLowerCase();const items=q?[...records.values()].filter(a=>visible(a)&&`${a.title} ${a.titleZh||''} ${a.summaryZh||''} ${a.source} ${(a.tags||[]).join(' ')}`.toLowerCase().includes(q)).sort(byDate).slice(0,12):[];$('#global-results').innerHTML=q?(items.map(a=>`<a class="search-result" href="${e(articleLink(a))}" data-search-result>${e(displayTitle(a))}<small>${e(a.source)} · ${e(shortTime(a))}</small></a>`).join('')||'<p class="method-note">没有匹配结果，可以在资讯页切换日期继续查找。</p>'):'<p class="method-note">试试 OpenAI、DeepSeek、融资、产品增长或 Bitcoin。</p>';}
-function openSearch(){$('#search-dialog').showModal();$('#global-search').focus();searchResults();}
+async function ensureNewsData(force=false){
+  if(data&&!force)return;
+  if(!newsRequest)newsRequest=fetchNewsData();
+  const pending=newsRequest;
+  try{await pending;}finally{if(newsRequest===pending)newsRequest=null;}
+}
+async function loadData(){await ensureNewsData(true);await renderRoute();}
+function searchResults(){if(!data){$('#global-results').innerHTML='<p class="method-note">正在读取资讯索引…</p>';return;}const q=$('#global-search').value.trim().toLowerCase();const items=q?[...records.values()].filter(a=>visible(a)&&`${a.title} ${a.titleZh||''} ${a.summaryZh||''} ${a.source} ${(a.tags||[]).join(' ')}`.toLowerCase().includes(q)).sort(byDate).slice(0,12):[];$('#global-results').innerHTML=q?(items.map(a=>`<a class="search-result" href="${e(articleLink(a))}" data-search-result>${e(displayTitle(a))}<small>${e(a.source)} · ${e(shortTime(a))}</small></a>`).join('')||'<p class="method-note">没有匹配结果，可以在资讯页切换日期继续查找。</p>'):'<p class="method-note">试试 OpenAI、DeepSeek、融资、产品增长或 Bitcoin。</p>';}
+async function openSearch(){$('#search-dialog').showModal();$('#global-search').focus();searchResults();try{await ensureNewsData();searchResults();}catch{$('#global-results').innerHTML='<p class="method-note">资讯索引暂时无法读取，请稍后重新搜索。</p>';}}
 function findArticle(id){return records.get(id)||saved[id];}
 function shiftDay(direction){const date=route.name==='daily'?dailyDate():(route.params.get('date')||chinaDate());const d=new Date(date+'T12:00:00+08:00');d.setUTCDate(d.getUTCDate()+(direction==='next'?1:-1));updateParams({date:chinaDate(d)});}
 document.addEventListener('click',async event=>{
@@ -295,5 +321,5 @@ $('#search-dialog').addEventListener('click',event=>{if(event.target===$('#searc
 $('#theme-toggle').addEventListener('click',()=>{const next=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=next;try{localStorage.setItem('zhixin-theme',JSON.stringify(next));}catch{}});
 window.addEventListener('hashchange',()=>{pageLimit=24;renderRoute();});
 $('#year').textContent=new Date().getFullYear();
-async function start(){try{await loadData();}catch{$('#main').innerHTML='<div class="loading">数据暂时未能加载，请稍后重试。<br><button class="more-button" id="retry-data">重新加载</button></div>';}}
+async function start(){await renderRoute();}
 start();

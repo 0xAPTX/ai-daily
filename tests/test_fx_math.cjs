@@ -109,3 +109,27 @@ test('hover inspects daily records omitted from a sampled long-term line',()=>{
   assert.ok(omitted);
   assert.equal(points[fx.nearestIndex(points,omitted.time)],omitted);
 });
+test('slow response headers and JSON bodies both time out and abort',async t=>{
+  let signal;
+  t.mock.method(globalThis,'fetch',async(_url,options)=>{signal=options.signal;return new Promise(()=>{});});
+  await assert.rejects(fx.readJSON('/slow-headers',20),{name:'TimeoutError'});
+  assert.equal(signal.aborted,true);
+  globalThis.fetch.mock.mockImplementation(async(_url,options)=>{signal=options.signal;return {ok:true,json:()=>new Promise(()=>{})};});
+  await assert.rejects(fx.readJSON('/slow-body',20),{name:'TimeoutError'});
+  assert.equal(signal.aborted,true);
+});
+test('concurrent year switches share the same index and overlapping year requests',async t=>{
+  const calls=[],recent={schemaVersion:1,status:'ok',asOf:'2026-10-26',currencies:[{code:'EUR'},{code:'USD'},{code:'CNY'}],history:history.slice(-2)};
+  t.mock.method(globalThis,'fetch',async url=>{
+    calls.push(String(url));await new Promise(resolve=>setImmediate(resolve));
+    if(String(url).includes('/fx.json?'))return {ok:true,json:async()=>recent};
+    if(String(url).includes('/index.json?'))return {ok:true,json:async()=>({schemaVersion:1,startDate:'2016-01-04',years:[2023,2024,2025,2026].map(year=>({year}))})};
+    const year=Number(String(url).match(/(\d{4})\.json/)[1]);
+    return {ok:true,json:async()=>({schemaVersion:1,year,history:[{date:`${year}-01-04`,rates:{EUR:1,USD:2,CNY:10}}]})};
+  });
+  await fx.loadRecent(true);
+  await Promise.all([fx.load(false,new URLSearchParams('period=1y')),fx.load(false,new URLSearchParams('period=3y'))]);
+  assert.equal(calls.filter(u=>u.includes('/index.json?')).length,1);
+  for(const year of [2023,2024,2025,2026])assert.equal(calls.filter(u=>u.includes(`/${year}.json?`)).length,1);
+  assert.equal(fx.ready(new URLSearchParams('period=1y')),true);
+});

@@ -5,6 +5,8 @@ const FX = (() => {
   let conversion = {amount: '1000', from: null, to: null};
   let historyIndex = null;
   let chartModel = null;
+  let recentRequest = null, generation = 0;
+  const requests = new Map();
   const yearCache = new Map(), historyErrors = new Map();
   const PERIODS = [{key:'30',days:30,label:'近 30 日'},{key:'90',days:90,label:'近 90 日'},
     {key:'1y',years:1,label:'近 1 年'},{key:'3y',years:3,label:'近 3 年'},
@@ -26,8 +28,11 @@ const FX = (() => {
     const reference = baseline(history, days), current = rate(history.at(-1), from, to), previous = rate(reference, from, to);
     return reference && current !== null && previous !== null ? {value: (current / previous - 1) * 100, date: reference.date} : null;
   };
-  const number = value => value === null || !Number.isFinite(value) ? '—' : new Intl.NumberFormat('zh-CN', {minimumFractionDigits: 4, maximumFractionDigits: value < .1 ? 6 : 4}).format(value);
-  const money = value => new Intl.NumberFormat('zh-CN', {maximumFractionDigits: 2}).format(value);
+  const rateFormat = new Intl.NumberFormat('zh-CN',{minimumFractionDigits:4,maximumFractionDigits:4});
+  const smallFormat = new Intl.NumberFormat('zh-CN',{minimumFractionDigits:4,maximumFractionDigits:6});
+  const moneyFormat = new Intl.NumberFormat('zh-CN',{maximumFractionDigits:2});
+  const number = value => value === null || !Number.isFinite(value) ? '—' : (value<.1?smallFormat:rateFormat).format(value);
+  const money = value => moneyFormat.format(value);
   const tone = value => !value || Math.abs(value) < .005 ? 'flat' : value > 0 ? 'up' : 'down';
   const delta = item => {
     if (!item) return '<span class="fx-change flat">—</span>';
@@ -110,6 +115,7 @@ const FX = (() => {
     function hide() {guide.setAttribute('hidden','');tooltip.hidden=true;}
     function show(index, announce = false) {
       if (index < 0 || index >= model.points.length) return;
+      if (index === cursor && !tooltip.hidden && !announce) return;
       cursor = index;
       const point = model.points[index], x = model.x(point), y = model.y(point.value);
       const text = `1 ${model.from} = ${number(point.value)} ${model.to}`;
@@ -141,12 +147,17 @@ const FX = (() => {
       const target=model.first+(point.x-model.left)/(model.width-model.left-model.right)*model.span;
       show(nearestIndex(model.points,target),event.type==='pointerdown');
     }
-    svg.addEventListener('pointermove',pointer);
-    svg.addEventListener('pointerdown',event=>{root.focus({preventScroll:true});pointer(event);});
-    svg.addEventListener('pointerleave',event=>{if(event.pointerType!=='touch')hide();});
-    svg.addEventListener('pointercancel',hide);
+    let frame = 0, pendingPointer = null;
+    const cancelPointer = () => {if(frame)cancelAnimationFrame(frame);frame=0;pendingPointer=null;};
+    svg.addEventListener('pointermove',event=>{
+      pendingPointer={clientX:event.clientX,clientY:event.clientY,type:'pointermove'};
+      if(!frame)frame=requestAnimationFrame(()=>{frame=0;if(root.isConnected&&pendingPointer)pointer(pendingPointer);pendingPointer=null;});
+    });
+    svg.addEventListener('pointerdown',event=>{cancelPointer();root.focus({preventScroll:true});pointer(event);});
+    svg.addEventListener('pointerleave',event=>{cancelPointer();if(event.pointerType!=='touch')hide();});
+    svg.addEventListener('pointercancel',()=>{cancelPointer();hide();});
     root.addEventListener('focus',()=>show(model.points.length-1,true));
-    root.addEventListener('blur',hide);
+    root.addEventListener('blur',()=>{cancelPointer();hide();});
     root.addEventListener('keydown',event=>{
       let next;
       if(event.key==='ArrowLeft')next=Math.max(0,cursor-1);
@@ -167,32 +178,54 @@ const FX = (() => {
     const period = periodFor(params);
     return !period.years || historyErrors.has(period.key) || neededYears(period).every(y=>yearCache.has(y));
   }
+  async function readJSON(url, timeoutMs=15000) {
+    const controller=new AbortController();
+    let timer;
+    const timeout=new Promise((_,reject)=>{timer=setTimeout(()=>{
+      const error=new Error('Request timed out');error.name='TimeoutError';reject(error);controller.abort();
+    },timeoutMs);});
+    try {
+      return await Promise.race([(async()=>{
+        const response=await fetch(url,{cache:'no-store',signal:controller.signal});
+        if(!response.ok)throw new Error('Data unavailable');
+        return response.json();
+      })(),timeout]);
+    } finally {clearTimeout(timer);}
+  }
+  function shared(key, create) {
+    if(requests.has(key))return requests.get(key);
+    const pending=(async()=>{try{return await Promise.resolve().then(create);}finally{if(requests.get(key)===pending)requests.delete(key);}})();
+    requests.set(key,pending);return pending;
+  }
+  async function loadRecent(force=false) {
+    if(data&&!force)return;
+    if(recentRequest)return recentRequest;
+    generation++;
+    const pending=(async()=>{
+      const value=await readJSON('./data/fx.json?t='+Date.now());
+      if(value.schemaVersion!==1)throw new Error('Unsupported FX data');
+      data=value;
+      if(force){historyIndex=null;yearCache.clear();historyErrors.clear();requests.clear();}
+    })();
+    recentRequest=pending;
+    try {await pending;} finally {if(recentRequest===pending)recentRequest=null;}
+  }
   async function load(force = false, params = new URLSearchParams()) {
-    if (!data || force) {
-      const response = await fetch('./data/fx.json?t=' + Date.now(), {cache:'no-store'});
-      if (!response.ok) throw new Error('FX data unavailable');
-      const value = await response.json();
-      if (value.schemaVersion !== 1) throw new Error('Unsupported FX data');
-      data = value;
-      if (force) {historyIndex=null;yearCache.clear();historyErrors.clear();}
-    }
+    await loadRecent(force);
     const period = periodFor(params);
     if (!period.years || !data?.history?.length || (historyErrors.has(period.key) && !force)) return;
+    const token=generation;
     try {
       const version = force ? Date.now() : data.asOf;
-      if (!historyIndex) {
-        const response = await fetch('./data/fx-history/index.json?v='+version, {cache:'no-store'});
-        if (!response.ok) throw new Error('Historical index unavailable');
-        const index = await response.json();
-        if (index.schemaVersion !== 1 || !Array.isArray(index.years) || !Number.isFinite(dateMs(index.startDate)) || dateMs(index.startDate) > periodStart(data.asOf,period.key)+7*DAY) throw new Error('Historical coverage incomplete');
-        historyIndex = index;
-      }
+      const index=historyIndex||await shared('index:'+token,()=>readJSON('./data/fx-history/index.json?v='+version));
+      if(token!==generation)return;
+      if(index.schemaVersion!==1||!Array.isArray(index.years)||!Number.isFinite(dateMs(index.startDate))||dateMs(index.startDate)>periodStart(data.asOf,period.key)+7*DAY)throw new Error('Historical coverage incomplete');
+      historyIndex=index;
       const years = neededYears(period);
       if (!years.every(year=>historyIndex.years.some(entry=>entry.year===year))) throw new Error('Historical years missing');
-      await Promise.all(years.filter(year=>!yearCache.has(year)).map(async year=>{
-        const response = await fetch(`./data/fx-history/${year}.json?v=${version}`, {cache:'no-store'});
-        if (!response.ok) throw new Error('Historical year unavailable');
-        const value = await response.json();
+      await Promise.all(years.filter(year=>!yearCache.has(year)).map(year=>shared('year:'+year+':'+token,async()=>{
+        const value=await readJSON(`./data/fx-history/${year}.json?v=${version}`);
+        if(token!==generation)return;
         if (value.schemaVersion !== 1 || value.year !== year || !Array.isArray(value.history) || !value.history.length) throw new Error('Invalid historical year');
         let previous = '';
         for (const row of value.history) {
@@ -200,10 +233,10 @@ const FX = (() => {
           previous = row.date;
         }
         yearCache.set(year,value.history);
-      }));
-      historyErrors.delete(period.key);
-    } catch {
-      historyErrors.set(period.key,'长期历史暂时无法读取，请重试或先查看近 90 日。');
+      })));
+      if(token===generation)historyErrors.delete(period.key);
+    } catch(error) {
+      if(token===generation)historyErrors.set(period.key,error.name==='TimeoutError'?'历史汇率读取超时，可重试或切换其他范围。':'长期历史暂时无法读取，请重试或先查看近 90 日。');
     }
   }
   function combinedHistory() {
@@ -219,16 +252,16 @@ const FX = (() => {
     const codes = currencies.map(c => c.code), names = Object.fromEntries(currencies.map(c => [c.code,c.name]));
     const quote = codes.includes(params.get('quote')) ? params.get('quote') : 'CNY';
     const requested = params.get('from'), from = codes.includes(requested) && requested !== quote ? requested : quote === 'USD' ? 'EUR' : 'USD';
-    const period = periodFor(params), chartError = period.years && (!ready(params) || historyErrors.has(period.key));
+    const period = periodFor(params), chartPending = period.years&&!ready(params), chartError = period.years&&historyErrors.has(period.key);
     const convertFrom = codes.includes(conversion.from) ? conversion.from : from;
     const convertTo = codes.includes(conversion.to) ? conversion.to : quote;
     const convertRate = rate(latest, convertFrom, convertTo);
     const selected = series(history, period.key), current = rate(latest, from, quote);
-    const firstRate = chartError ? null : rate(selected[0],from,quote);
+    const firstRate = chartError||chartPending ? null : rate(selected[0],from,quote);
     const movement = firstRate ? {value:(current/firstRate-1)*100,date:selected[0].date} : null;
     const ranges = PERIODS.map(p=>`<button data-fx-period="${p.key}" aria-pressed="${period.key===p.key}" class="${period.key===p.key?'active':''}">${p.label}</button>`).join('');
-    const chart = chartError ? '<div class="fx-history-error"><p>长期历史暂时无法读取，请重试或先查看近 90 日。</p><button class="quiet-button" data-fx-retry>重试历史数据</button></div>' : plot(selected,from,quote);
-    const interval = chartError ? '' : `<span>区间低 ${number(Math.min(...selected.map(r=>rate(r,from,quote))))} / 高 ${number(Math.max(...selected.map(r=>rate(r,from,quote))))}</span>`;
+    const chart = chartPending ? '<div class="fx-history-error" role="status"><p>正在读取所选范围的历史汇率…</p><small>可继续切换范围或使用换算工具；加载超时后可重试。</small></div>' : chartError ? `<div class="fx-history-error"><p>${escape(historyErrors.get(period.key))}</p><button class="quiet-button" data-fx-retry>重试历史数据</button></div>` : plot(selected,from,quote);
+    const interval = chartError||chartPending ? '' : `<span>区间低 ${number(Math.min(...selected.map(r=>rate(r,from,quote))))} / 高 ${number(Math.max(...selected.map(r=>rate(r,from,quote))))}</span>`;
     const optionList = selectedCode => currencies.map(c => `<option value="${c.code}" ${c.code === selectedCode ? 'selected' : ''}>${c.code} · ${escape(c.name)}${c.code==='CNY'?'（RMB）':''}</option>`).join('');
     const age = Math.floor((Date.now() - dateMs(latest.date)) / DAY);
     const status = data.status === 'error' ? '本次采集未成功，以下保留上次有效数据。' : age > 4 ? '来源已超过 4 天没有新公布值，请结合数据日期阅读。' : '';
@@ -245,6 +278,6 @@ const FX = (() => {
     document.getElementById('fx-result').textContent = conversionText(input.value,from,to);
     document.getElementById('fx-equation').textContent = `1 ${from} = ${number(unit)} ${to}`;
   }
-  return {load,ready,render,bindChart,convert,rate,baseline,change,series,periodStart,samplePoints,nearestIndex};
+  return {load,loadRecent,readJSON,ready,render,bindChart,convert,rate,baseline,change,series,periodStart,samplePoints,nearestIndex};
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = FX;
