@@ -3,9 +3,16 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      fx_only:
+        description: 'Only check and publish exchange rates'
+        type: boolean
+        default: false
   schedule:
     # Every hour at minute 17; GitHub may delay scheduled runs.
     - cron: '17 * * * *'
+    # Together with the hourly run above, FX is checked every 30 minutes.
+    - cron: '47 * * * *'
     # Following-list sync every 12 hours at 07:43 and 19:43 Beijing.
     - cron: '43 11,23 * * *'
 
@@ -19,6 +26,8 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-24.04
+    env:
+      FX_ONLY: ${{ github.event.schedule == '47 * * * *' || (github.event_name == 'workflow_dispatch' && inputs.fx_only) }}
     timeout-minutes: 25
     outputs:
       publish: ${{ steps.save.outputs.publish }}
@@ -37,18 +46,21 @@ jobs:
       - name: Test custom-domain routing
         run: node --test cloudflare/test_proxy.mjs tests/test_fx_math.cjs
       - name: Sync X following twice daily (opt-in, budget guarded)
-        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '43 11,23 * * *'
+        if: env.FX_ONLY != 'true' && (github.event_name == 'workflow_dispatch' || github.event.schedule == '43 11,23 * * *')
         env:
           X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
         run: python scripts/sync_x_following.py
       - name: Collect publisher feeds
+        if: env.FX_ONLY != 'true'
         run: python scripts/collect.py
       - name: Collect official daily exchange rates
         run: python scripts/collect_fx.py
       - name: Decide whether Chinese briefs need refreshing
         id: summaries
         run: |
-          if [ "$GITHUB_EVENT_NAME" != "push" ] || ! git diff --quiet HEAD^ HEAD -- scripts/summarize.py scripts/summary_utils.py scripts/collect.py sources.json; then
+          if [ "$FX_ONLY" = "true" ]; then
+            echo "refresh=false" >> "$GITHUB_OUTPUT"
+          elif [ "$GITHUB_EVENT_NAME" != "push" ] || ! git diff --quiet HEAD^ HEAD -- scripts/summarize.py scripts/summary_utils.py scripts/collect.py sources.json; then
             echo "refresh=true" >> "$GITHUB_OUTPUT"
           else
             echo "refresh=false" >> "$GITHUB_OUTPUT"
@@ -62,10 +74,12 @@ jobs:
         if: steps.summaries.outputs.refresh == 'true'
         run: python scripts/summarize.py --limit 64 --max-seconds 540
       - name: Check configured X watchlist
+        if: env.FX_ONLY != 'true'
         env:
           X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
         run: python scripts/collect_x.py
       - name: Build yesterday newspaper and past editions
+        if: env.FX_ONLY != 'true'
         run: python scripts/daily_edition.py
       - name: Refresh browser asset versions
         run: python scripts/version_assets.py

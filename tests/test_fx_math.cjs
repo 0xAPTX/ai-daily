@@ -33,10 +33,15 @@ test('unavailable first load and refresh failures do not invent market data',asy
   globalThis.fetch.mock.mockImplementation(async()=>({ok:true,json:async()=>({schemaVersion:1,status:'error',previousDate:'2026-10-23',checkedAt:'2026-10-27T00:00:00Z',lastSuccessfulAt:'2026-10-26T00:00:00Z',source:{url:'https://www.ecb.europa.eu/'},currencies:[{code:'CNY',name:'人民币'},{code:'USD',name:'美元'},{code:'EUR',name:'欧元'}],history})}));
   await fx.load(true);
   const html=fx.render(new URLSearchParams());
+  assert.match(html, /<option value="CNY" selected>.*人民币（RMB）/);
+  assert.match(html, /每 1 单位外币可折合多少 CNY/);
   assert.match(html,/本次采集未成功/);
   assert.match(html,/6\.5000/);
   assert.match(html,/2026-10-26/);
-  assert.match(fx.render(new URLSearchParams('quote=USD')),/欧元兑美元/);
+  const dollars=fx.render(new URLSearchParams('quote=USD'));
+  assert.match(dollars,/欧元兑美元/);
+  assert.match(dollars, /<option value="USD" selected>/);
+  assert.match(dollars, /每 1 单位外币可折合多少 USD/);
   globalThis.fetch.mock.mockImplementation(async()=>{throw new Error('network');});
   await assert.rejects(fx.load(true));
   assert.match(fx.render(new URLSearchParams()),/6\.5000/);
