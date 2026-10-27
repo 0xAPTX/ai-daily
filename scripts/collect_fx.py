@@ -19,7 +19,7 @@ CURRENCIES = [
 ]
 
 
-def parse_rates(raw, today=None):
+def parse_rates(raw, today=None, since=None):
     today = today or datetime.now(timezone.utc).date()
     required = {code for code, _ in CURRENCIES} - {'EUR'}
     observations = {}
@@ -30,6 +30,8 @@ def parse_rates(raw, today=None):
         parsed = date.fromisoformat(day)
         if parsed.isoformat() != day or parsed > today:
             raise ValueError('Invalid or future observation date')
+        if since and parsed < since:
+            continue
         if day in observations:
             raise ValueError('Duplicate observation date')
         rates = {'EUR': 1.0}
@@ -89,6 +91,11 @@ def collect(output=OUTPUT, fetch=None, now=None):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--input-file', type=Path)
+    parser.add_argument('--history-file', type=Path)
     args = parser.parse_args()
     result = collect(fetch=args.input_file.read_bytes if args.input_file else None)
+    if result['status'] == 'ok':
+        from fx_history import update_history
+        result['longHistory'] = update_history(result, fetch=args.history_file.read_bytes if args.history_file else None)
+        OUTPUT.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
     print('ECB FX:', result['status'], result.get('asOf', 'no observations'))

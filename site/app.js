@@ -226,7 +226,7 @@ async function renderRoute({keepScroll=false}={}){
   }
   const version=++routeVersion;updateShell();
   try{
-    if(route.name==='fx'){try{await FX.load();}catch{}}
+    if(route.name==='fx'){if(!FX.ready(route.params))$('#main').innerHTML='<div class="loading" role="status">正在读取汇率与历史走势，首次加载可能稍久…</div>';try{await FX.load(false,route.params);}catch{}}
     let date=route.params.get('date');if(route.name==='daily'){date=dailyDate();await ensureEdition(date);}if(route.name==='article')date=route.parts[1];
     if(date&&route.name!=='daily'&&!archiveCache.has(date)){$('#main').innerHTML='<div class="loading">正在读取日期归档…</div>';await ensureArchive(date);}
     if(route.name==='x'&&!xData){try{const r=await fetch('./data/x-feed.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error();xData=await r.json();}catch{xData={status:'unavailable',posts:[],accounts:[],watchlist:[]};}}
@@ -253,7 +253,7 @@ document.addEventListener('click',async event=>{
   const fxFrom=t.closest('[data-fx-from]');if(fxFrom){updateParams({from:fxFrom.dataset.fxFrom});return;}
   const fxPeriod=t.closest('[data-fx-period]');if(fxPeriod){updateParams({period:fxPeriod.dataset.fxPeriod});return;}
   if(t.closest('#fx-swap')){const a=$('#fx-convert-from'),b=$('#fx-convert-to');[a.value,b.value]=[b.value,a.value];FX.convert();return;}
-  if(t.closest('#fx-refresh')){const button=t.closest('#fx-refresh');button.disabled=true;try{await FX.load(true);await renderRoute({keepScroll:true});toast('已读取最新发布的汇率数据。');}catch{button.disabled=false;toast('汇率暂时无法读取，请稍后重试。');}return;}
+  if(t.closest('#fx-refresh,[data-fx-retry]')){const button=t.closest('#fx-refresh,[data-fx-retry]');button.disabled=true;try{await FX.load(true,route.params);await renderRoute({keepScroll:true});toast('已读取最新发布的汇率数据。');}catch{button.disabled=false;toast('汇率暂时无法读取，请稍后重试。');}return;}
   if(t.closest('.skip')){event.preventDefault();$('#main').focus();$('#main').scrollIntoView({behavior:'instant'});return;}
   const topic=t.closest('[data-topic]');if(topic){pageLimit=24;updateParams({topic:topic.dataset.topic==='all'?'':topic.dataset.topic,section:''});return;}
   const jump=t.closest('[data-module-jump]');if(jump){document.getElementById('module-'+jump.dataset.moduleJump)?.scrollIntoView({behavior:'smooth',block:'start'});return;}

@@ -3,6 +3,9 @@ import importlib.util
 import json
 from pathlib import Path
 import tempfile
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+from fx_history import update_history
 import unittest
 
 spec = importlib.util.spec_from_file_location('collect_fx', Path(__file__).resolve().parents[1] / 'scripts/collect_fx.py')
@@ -50,6 +53,38 @@ class FXTests(unittest.TestCase):
             result = fx.collect(Path(directory) / 'fx.json', lambda: b'bad')
             self.assertEqual(result['status'], 'error')
             self.assertNotIn('history', result)
+
+
+class LongHistoryTests(unittest.TestCase):
+    def test_bootstrap_incremental_merge_and_new_year_do_not_redownload_history(self):
+        def recent(days):
+            rows = fx.parse_rates(document(days), date(2027, 1, 10))
+            return {'asOf': rows[-1]['date'], 'history': rows}
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            full = document(tuple(f'{year}-01-04' for year in range(2016, 2026)) + ('2026-10-23', '2026-10-26'))
+            result = update_history(recent(('2026-10-23', '2026-10-26')), root, lambda: full.encode())
+            self.assertEqual(result['status'], 'ok')
+            self.assertEqual(len(json.loads((root / 'index.json').read_text())['years']), 11)
+            oldest = (root / '2016.json').read_text()
+            def forbidden():
+                self.fail('Complete history must not be fetched again')
+            self.assertEqual(update_history(recent(('2026-10-26', '2026-10-27')), root, forbidden)['status'], 'ok')
+            self.assertEqual((root / '2016.json').read_text(), oldest)
+            self.assertEqual(json.loads((root / '2026.json').read_text())['history'][-1]['date'], '2026-10-27')
+            self.assertEqual(update_history(recent(('2026-12-31', '2027-01-04')), root, forbidden)['status'], 'ok')
+            self.assertFalse((root / '2016.json').exists())
+            self.assertTrue((root / '2027.json').exists())
+            manifest = (root / 'index.json').read_text()
+            self.assertEqual(update_history(recent(('2026-10-26', '2026-10-27')), root, forbidden)['status'], 'error')
+            self.assertEqual((root / 'index.json').read_text(), manifest)
+
+    def test_incomplete_bootstrap_does_not_publish_a_ten_year_claim(self):
+        with tempfile.TemporaryDirectory() as directory:
+            recent = {'asOf': '2026-10-26', 'history': fx.parse_rates(document(), date(2026, 10, 27))}
+            result = update_history(recent, Path(directory), lambda: document().encode())
+            self.assertEqual(result['status'], 'error')
+            self.assertFalse((Path(directory) / 'index.json').exists())
 
 
 if __name__ == '__main__':

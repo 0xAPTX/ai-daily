@@ -107,10 +107,12 @@ python3 -m http.server 8765 --directory site --bind 127.0.0.1
 
 ## 汇率观察
 
-[打开汇率板块](https://aptx.dev/#/fx)。覆盖人民币、美元、港币、欧元、日元、英镑、新加坡元、澳元、加元、瑞士法郎、韩元、新西兰元、泰铢、马来西亚林吉特和印度卢比。默认展示每 1 单位外币折合人民币（CNY / RMB），可切换折算币种、查看 30 / 90 日走势图，以及使用金额换算器。
+[打开汇率板块](https://aptx.dev/#/fx)。覆盖人民币、美元、港币、欧元、日元、英镑、新加坡元、澳元、加元、瑞士法郎、韩元、新西兰元、泰铢、马来西亚林吉特和印度卢比。默认展示每 1 单位外币折合人民币（CNY / RMB），可切换折算币种、查看 30 / 90 日及 1 / 3 / 5 / 10 年走势图，以及使用金额换算器。
 
 汇率直接采集[欧洲央行近 90 日官方 XML](https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml)，不需要 API 密钥。GitHub Actions 每半小时检查一次（每小时第 17、47 分钟）；ECB 通常在工作日欧洲时间约 16:00 发布，周末与休市日沿用最新公布值。页面分别标明数据日期和最近检查时间，不将每日参考价称作实时行情。第 47 分钟的任务只检查汇率，不重复采集新闻或运行摘要；可用手动运行参数 `fx_only=true` 单独刷新汇率。
 
 所有货币对采用同一公布日的欧元汇率交叉换算。较前次变化比较前一公布日；7 / 30 日变化比较对应日期或之前最近公布日，缺少历史时显示空缺。采集失败或来源退回更早日期时保留上次有效数据并显示状态，不补造价格；超过 4 日没有新公布值时提示数据可能滞后。参考价不含银行点差、现钞/现汇价差或手续费。
 
-本地更新：`python3 scripts/collect_fx.py`。数据在 `site/data/fx.json`；换算和绘图在 `site/fx.js`。运行 `python3 -m unittest discover -s tests -v` 与 `node --test tests/test_fx_math.cjs cloudflare/test_proxy.mjs` 检查数据保留、周末基准与换算方向。
+本地更新：`python3 scripts/collect_fx.py`。近期数据在 `site/data/fx.json`；长期历史在 `site/data/fx-history/`，按年份保存，通过 `index.json` 记录实际覆盖范围。首次初始化或历史文件缺失时读取 ECB 完整历史 XML，保留最近十个完整年份及当年；后续半小时任务只合并最近 90 日，不反复下载全量。网页按所选范围加载年份文件。
+
+年份范围按最新公布日期的日历周年截取（闰日回退至 2 月 28 日），不将一年近似为 365 天。长周期曲线保留首尾点及分组高低点抽样绘制，区间变化和高低值按完整日数据计算；缺少历史时明确提示，不使用 90 日数据冒充多年走势。换算和绘图在 `site/fx.js`。运行 `python3 -m unittest discover -s tests -v` 与 `node --test tests/test_fx_math.cjs cloudflare/test_proxy.mjs` 检查数据保留、周末基准与换算方向。
