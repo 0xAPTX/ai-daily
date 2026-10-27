@@ -4,6 +4,7 @@ const FX = (() => {
   let data = null;
   let conversion = {amount: '1000', from: null, to: null};
   let historyIndex = null;
+  let chartModel = null;
   const yearCache = new Map(), historyErrors = new Map();
   const PERIODS = [{key:'30',days:30,label:'近 30 日'},{key:'90',days:90,label:'近 90 日'},
     {key:'1y',years:1,label:'近 1 年'},{key:'3y',years:3,label:'近 3 年'},
@@ -66,8 +67,19 @@ const FX = (() => {
     chosen.push(points.at(-1));
     return chosen;
   }
+  function nearestIndex(points, targetTime) {
+    if (!points.length || !Number.isFinite(targetTime)) return -1;
+    const timeAt = i => points[i].time ?? dateMs(points[i].date);
+    let low = 0, high = points.length - 1;
+    while (low < high) {
+      const middle = Math.floor((low + high) / 2);
+      if (timeAt(middle) < targetTime) low = middle + 1;
+      else high = middle;
+    }
+    return low && targetTime - timeAt(low - 1) <= timeAt(low) - targetTime ? low - 1 : low;
+  }
   function plot(history, from, to, compact = false) {
-    const points = history.map(row => ({date: row.date, value: rate(row, from, to)})).filter(p => p.value !== null);
+    const points = history.map(row => ({date: row.date, time:dateMs(row.date), value: rate(row, from, to)})).filter(p => p.value !== null);
     if (points.length < 2) return '<p class="method-note">历史数据不足，暂不绘制走势。</p>';
     const values = points.map(p => p.value), low = Math.min(...values), high = Math.max(...values), spread = high - low || high * .002 || .01;
     const small = typeof window !== 'undefined' && window.matchMedia('(max-width:760px)').matches;
@@ -82,8 +94,69 @@ const FX = (() => {
     const color = tone((values.at(-1) / values[0] - 1) * 100);
     const grid = compact ? '' : [low, (low + high) / 2, high].filter((v, i, all) => all.indexOf(v) === i).map(v => `<line x1="${left}" x2="${width-right}" y1="${y(v)}" y2="${y(v)}" class="fx-gridline"/><text x="${left-10}" y="${y(v)+3}" text-anchor="end">${escape(number(v))}</text>`).join('');
     const dates = compact ? '' : `<text x="${left}" y="${height-7}">${points[0].date}</text><text x="${width-right}" y="${height-7}" text-anchor="end">${points.at(-1).date}</text>`;
-    const dots = compact ? '' : drawn.map(p => `<circle cx="${x(p)}" cy="${y(p.value)}" r="7" class="fx-hit"><title>${p.date} · 1 ${from} = ${number(p.value)} ${to}</title></circle>`).join('');
-    return `<svg class="${compact ? 'fx-spark' : 'fx-chart'} ${color}" viewBox="0 0 ${width} ${height}" ${compact ? 'aria-hidden="true"' : `role="img" aria-label="${from} 兑 ${to}，${points[0].date} 至 ${points.at(-1).date} 汇率走势，纵轴非零起点"`}><title>${from}/${to} · ${points[0].date} — ${points.at(-1).date}</title>${grid}<path d="${path}" class="fx-line"/>${dots}${dates}</svg>`;
+    if (compact) return `<svg class="fx-spark ${color}" viewBox="0 0 ${width} ${height}" aria-hidden="true"><path d="${path}" class="fx-line"/></svg>`;
+    // Draw a light sampled line, but inspect every original daily observation.
+    chartModel = {points,from,to,width,height,left,right,top,bottom,first,span,x,y};
+    return `<div class="fx-chart-wrap" tabindex="0" role="group" aria-label="${from} 兑 ${to} 走势图，左右方向键逐日查看，Home 和 End 查看首尾" aria-describedby="fx-chart-detail"><svg class="fx-chart ${color}" viewBox="0 0 ${width} ${height}" role="img" aria-label="${from} 兑 ${to}，${points[0].date} 至 ${points.at(-1).date} 汇率走势，纵轴非零起点">${grid}<path d="${path}" class="fx-line"/><g class="fx-guide" aria-hidden="true" hidden><line class="fx-guide-line" y1="${top}" y2="${height-bottom}"/><circle class="fx-guide-dot" r="4"/></g>${dates}<rect class="fx-chart-capture" x="${left}" y="${top}" width="${width-left-right}" height="${height-top-bottom}"/></svg><div class="fx-tooltip" role="tooltip" hidden><time></time><strong></strong><small>ECB 参考价 · 最近公布日</small></div><span class="sr-only" id="fx-chart-detail" role="status" aria-live="polite">悬停或点按图表查看日期与汇率。</span></div>`;
+  }
+  function bindChart() {
+    const root = document.querySelector('.fx-chart-wrap'), model = chartModel;
+    if (!root || !model || root.dataset.fxBound) return;
+    root.dataset.fxBound = 'true';
+    const svg = root.querySelector('.fx-chart'), guide = root.querySelector('.fx-guide');
+    const line = root.querySelector('.fx-guide-line'), dot = root.querySelector('.fx-guide-dot');
+    const tooltip = root.querySelector('.fx-tooltip'), detail = root.querySelector('#fx-chart-detail');
+    let cursor = model.points.length - 1;
+    function hide() {guide.setAttribute('hidden','');tooltip.hidden=true;}
+    function show(index, announce = false) {
+      if (index < 0 || index >= model.points.length) return;
+      cursor = index;
+      const point = model.points[index], x = model.x(point), y = model.y(point.value);
+      const text = `1 ${model.from} = ${number(point.value)} ${model.to}`;
+      line.setAttribute('x1',x);line.setAttribute('x2',x);
+      dot.setAttribute('cx',x);dot.setAttribute('cy',y);
+      guide.removeAttribute('hidden');
+      tooltip.querySelector('time').textContent=point.date;
+      tooltip.querySelector('time').dateTime=point.date;
+      tooltip.querySelector('strong').textContent=text;
+      tooltip.hidden=false;
+      const matrix = svg.getScreenCTM();
+      if (!matrix) {hide();return;}
+      const svgPoint = svg.createSVGPoint();svgPoint.x=x;svgPoint.y=y;
+      const screenPoint = svgPoint.matrixTransform(matrix), box = root.getBoundingClientRect();
+      const anchorX=screenPoint.x-box.left, anchorY=screenPoint.y-box.top;
+      const w=tooltip.offsetWidth, h=tooltip.offsetHeight;
+      let left=anchorX+13, top=anchorY-h-13;
+      if (left+w>box.width-8) left=anchorX-w-13;
+      if (top<8) top=anchorY+13;
+      tooltip.style.left=Math.max(8,Math.min(left,box.width-w-8))+'px';
+      tooltip.style.top=Math.max(8,Math.min(top,box.height-h-8))+'px';
+      if (announce) detail.textContent=`${point.date}，${text}，最近公布日参考汇率。`;
+    }
+    function pointer(event) {
+      const matrix=svg.getScreenCTM();if(!matrix)return;
+      const screenPoint=svg.createSVGPoint();screenPoint.x=event.clientX;screenPoint.y=event.clientY;
+      const point=screenPoint.matrixTransform(matrix.inverse());
+      if(point.x<model.left||point.x>model.width-model.right||point.y<model.top||point.y>model.height-model.bottom){hide();return;}
+      const target=model.first+(point.x-model.left)/(model.width-model.left-model.right)*model.span;
+      show(nearestIndex(model.points,target),event.type==='pointerdown');
+    }
+    svg.addEventListener('pointermove',pointer);
+    svg.addEventListener('pointerdown',event=>{root.focus({preventScroll:true});pointer(event);});
+    svg.addEventListener('pointerleave',event=>{if(event.pointerType!=='touch')hide();});
+    svg.addEventListener('pointercancel',hide);
+    root.addEventListener('focus',()=>show(model.points.length-1,true));
+    root.addEventListener('blur',hide);
+    root.addEventListener('keydown',event=>{
+      let next;
+      if(event.key==='ArrowLeft')next=Math.max(0,cursor-1);
+      else if(event.key==='ArrowRight')next=Math.min(model.points.length-1,cursor+1);
+      else if(event.key==='Home')next=0;
+      else if(event.key==='End')next=model.points.length-1;
+      else if(event.key==='Escape'){hide();return;}
+      else return;
+      event.preventDefault();show(next,true);
+    });
   }
   function neededYears(period) {
     const first = new Date(periodStart(data.asOf,period.key)).getUTCFullYear(), last = Number(data.asOf.slice(0,4));
@@ -140,6 +213,7 @@ const FX = (() => {
     return [...byDay.values()].sort((a,b)=>a.date.localeCompare(b.date));
   }
   function render(params) {
+    chartModel=null;
     if (!data?.history?.length) return `<div class="page-heading"><div><h1>汇率观察</h1><p>主流法币参考汇率与变化趋势。</p></div></div><div class="empty"><strong>汇率数据暂时无法加载。</strong>稍后可以重新读取。<br><button class="quiet-button" id="fx-refresh">重试汇率数据</button></div>`;
     const history = combinedHistory(), latest = history.at(-1), currencies = data.currencies;
     const codes = currencies.map(c => c.code), names = Object.fromEntries(currencies.map(c => [c.code,c.name]));
@@ -161,7 +235,7 @@ const FX = (() => {
     const checkTime = value => value ? new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(value)) : '暂无';
     const cards = ['USD','HKD','EUR','JPY','GBP'].filter(code => code !== quote).slice(0,4).map(code => `<button class="fx-spot ${code === from ? 'selected' : ''}" data-fx-from="${code}" aria-pressed="${code === from}"><span class="fx-spot-label"><b>${code} <small>${names[code]}</small></b><span aria-hidden="true">↗</span></span><strong>${number(rate(latest,code,quote))}<small>${quote}</small></strong><span class="fx-spot-bottom"><span>1 ${code} 折合</span>${delta(change(history,code,quote,1))}</span></button>`).join('');
     const rows = currencies.filter(c => c.code !== quote).map(c => `<tr class="${c.code === from ? 'selected' : ''}"><th scope="row"><button data-fx-from="${c.code}"><b>${c.code}</b><span>${escape(c.name)}</span></button></th><td class="fx-rate-cell">${number(rate(latest,c.code,quote))}</td>${[1,7,30].map(d => `<td>${delta(change(history,c.code,quote,d))}</td>`).join('')}<td>${plot(series(history,30),c.code,quote,true)}</td><td><button class="fx-open" data-fx-from="${c.code}" aria-label="查看${escape(c.name)}走势">查看 ↗</button></td></tr>`).join('');
-    return `<div class="fx-page"><div class="page-heading"><div><span class="fx-eyebrow">CURRENCY / 汇率</span><h1>看清汇率，也看清变化。</h1><p>主流法币参考价，放在一起比较。</p></div><button class="quiet-button" id="fx-refresh">↻ 刷新数据</button></div><div class="fx-status"><span><i class="live-dot"></i>数据日期 <b>${latest.date}</b></span><span>较前次：${escape(data.previousDate)}</span><span>最近检查 ${checkTime(data.checkedAt)} · 北京时间</span><a href="${escape(data.source.url)}" target="_blank" rel="noopener noreferrer">欧洲央行 ECB ↗</a></div>${status ? `<div class="notice">${escape(status)}${data.lastSuccessfulAt ? ' 最近成功采集：'+checkTime(data.lastSuccessfulAt)+'。' : ''}</div>` : ''}<div class="fx-overview-head"><h2>主流币种速览 <small>变化为较前次公布值</small></h2><label>折算为 <select id="fx-quote" aria-label="折算币种">${optionList(quote)}</select></label></div><div class="fx-spots">${cards}</div><div class="fx-main"><section class="fx-panel"><header class="fx-chart-header"><div><span class="fx-eyebrow">${from} / ${quote}</span><h2>${names[from]}兑${names[quote]}</h2></div><div class="segmented fx-ranges" role="group" aria-label="走势时间范围">${ranges}</div></header><div class="fx-chart-value"><strong>${number(current)}</strong><span>1 ${from} = ${number(current)} ${quote}</span><span class="fx-interval">${delta(movement)}<small>区间变化</small></span></div>${chart}<div class="fx-chart-foot"><span>公布日连线 · 纵轴非零起点${period.years?' · 保留极值抽样':''}</span>${interval}</div></section><section class="fx-panel fx-converter"><span class="fx-eyebrow">CONVERT / 换算</span><h2>这笔钱，能换多少？</h2><p>使用 ${latest.date} 的参考汇率估算</p><label for="fx-amount">换算金额</label><input id="fx-amount" type="number" min="0" step="any" value="${escape(conversion.amount)}" inputmode="decimal"><div class="fx-pair"><label>原币种<select id="fx-convert-from">${optionList(convertFrom)}</select></label><button id="fx-swap" aria-label="交换换算币种">⇄</button><label>目标币种<select id="fx-convert-to">${optionList(convertTo)}</select></label></div><div class="fx-conversion" aria-live="polite"><span>约合</span><strong id="fx-result">${escape(conversionText(conversion.amount,convertFrom,convertTo))}</strong><small id="fx-equation">1 ${convertFrom} = ${number(convertRate)} ${convertTo}</small></div><p class="fx-converter-note">参考价不含银行点差、手续费，也不区分现钞与现汇。</p></section></div><section class="fx-panel fx-table-panel"><header><div><h2>全部币种，一眼比较</h2><p>每 1 单位外币可折合多少 ${quote} · 点击币种查看走势</p></div><span>${currencies.length-1} 个货币对</span></header><div class="fx-table-wrap" tabindex="0" role="region" aria-label="主流币种汇率比较表，可横向滚动"><table class="fx-table"><thead><tr><th scope="col">币种</th><th scope="col">折合 ${quote}</th><th scope="col">较前次</th><th scope="col">近 7 日</th><th scope="col">近 30 日</th><th scope="col">30 日走势</th><th scope="col"><span class="sr-only">操作</span></th></tr></thead><tbody>${rows}</tbody></table></div></section><div class="fx-source-note"><b>数据怎么读</b><p>来源：<a href="${escape(data.source.url)}" target="_blank" rel="noopener noreferrer">欧洲央行官方参考汇率 ↗</a>。通常每个工作日欧洲时间约 16:00 发布；周末与休市日不新增报价。本站每半小时检查，但数据频率仍为工作日参考价。</p><p>所有货币对均以同一公布日的欧元报价交叉换算。正值表示该外币相对折算币种升值，负值表示贬值；7 / 30 日变化与对应日期或之前最近公布日相比，历史不足时显示“—”。长周期绘图保留区间高低点进行抽样，区间高低值及涨跌始终按完整日数据计算。仅供了解汇率，不代表银行实际成交报价。</p></div></div>`;
+    return `<div class="fx-page"><div class="page-heading"><div><span class="fx-eyebrow">CURRENCY / 汇率</span><h1>看清汇率，也看清变化。</h1><p>主流法币参考价，放在一起比较。</p></div><button class="quiet-button" id="fx-refresh">↻ 刷新数据</button></div><div class="fx-status"><span><i class="live-dot"></i>数据日期 <b>${latest.date}</b></span><span>较前次：${escape(data.previousDate)}</span><span>最近检查 ${checkTime(data.checkedAt)} · 北京时间</span><a href="${escape(data.source.url)}" target="_blank" rel="noopener noreferrer">欧洲央行 ECB ↗</a></div>${status ? `<div class="notice">${escape(status)}${data.lastSuccessfulAt ? ' 最近成功采集：'+checkTime(data.lastSuccessfulAt)+'。' : ''}</div>` : ''}<div class="fx-overview-head"><h2>主流币种速览 <small>变化为较前次公布值</small></h2><label>折算为 <select id="fx-quote" aria-label="折算币种">${optionList(quote)}</select></label></div><div class="fx-spots">${cards}</div><div class="fx-main"><section class="fx-panel"><header class="fx-chart-header"><div><span class="fx-eyebrow">${from} / ${quote}</span><h2>${names[from]}兑${names[quote]}</h2></div><div class="segmented fx-ranges" role="group" aria-label="走势时间范围">${ranges}</div></header><div class="fx-chart-value"><strong>${number(current)}</strong><span>1 ${from} = ${number(current)} ${quote}</span><span class="fx-interval">${delta(movement)}<small>区间变化</small></span></div>${chart}<div class="fx-chart-foot"><span>悬停或点按查看日期与汇率 · 公布日连线 · 纵轴非零起点${period.years?' · 保留极值抽样':''}</span>${interval}</div></section><section class="fx-panel fx-converter"><span class="fx-eyebrow">CONVERT / 换算</span><h2>这笔钱，能换多少？</h2><p>使用 ${latest.date} 的参考汇率估算</p><label for="fx-amount">换算金额</label><input id="fx-amount" type="number" min="0" step="any" value="${escape(conversion.amount)}" inputmode="decimal"><div class="fx-pair"><label>原币种<select id="fx-convert-from">${optionList(convertFrom)}</select></label><button id="fx-swap" aria-label="交换换算币种">⇄</button><label>目标币种<select id="fx-convert-to">${optionList(convertTo)}</select></label></div><div class="fx-conversion" aria-live="polite"><span>约合</span><strong id="fx-result">${escape(conversionText(conversion.amount,convertFrom,convertTo))}</strong><small id="fx-equation">1 ${convertFrom} = ${number(convertRate)} ${convertTo}</small></div><p class="fx-converter-note">参考价不含银行点差、手续费，也不区分现钞与现汇。</p></section></div><section class="fx-panel fx-table-panel"><header><div><h2>全部币种，一眼比较</h2><p>每 1 单位外币可折合多少 ${quote} · 点击币种查看走势</p></div><span>${currencies.length-1} 个货币对</span></header><div class="fx-table-wrap" tabindex="0" role="region" aria-label="主流币种汇率比较表，可横向滚动"><table class="fx-table"><thead><tr><th scope="col">币种</th><th scope="col">折合 ${quote}</th><th scope="col">较前次</th><th scope="col">近 7 日</th><th scope="col">近 30 日</th><th scope="col">30 日走势</th><th scope="col"><span class="sr-only">操作</span></th></tr></thead><tbody>${rows}</tbody></table></div></section><div class="fx-source-note"><b>数据怎么读</b><p>来源：<a href="${escape(data.source.url)}" target="_blank" rel="noopener noreferrer">欧洲央行官方参考汇率 ↗</a>。通常每个工作日欧洲时间约 16:00 发布；周末与休市日不新增报价。本站每半小时检查，但数据频率仍为工作日参考价。</p><p>所有货币对均以同一公布日的欧元报价交叉换算。正值表示该外币相对折算币种升值，负值表示贬值；7 / 30 日变化与对应日期或之前最近公布日相比，历史不足时显示“—”。长周期绘图保留区间高低点进行抽样，区间高低值及涨跌始终按完整日数据计算。仅供了解汇率，不代表银行实际成交报价。</p></div></div>`;
   }
   function convert() {
     const input = document.getElementById('fx-amount');
@@ -171,6 +245,6 @@ const FX = (() => {
     document.getElementById('fx-result').textContent = conversionText(input.value,from,to);
     document.getElementById('fx-equation').textContent = `1 ${from} = ${number(unit)} ${to}`;
   }
-  return {load,ready,render,convert,rate,baseline,change,series,periodStart,samplePoints};
+  return {load,ready,render,bindChart,convert,rate,baseline,change,series,periodStart,samplePoints,nearestIndex};
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = FX;

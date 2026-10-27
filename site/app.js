@@ -233,6 +233,7 @@ async function renderRoute({keepScroll=false}={}){
     if(version!==routeVersion)return;
     const renderers={home:renderHome,news:renderNews,fx:()=>FX.render(route.params),daily:renderDaily,sources:renderSources,hot:renderHot,x:renderX,article:renderArticle,saved:renderNews,about:renderAbout};
     $('#main').innerHTML=(renderers[route.name]||(()=>heading('这个页面还没有内容。','请从首页继续阅读。')))();
+    if(route.name==='fx')FX.bindChart();
     if(route.name==='saved')$('#main').insertAdjacentHTML('beforeend','<button class="more-button" id="export-saved">导出收藏备份 JSON ↓</button>');
     document.title=({home:'知新 · 多源资讯，每日有新知',news:route.params.get('topic')==='hk'?'港股资讯 · 知新':route.params.get('topic')==='stocks'?'美股资讯 · 知新':'资讯流 · 知新',daily:dailyDate()+' · 知新日报',fx:'主流币种汇率 · 知新',hot:'站内热点 · 知新',x:'X 热帖监测 · 知新',sources:'完整信源目录 · 知新',saved:'我的收藏 · 知新',article:'原文与出处 · 知新',about:'收录规则 · 知新'})[route.name]||'知新';
     if(!keepScroll)window.scrollTo({top:0,behavior:'instant'});

@@ -90,3 +90,22 @@ test('long history loads required years once and reports missing history honestl
   assert.doesNotMatch(fx.render(new URLSearchParams('period=10y')),/class="fx-chart /);
   assert.match(fx.render(new URLSearchParams()),/class="fx-chart /);
 });
+test('hover chooses an actual nearest publication date and clamps chart edges',()=>{
+  const points=[{date:'2026-10-23',value:1},{date:'2026-10-26',value:2},{date:'2026-10-27',value:3}];
+  const at=day=>Date.parse(day+'T00:00:00Z');
+  assert.equal(fx.nearestIndex(points,at('2026-10-24')),0);
+  assert.equal(fx.nearestIndex(points,at('2026-10-25')),1);
+  assert.equal(fx.nearestIndex(points,at('2026-10-26')),1);
+  assert.equal(fx.nearestIndex(points,at('2026-10-28')),2);
+  assert.equal(fx.nearestIndex(points,at('2026-10-01')),0);
+  assert.equal(fx.nearestIndex(points,(at('2026-10-23')+at('2026-10-26'))/2),0);
+  assert.equal(fx.nearestIndex([],at('2026-10-26')),-1);
+  assert.equal(fx.nearestIndex(points,NaN),-1);
+});
+test('hover inspects daily records omitted from a sampled long-term line',()=>{
+  const points=Array.from({length:2600},(_,i)=>({date:String(i),time:i*86400000,value:Math.sin(i/13)}));
+  const drawn=new Set(fx.samplePoints(points,120));
+  const omitted=points.find((p,i)=>i>100&&!drawn.has(p));
+  assert.ok(omitted);
+  assert.equal(points[fx.nearestIndex(points,omitted.time)],omitted);
+});
