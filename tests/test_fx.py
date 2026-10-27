@@ -6,6 +6,7 @@ import tempfile
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 from fx_history import update_history
+from build_fx_bootstrap import build, year_start
 import unittest
 
 spec = importlib.util.spec_from_file_location('collect_fx', Path(__file__).resolve().parents[1] / 'scripts/collect_fx.py')
@@ -85,6 +86,47 @@ class LongHistoryTests(unittest.TestCase):
             result = update_history(recent, Path(directory), lambda: document().encode())
             self.assertEqual(result['status'], 'error')
             self.assertFalse((Path(directory) / 'index.json').exists())
+
+
+class BootstrapTests(unittest.TestCase):
+    def test_build_is_repeatable_escapes_html_and_preserves_values(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            history_dir = root / 'data/fx-history'
+            history_dir.mkdir(parents=True)
+            rows = [{'date': day, 'rates': {'EUR': 1, 'USD': 1.23456, 'CNY': 7.12345}}
+                    for day in ('2016-10-25', '2025-10-24', '2025-10-27', '2026-10-26')]
+            for year in (2016, 2025, 2026):
+                (history_dir / f'{year}.json').write_text(json.dumps({'history': [row for row in rows if row['date'].startswith(str(year))]}))
+            recent = {'schemaVersion': 1, 'asOf': '2026-10-26', 'history': rows[-1:],
+                      'currencies': [{'code': code} for code in ('EUR', 'USD', 'CNY')],
+                      'source': {'name': '</script><img src=x>'}}
+            (root / 'data/fx.json').write_text(json.dumps(recent))
+            (root / 'index.html').write_text('<html><head></head></html>')
+            build(root)
+            first = (root / 'index.html').read_text()
+            self.assertNotIn('</script><img', first)
+            self.assertIn('7.12345', first)
+            self.assertEqual(first.count('id="fx-bootstrap"'), 1)
+            packet = json.loads((history_dir / 'range-10y.json').read_text())
+            self.assertEqual(packet['rows'][-1], ['2026-10-26', 1.23456, 7.12345])
+            build(root)
+            self.assertEqual((root / 'index.html').read_text(), first)
+            self.assertEqual(year_start(date(2024, 2, 29), 1), date(2023, 2, 28))
+
+    def test_new_archive_does_not_claim_a_year_of_missing_history(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'data').mkdir()
+            recent = {'schemaVersion': 1, 'asOf': '2026-10-26',
+                      'currencies': [{'code': 'EUR'}, {'code': 'CNY'}],
+                      'history': [{'date': '2026-10-26', 'rates': {'EUR': 1, 'CNY': 7}}]}
+            (root / 'data/fx.json').write_text(json.dumps(recent))
+            (root / 'index.html').write_text('<html><head></head></html>')
+            build(root)
+            html = (root / 'index.html').read_text()
+            self.assertIn('"startDate":"2026-10-26"', html)
+            self.assertIn('"ranges":{}', html)
 
 
 if __name__ == '__main__':

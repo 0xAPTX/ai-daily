@@ -8,6 +8,7 @@ const FX = (() => {
   let recentRequest = null, generation = 0;
   const requests = new Map();
   const yearCache = new Map(), historyErrors = new Map();
+  let packedHistory = [], packedStart = null, packedAsOf = null, packedRanges = {};
   const PERIODS = [{key:'30',days:30,label:'近 30 日'},{key:'90',days:90,label:'近 90 日'},
     {key:'1y',years:1,label:'近 1 年'},{key:'3y',years:3,label:'近 3 年'},
     {key:'5y',years:5,label:'近 5 年'},{key:'10y',years:10,label:'近 10 年'}];
@@ -176,7 +177,8 @@ const FX = (() => {
   function ready(params) {
     if (!data?.history?.length) return false;
     const period = periodFor(params);
-    return !period.years || historyErrors.has(period.key) || neededYears(period).every(y=>yearCache.has(y));
+    return !period.years || historyErrors.has(period.key) ||
+      (packedStart && dateMs(packedStart)<=periodStart(data.asOf,period.key)) || neededYears(period).every(y=>yearCache.has(y));
   }
   async function readJSON(url, timeoutMs=15000) {
     const controller=new AbortController();
@@ -186,7 +188,7 @@ const FX = (() => {
     },timeoutMs);});
     try {
       return await Promise.race([(async()=>{
-        const response=await fetch(url,{cache:'no-store',signal:controller.signal});
+        const response=await fetch(url,{cache:'default',signal:controller.signal});
         if(!response.ok)throw new Error('Data unavailable');
         return response.json();
       })(),timeout]);
@@ -197,15 +199,44 @@ const FX = (() => {
     const pending=(async()=>{try{return await Promise.resolve().then(create);}finally{if(requests.get(key)===pending)requests.delete(key);}})();
     requests.set(key,pending);return pending;
   }
+  function unpack(value, currencies) {
+    if(value.schemaVersion!==1||!Array.isArray(value.codes)||!Array.isArray(value.rows)||!value.rows.length||
+      !Number.isFinite(dateMs(value.startDate))||!Number.isFinite(dateMs(value.asOf))||
+      value.codes.includes('EUR')||new Set(value.codes).size!==value.codes.length||
+      currencies.some(c=>c.code!=='EUR'&&!value.codes.includes(c.code)))throw new Error('Invalid compact history');
+    let previous='';
+    const rows=value.rows.map(row=>{
+      if(!Array.isArray(row)||row.length!==value.codes.length+1||!/^\d{4}-\d{2}-\d{2}$/.test(row[0])||
+        row[0]<=previous||row[0]>value.asOf||row.slice(1).some(n=>!Number.isFinite(n)||n<=0))throw new Error('Invalid compact observation');
+      previous=row[0];
+      return {date:row[0],rates:{EUR:1,...Object.fromEntries(value.codes.map((code,i)=>[code,row[i+1]]))}};
+    });
+    if(dateMs(rows[0].date)>dateMs(value.startDate)+7*DAY||rows.at(-1).date!==value.asOf)throw new Error('Incomplete compact history');
+    return rows;
+  }
+  async function loadPacked(period, force, token) {
+    const url=packedRanges[period.key], key='aptx-fx-range:'+period.key;
+    let value, rows;
+    if(!force){try{const saved=JSON.parse(localStorage.getItem(key));if(saved?.url===url){value=saved.value;rows=unpack(value,data.currencies);}}catch{}}
+    if(!rows){
+      value=await readJSON(url+(force?'&refresh='+Date.now():''));
+      rows=unpack(value,data.currencies);
+    }
+    if(token!==generation)return;
+    if(value.asOf!==data.asOf||dateMs(value.startDate)>periodStart(data.asOf,period.key))throw new Error('Compact range mismatch');
+    if(!packedStart||value.startDate<packedStart){packedHistory=rows;packedStart=value.startDate;}
+    try{localStorage.setItem(key,JSON.stringify({url,value}));}catch{}
+  }
   async function loadRecent(force=false) {
     if(data&&!force)return;
     if(recentRequest)return recentRequest;
     generation++;
     const pending=(async()=>{
-      const value=await readJSON('./data/fx.json?t='+Date.now());
+      const value=await readJSON('./data/fx.json?t='+(force?Date.now():Math.floor(Date.now()/1800000)));
       if(value.schemaVersion!==1)throw new Error('Unsupported FX data');
       data=value;
-      if(force){historyIndex=null;yearCache.clear();historyErrors.clear();requests.clear();}
+      if(force){historyIndex=null;yearCache.clear();historyErrors.clear();requests.clear();
+        if(value.asOf!==packedAsOf){packedHistory=[];packedStart=null;packedRanges={};}}
     })();
     recentRequest=pending;
     try {await pending;} finally {if(recentRequest===pending)recentRequest=null;}
@@ -216,6 +247,12 @@ const FX = (() => {
     if (!period.years || !data?.history?.length || (historyErrors.has(period.key) && !force)) return;
     const token=generation;
     try {
+      if(!force&&ready(params))return;
+      if(packedRanges[period.key]){
+        await shared('range:'+period.key+':'+token,()=>loadPacked(period,force,token));
+        if(token===generation)historyErrors.delete(period.key);
+        return;
+      }
       const version = force ? Date.now() : data.asOf;
       const index=historyIndex||await shared('index:'+token,()=>readJSON('./data/fx-history/index.json?v='+version));
       if(token!==generation)return;
@@ -241,6 +278,7 @@ const FX = (() => {
   }
   function combinedHistory() {
     const byDay = new Map();
+    for (const row of packedHistory) if(row.date<=data.asOf)byDay.set(row.date,row);
     for (const rows of yearCache.values()) for (const row of rows) if (row.date<=data.asOf) byDay.set(row.date,row);
     for (const row of data.history) byDay.set(row.date,row);
     return [...byDay.values()].sort((a,b)=>a.date.localeCompare(b.date));
@@ -248,7 +286,7 @@ const FX = (() => {
   function render(params) {
     chartModel=null;
     if (!data?.history?.length) return `<div class="page-heading"><div><h1>汇率观察</h1><p>主流法币参考汇率与变化趋势。</p></div></div><div class="empty"><strong>汇率数据暂时无法加载。</strong>稍后可以重新读取。<br><button class="quiet-button" id="fx-refresh">重试汇率数据</button></div>`;
-    const history = combinedHistory(), latest = history.at(-1), currencies = data.currencies;
+    const history = combinedHistory(), recent = data.history, latest = recent.at(-1), currencies = data.currencies;
     const codes = currencies.map(c => c.code), names = Object.fromEntries(currencies.map(c => [c.code,c.name]));
     const quote = codes.includes(params.get('quote')) ? params.get('quote') : 'CNY';
     const requested = params.get('from'), from = codes.includes(requested) && requested !== quote ? requested : quote === 'USD' ? 'EUR' : 'USD';
@@ -266,8 +304,8 @@ const FX = (() => {
     const age = Math.floor((Date.now() - dateMs(latest.date)) / DAY);
     const status = data.status === 'error' ? '本次采集未成功，以下保留上次有效数据。' : age > 4 ? '来源已超过 4 天没有新公布值，请结合数据日期阅读。' : '';
     const checkTime = value => value ? new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(value)) : '暂无';
-    const cards = ['USD','HKD','EUR','JPY','GBP'].filter(code => code !== quote).slice(0,4).map(code => `<button class="fx-spot ${code === from ? 'selected' : ''}" data-fx-from="${code}" aria-pressed="${code === from}"><span class="fx-spot-label"><b>${code} <small>${names[code]}</small></b><span aria-hidden="true">↗</span></span><strong>${number(rate(latest,code,quote))}<small>${quote}</small></strong><span class="fx-spot-bottom"><span>1 ${code} 折合</span>${delta(change(history,code,quote,1))}</span></button>`).join('');
-    const rows = currencies.filter(c => c.code !== quote).map(c => `<tr class="${c.code === from ? 'selected' : ''}"><th scope="row"><button data-fx-from="${c.code}"><b>${c.code}</b><span>${escape(c.name)}</span></button></th><td class="fx-rate-cell">${number(rate(latest,c.code,quote))}</td>${[1,7,30].map(d => `<td>${delta(change(history,c.code,quote,d))}</td>`).join('')}<td>${plot(series(history,30),c.code,quote,true)}</td><td><button class="fx-open" data-fx-from="${c.code}" aria-label="查看${escape(c.name)}走势">查看 ↗</button></td></tr>`).join('');
+    const cards = ['USD','HKD','EUR','JPY','GBP'].filter(code => code !== quote).slice(0,4).map(code => `<button class="fx-spot ${code === from ? 'selected' : ''}" data-fx-from="${code}" aria-pressed="${code === from}"><span class="fx-spot-label"><b>${code} <small>${names[code]}</small></b><span aria-hidden="true">↗</span></span><strong>${number(rate(latest,code,quote))}<small>${quote}</small></strong><span class="fx-spot-bottom"><span>1 ${code} 折合</span>${delta(change(recent,code,quote,1))}</span></button>`).join('');
+    const rows = currencies.filter(c => c.code !== quote).map(c => `<tr class="${c.code === from ? 'selected' : ''}"><th scope="row"><button data-fx-from="${c.code}"><b>${c.code}</b><span>${escape(c.name)}</span></button></th><td class="fx-rate-cell">${number(rate(latest,c.code,quote))}</td>${[1,7,30].map(d => `<td>${delta(change(recent,c.code,quote,d))}</td>`).join('')}<td>${plot(series(recent,30),c.code,quote,true)}</td><td><button class="fx-open" data-fx-from="${c.code}" aria-label="查看${escape(c.name)}走势">查看 ↗</button></td></tr>`).join('');
     return `<div class="fx-page"><div class="page-heading"><div><span class="fx-eyebrow">CURRENCY / 汇率</span><h1>看清汇率，也看清变化。</h1><p>主流法币参考价，放在一起比较。</p></div><button class="quiet-button" id="fx-refresh">↻ 刷新数据</button></div><div class="fx-status"><span><i class="live-dot"></i>数据日期 <b>${latest.date}</b></span><span>较前次：${escape(data.previousDate)}</span><span>最近检查 ${checkTime(data.checkedAt)} · 北京时间</span><a href="${escape(data.source.url)}" target="_blank" rel="noopener noreferrer">欧洲央行 ECB ↗</a></div>${status ? `<div class="notice">${escape(status)}${data.lastSuccessfulAt ? ' 最近成功采集：'+checkTime(data.lastSuccessfulAt)+'。' : ''}</div>` : ''}<div class="fx-overview-head"><h2>主流币种速览 <small>变化为较前次公布值</small></h2><label>折算为 <select id="fx-quote" aria-label="折算币种">${optionList(quote)}</select></label></div><div class="fx-spots">${cards}</div><div class="fx-main"><section class="fx-panel"><header class="fx-chart-header"><div><span class="fx-eyebrow">${from} / ${quote}</span><h2>${names[from]}兑${names[quote]}</h2></div><div class="segmented fx-ranges" role="group" aria-label="走势时间范围">${ranges}</div></header><div class="fx-chart-value"><strong>${number(current)}</strong><span>1 ${from} = ${number(current)} ${quote}</span><span class="fx-interval">${delta(movement)}<small>区间变化</small></span></div>${chart}<div class="fx-chart-foot"><span>悬停或点按查看日期与汇率 · 公布日连线 · 纵轴非零起点${period.years?' · 保留极值抽样':''}</span>${interval}</div></section><section class="fx-panel fx-converter"><span class="fx-eyebrow">CONVERT / 换算</span><h2>这笔钱，能换多少？</h2><p>使用 ${latest.date} 的参考汇率估算</p><label for="fx-amount">换算金额</label><input id="fx-amount" type="number" min="0" step="any" value="${escape(conversion.amount)}" inputmode="decimal"><div class="fx-pair"><label>原币种<select id="fx-convert-from">${optionList(convertFrom)}</select></label><button id="fx-swap" aria-label="交换换算币种">⇄</button><label>目标币种<select id="fx-convert-to">${optionList(convertTo)}</select></label></div><div class="fx-conversion" aria-live="polite"><span>约合</span><strong id="fx-result">${escape(conversionText(conversion.amount,convertFrom,convertTo))}</strong><small id="fx-equation">1 ${convertFrom} = ${number(convertRate)} ${convertTo}</small></div><p class="fx-converter-note">参考价不含银行点差、手续费，也不区分现钞与现汇。</p></section></div><section class="fx-panel fx-table-panel"><header><div><h2>全部币种，一眼比较</h2><p>每 1 单位外币可折合多少 ${quote} · 点击币种查看走势</p></div><span>${currencies.length-1} 个货币对</span></header><div class="fx-table-wrap" tabindex="0" role="region" aria-label="主流币种汇率比较表，可横向滚动"><table class="fx-table"><thead><tr><th scope="col">币种</th><th scope="col">折合 ${quote}</th><th scope="col">较前次</th><th scope="col">近 7 日</th><th scope="col">近 30 日</th><th scope="col">30 日走势</th><th scope="col"><span class="sr-only">操作</span></th></tr></thead><tbody>${rows}</tbody></table></div></section><div class="fx-source-note"><b>数据怎么读</b><p>来源：<a href="${escape(data.source.url)}" target="_blank" rel="noopener noreferrer">欧洲央行官方参考汇率 ↗</a>。通常每个工作日欧洲时间约 16:00 发布；周末与休市日不新增报价。本站每半小时检查，但数据频率仍为工作日参考价。</p><p>所有货币对均以同一公布日的欧元报价交叉换算。正值表示该外币相对折算币种升值，负值表示贬值；7 / 30 日变化与对应日期或之前最近公布日相比，历史不足时显示“—”。长周期绘图保留区间高低点进行抽样，区间高低值及涨跌始终按完整日数据计算。仅供了解汇率，不代表银行实际成交报价。</p></div></div>`;
   }
   function convert() {
@@ -278,6 +316,18 @@ const FX = (() => {
     document.getElementById('fx-result').textContent = conversionText(input.value,from,to);
     document.getElementById('fx-equation').textContent = `1 ${from} = ${number(unit)} ${to}`;
   }
+  // Published with the HTML: the default one-year chart requires no data request.
+  try {
+    const snapshot=typeof document!=='undefined'&&document.querySelector('#fx-bootstrap')?.textContent;
+    if(snapshot){
+      const value=JSON.parse(snapshot), rows=unpack(value.history,value.recent.currencies);
+      if(value.recent.schemaVersion!==1||value.recent.asOf!==value.history.asOf)throw new Error('Snapshot mismatch');
+      data={...value.recent,history:rows.slice(-70)};
+      packedHistory=rows;packedStart=value.history.startDate;packedAsOf=value.history.asOf;
+      packedRanges=Object.fromEntries(Object.entries(value.ranges||{}).filter(([period,url])=>
+        ['3y','5y','10y'].includes(period)&&/^\.\/data\/fx-history\/range-(3|5|10)y\.json\?v=[a-f0-9]{12}$/.test(url)));
+    }
+  } catch { /* The normal JSON loader remains available if the snapshot is absent or invalid. */ }
   return {load,loadRecent,readJSON,ready,render,bindChart,convert,rate,baseline,change,series,periodStart,samplePoints,nearestIndex};
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = FX;

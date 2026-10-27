@@ -7,6 +7,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def main():
+    from build_fx_bootstrap import build
+    build()
     path = ROOT / 'site/index.html'
     original = text = path.read_text()
     for name in ('app.js', 'fx.js', 'style.css'):
