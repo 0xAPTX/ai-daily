@@ -7,8 +7,8 @@ const snapshot=JSON.parse(html.match(/<script id="fx-bootstrap" type="applicatio
 const script=fs.readFileSync('site/fx.js','utf8');
 const params=period=>new URLSearchParams({period});
 const readRange=url=>JSON.parse(fs.readFileSync('site/'+url.split('?')[0].replace('./',''),'utf8'));
-function boot(fetch,store=new Map()){
-  const ctx=vm.createContext({URLSearchParams,AbortController,setTimeout,clearTimeout,fetch,
+function boot(fetch,store=new Map(),hostname="localhost"){
+  const ctx=vm.createContext({URLSearchParams,URL,AbortController,setTimeout,clearTimeout,fetch,location:{hostname},
     document:{querySelector:selector=>selector==='#fx-bootstrap'?{textContent:JSON.stringify(snapshot)}:null},
     localStorage:{getItem:key=>store.get(key)||null,setItem:(key,value)=>store.set(key,value)}
   });
@@ -63,4 +63,19 @@ test('compact snapshots retain every published day and all original currency val
     assert.deepEqual(packet.rows.filter(row=>row[0]>=packet.startDate).map(row=>row[0]),expected);
     for(const row of packet.rows)packet.codes.forEach((code,i)=>assert.equal(row[i+1],original.get(row[0])[code]));
   }
+});
+
+
+test('custom domain reads public history directly and keeps the proxy as fallback',async()=>{
+  const calls=[];
+  const fx=boot(async(url,options)=>{
+    calls.push(url);assert.equal(options.credentials,'omit');
+    if(url.startsWith('https://'))throw new Error('Origin temporarily unavailable');
+    return {ok:true,json:async()=>readRange(url)};
+  },new Map(),'aptx.dev');
+  await fx.load(false,params('3y'));
+  assert.equal(calls.length,2);
+  assert.ok(calls[0].startsWith('https://0xaptx.github.io/ai-daily/data/fx-history/range-3y.json?v='));
+  assert.ok(calls[1].startsWith('./data/fx-history/range-3y.json?v='));
+  assert.match(fx.render(params('3y')),/class="fx-chart /);
 });

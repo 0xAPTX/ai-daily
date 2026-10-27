@@ -188,7 +188,7 @@ const FX = (() => {
     },timeoutMs);});
     try {
       return await Promise.race([(async()=>{
-        const response=await fetch(url,{cache:'default',signal:controller.signal});
+        const response=await fetch(url,{cache:'default',credentials:'omit',signal:controller.signal});
         if(!response.ok)throw new Error('Data unavailable');
         return response.json();
       })(),timeout]);
@@ -219,7 +219,12 @@ const FX = (() => {
     let value, rows;
     if(!force){try{const saved=JSON.parse(localStorage.getItem(key));if(saved?.url===url){value=saved.value;rows=unpack(value,data.currencies);}}catch{}}
     if(!rows){
-      value=await readJSON(url+(force?'&refresh='+Date.now():''));
+      const resource=url+(force?'&refresh='+Date.now():'');
+      // The custom-domain proxy can be much slower for data than the public origin.
+      if(typeof location!=='undefined'&&['aptx.dev','www.aptx.dev'].includes(location.hostname)){
+        try {value=await readJSON(new URL(resource,'https://0xaptx.github.io/ai-daily/').href,4000);}
+        catch {value=await readJSON(resource);}
+      }else value=await readJSON(resource);
       rows=unpack(value,data.currencies);
     }
     if(token!==generation)return;
