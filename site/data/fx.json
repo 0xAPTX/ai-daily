@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "status": "ok",
-  "asOf": "2026-10-28",
-  "previousDate": "2026-10-27",
+  "asOf": "2026-10-29",
+  "previousDate": "2026-10-28",
   "base": "EUR",
-  "checkedAt": "2026-10-29T14:40:37+00:00",
-  "lastSuccessfulAt": "2026-10-29T14:40:37+00:00",
+  "checkedAt": "2026-10-29T17:32:44+00:00",
+  "lastSuccessfulAt": "2026-10-29T17:32:44+00:00",
   "source": {
     "name": "欧洲央行 ECB",
     "url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html",
@@ -74,26 +74,6 @@
     }
   ],
   "history": [
-    {
-      "date": "2026-07-31",
-      "rates": {
-        "EUR": 1.0,
-        "USD": 1.1485,
-        "JPY": 184.03,
-        "GBP": 0.85573,
-        "CHF": 0.9304,
-        "AUD": 1.6365,
-        "CAD": 1.6126,
-        "CNY": 7.7539,
-        "HKD": 9.0079,
-        "INR": 109.5495,
-        "KRW": 1657.99,
-        "MYR": 4.6933,
-        "NZD": 1.9589,
-        "SGD": 1.4757,
-        "THB": 38.435
-      }
-    },
     {
       "date": "2026-08-03",
       "rates": {
@@ -1353,11 +1333,31 @@
         "SGD": 1.4274,
         "THB": 37.602
       }
+    },
+    {
+      "date": "2026-10-29",
+      "rates": {
+        "EUR": 1.0,
+        "USD": 1.113,
+        "JPY": 175.92,
+        "GBP": 0.83578,
+        "CHF": 0.9222,
+        "AUD": 1.5842,
+        "CAD": 1.5577,
+        "CNY": 7.4144,
+        "HKD": 8.733,
+        "INR": 106.0345,
+        "KRW": 1488.4,
+        "MYR": 4.5182,
+        "NZD": 1.9817,
+        "SGD": 1.4265,
+        "THB": 37.569
+      }
     }
   ],
   "longHistory": {
     "status": "ok",
     "startDate": "2016-01-04",
-    "asOf": "2026-10-28"
+    "asOf": "2026-10-29"
   }
 }
