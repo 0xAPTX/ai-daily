@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "status": "ok",
-  "asOf": "2026-10-30",
-  "previousDate": "2026-10-29",
+  "asOf": "2026-11-02",
+  "previousDate": "2026-10-30",
   "base": "EUR",
-  "checkedAt": "2026-11-02T08:22:57+00:00",
-  "lastSuccessfulAt": "2026-11-02T08:22:57+00:00",
+  "checkedAt": "2026-11-02T15:57:48+00:00",
+  "lastSuccessfulAt": "2026-11-02T15:57:48+00:00",
   "source": {
     "name": "欧洲央行 ECB",
     "url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html",
@@ -74,46 +74,6 @@
     }
   ],
   "history": [
-    {
-      "date": "2026-08-03",
-      "rates": {
-        "EUR": 1.0,
-        "USD": 1.1535,
-        "JPY": 180.73,
-        "GBP": 0.85633,
-        "CHF": 0.932,
-        "AUD": 1.6463,
-        "CAD": 1.6181,
-        "CNY": 7.7891,
-        "HKD": 9.0464,
-        "INR": 109.9725,
-        "KRW": 1646.1,
-        "MYR": 4.7242,
-        "NZD": 1.9636,
-        "SGD": 1.4783,
-        "THB": 38.452
-      }
-    },
-    {
-      "date": "2026-08-04",
-      "rates": {
-        "EUR": 1.0,
-        "USD": 1.1515,
-        "JPY": 181.26,
-        "GBP": 0.85639,
-        "CHF": 0.9319,
-        "AUD": 1.6377,
-        "CAD": 1.6191,
-        "CNY": 7.7767,
-        "HKD": 9.0316,
-        "INR": 109.8285,
-        "KRW": 1643.32,
-        "MYR": 4.7125,
-        "NZD": 1.9568,
-        "SGD": 1.4767,
-        "THB": 38.385
-      }
-    },
     {
       "date": "2026-08-05",
       "rates": {
@@ -1373,11 +1333,31 @@
         "SGD": 1.4282,
         "THB": 37.683
       }
+    },
+    {
+      "date": "2026-11-02",
+      "rates": {
+        "EUR": 1.0,
+        "USD": 1.1216,
+        "JPY": 177.1,
+        "GBP": 0.8358,
+        "CHF": 0.9193,
+        "AUD": 1.6004,
+        "CAD": 1.5673,
+        "CNY": 7.4567,
+        "HKD": 8.8002,
+        "INR": 106.4505,
+        "KRW": 1506.2,
+        "MYR": 4.5655,
+        "NZD": 1.9934,
+        "SGD": 1.4344,
+        "THB": 37.865
+      }
     }
   ],
   "longHistory": {
     "status": "ok",
     "startDate": "2016-01-04",
-    "asOf": "2026-10-30"
+    "asOf": "2026-11-02"
   }
 }
