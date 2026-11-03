@@ -20,8 +20,10 @@ ROOT = Path(__file__).resolve().parents[1]
 UTC = timezone.utc
 SHANGHAI = timezone(timedelta(hours=8))
 ATOM = "{http://www.w3.org/2005/Atom}"
-TOPICS = {"ai":"AI 动态", "invest":"投资市场", "stocks":"美股资讯", "hk":"港股资讯", "biz":"产品商业", "ship":"开发工具", "research":"学术研究", "crypto":"加密 Web3"}
+TOPICS = {"ai":"AI 动态", "invest":"投资市场", "stocks":"美股资讯", "hk":"港股资讯", "conflict":"战争局势", "biz":"产品商业", "ship":"开发工具", "research":"学术研究", "crypto":"加密 Web3"}
 TAGS = {
+ "俄乌":r"ukrain|俄乌|烏克蘭|乌克兰", "中东":r"gaza|israel|palestin|lebanon|iran|yemen|加沙|以色列|巴勒斯坦|黎巴嫩|伊朗|也门|也門",
+ "停火谈判":r"ceasefire|peace.talk|停火|停战|和平谈判|和平談判", "人道救援":r"humanitarian|refugee|displaced|人道|难民|難民|流离失所",
  "OpenAI":r"openai|chatgpt|gpt[- ]?\d|codex", "Anthropic":r"anthropic|claude", "Google":r"google|gemini|deepmind|谷歌",
  "DeepSeek":r"deepseek|深度求索", "Qwen":r"qwen|千问|通义", "Meta":r"\bmeta\b|\bllama\b", "NVIDIA":r"nvidia|英伟达|cuda",
  "Microsoft":r"microsoft|微软|copilot", "Apple":r"\bapple\b|苹果|\bmlx\b", "Agent":r"agent|智能体|智能代理",
@@ -88,6 +90,15 @@ HK_COMPANY = re.compile(r"騰訊|腾讯|阿里巴巴|美團|美团|小米|京東
 def is_hk_stock_news(title,source):
  return source.get("topic")=="hk" or bool(HK_MARKET.search(title) or (HK_COMPANY.search(title) and re.search(EQUITY_EVENT.pattern+r"|股份|股權|股权|收益|盈利|收入|成交|認購|认购|融資|融资",title,re.I)))
 
+CONFLICT_EVENT = re.compile(r"\b(?:wars?|ceasefire|airstrikes?|bombard\w*|shelling|hostilities|armed.conflict|peacekeep\w*|warfare|invasion|troops?|missiles?|drones?.attack|military.(?:strikes?|operations?|offensives?)|peace.talks?|hostages?|genocide)\b|战争|戰爭|战事|戰事|停火|停战|停戰|空袭|空襲|炮击|炮擊|武装冲突|武裝衝突|暴力冲突|暴力衝突|交战|交戰|轰炸|轟炸|入侵|驻军|駐軍|人质|人質", re.I)
+CONFLICT_REGION = re.compile(r"ukrain|russia|gaza|israel|palestin|lebanon|iran|yemen|sudan|myanmar|syria|congo|somalia|俄乌|俄羅斯|俄罗斯|乌克兰|烏克蘭|加沙|以色列|巴勒斯坦|黎巴嫩|伊朗|也门|也門|苏丹|蘇丹|缅甸|緬甸|叙利亚|敘利亞|刚果|剛果|索马里|索馬里", re.I)
+CONFLICT_CONTEXT = re.compile(r"humanitarian|refugee|displaced|famine|siege|attacks?|strikes?|fighting|kill(?:s|ed|ing)?|sanctions?|weapons?|military|peace|negotiat|diploma|人道|难民|難民|流离失所|饥荒|飢荒|围困|圍困|制裁|武器|军方|軍方|谈判|談判|和平|外交", re.I)
+
+def is_conflict_news(title, excerpt=""):
+ # Remove common figurative uses before matching literal conflict signals.
+ text = re.sub(r"\b(?:trade|price|tariff|star|console|streaming|bidding|AI|chip) wars?\b|贸易战|貿易戰|价格战|價格戰|商战|商戰|星球大战|星球大戰", "", title + " " + text_only(excerpt), flags=re.I)
+ return bool(CONFLICT_EVENT.search(text) or (CONFLICT_REGION.search(text) and CONFLICT_CONTEXT.search(text)))
+
 def decorate(article,source):
  title=article.get("originalTitle",article["title"])
  ai_context=bool(re.search(r"(?<![a-z])ai(?![a-z])|人工智能|大模型|智能体|机器学习|深度学习|llm|openai|anthropic|deepseek|chatgpt|claude|gemini|qwen|具身|机器人|language.model|neural.network",title+" "+article.get("excerpt",""),re.I))
@@ -108,6 +119,7 @@ def decorate(article,source):
  if is_us_stock_news(title,source):topics.append("stocks")
  if is_hk_stock_news(title,source):topics.append("hk")
  if topic in ("stocks","hk") and ai_context:topics.append("ai")
+ if topic in ("invest","biz","stocks","hk") and is_conflict_news(title):topics.append("conflict")
  article["topics"]=list(dict.fromkeys(topics))
  article["sourceGroup"]=source.get("group",source["name"])
  article["category"]=classify(title,source)
@@ -124,6 +136,7 @@ def make_article(title,link,date,excerpt,source,now,date_type="published"):
  link=canonical_url(link or "")
  if not title or not link or not date or date>now+timedelta(minutes=10) or date<now-timedelta(days=90):return None
  title=text_only(title)
+ if source.get("conflictOnly") and not is_conflict_news(title):return None
  if re.search(r"^viable/|^nightly/|^trunk/|^stable$|^latest$",title,re.I):return None
  excerpt=" ".join(text_only(excerpt).split()[:22])[:180].rstrip()
  return decorate({"id":hashlib.sha256(link.encode()).hexdigest()[:16],"title":title,"url":link,"publishedAt":date.isoformat(),"date":date.astimezone(SHANGHAI).date().isoformat(),"dateType":date_type,"excerpt":excerpt,"contentType":"publisher_excerpt" if excerpt else "title_only"},source)
@@ -273,6 +286,7 @@ def build_outputs(previous,incoming,sources,now,last_success):
  articles=[a for a in articles if not re.search(r"^viable/|^nightly/|^trunk/",a.get("originalTitle",a["title"]),re.I)]
  for article in articles:
   if article["sourceId"] in source_map:decorate(article,source_map[article["sourceId"]])
+ articles=[a for a in articles if not source_map.get(a["sourceId"],{}).get("conflictOnly") or is_conflict_news(a.get("originalTitle",a["title"]))]
  cache=read_cache(ROOT);enrich(articles,cache)
  for article in articles:
   for origin in article.get("origins",[]):origin["group"]=source_map.get(origin["sourceId"],{}).get("group",origin["sourceId"])

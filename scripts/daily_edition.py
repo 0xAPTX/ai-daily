@@ -13,7 +13,8 @@ SHANGHAI = timezone(timedelta(hours=8))
 VERSION = 'newspaper-v1'
 TOPICS = {'ai': '人工智能', 'stocks': '美股市场', 'hk': '港股市场', 'invest': '投资与宏观',
           'biz': '产品与商业', 'ship': '开发与安全', 'research': '学术研究', 'crypto': '加密市场'}
-ASSIGNMENT = ('hk', 'stocks', 'research', 'ai', 'crypto', 'invest', 'biz', 'ship')
+TOPICS['conflict'] = '战争局势'
+ASSIGNMENT = ('conflict', 'hk', 'stocks', 'research', 'ai', 'crypto', 'invest', 'biz', 'ship')
 
 
 def yesterday(now=None):

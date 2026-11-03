@@ -6,6 +6,7 @@ const TOPICS = {
   invest:{name:'Invest',zh:'投资市场',intro:'宏观政策、监管公告与全球市场'},
   stocks:{name:'美股',zh:'美股资讯',intro:'美股市场、上市公司财报与公告、美国政策监管'},
   hk:{name:'港股',zh:'港股资讯',intro:'恒生指数、港股公司动态与港交所公告'},
+  conflict:{name:'战争局势',zh:'战争局势',intro:'国际冲突、停火谈判、外交斡旋与人道救援'},
   biz:{name:'Biz',zh:'产品商业',intro:'产品增长、创业与商业观察'},
   ship:{name:'Ship',zh:'开发工具',intro:'版本发布、工程实践与安全更新'},
   research:{name:'Research',zh:'学术研究',intro:'原始论文、实验室与研究机构'},
@@ -87,6 +88,7 @@ function sectionDefinitions(topic){
   const market=match(/股市|恒指|恆指|恒生|恆生|恒科|科指|南向|北水|收市|收盘|收盤|开盘|開市|盘后|盤後|盘前|標普|标普|纳斯达克|納斯達克|道琼斯|道瓊斯|s&p|nasdaq|dow jones|stock market|futures|premarket|pre-market|market today/i);
   const company=match(/股價|股价|控股|集團|集团|騰訊|腾讯|美團|美团|阿里|中人壽|中國人壽|中国人寿|國泰|国泰|聯想|联想|小米|股份|财报|財報|业绩|業績|盈利|營收|营收|股權|股权|配股|招股|新股|上市|收购|收購|并购|併購|回购|回購|分红|派息|earnings|revenue|profit|dividend|buyback|guidance|acqui\w*|merger|\bipo\b/i);
   const definitions={
+    conflict:[['diplomacy','停火与外交',match(/ceasefire|peace.talk|negotiat|diploma|停火|停战|停戰|谈判|談判|外交|斡旋/i)],['humanitarian','人道与救援',match(/humanitarian|refugee|displaced|famine|aid|人道|难民|難民|流离失所|饥荒|飢荒|救援|援助/i)],['official','联合国与机构通报',official],['situation','冲突与局势动态',()=>true]],
     hk:[['market','盘面与资金',a=>!official(a)&&market(a)],['companies','公司与财报',a=>!String(a.sourceId||'').startsWith('hkex-')&&company(a)],['official','交易所与市场公告',official],['context','宏观与市场观察',()=>true]],
     stocks:[['market','指数与盘前动态',market],['companies','财报与公司动态',company],['official','政策与官方公告',official],['context','行业与市场观察',()=>true]],
     ai:[['models','模型与技术进展',match(/模型|model|reasoning|推理|multimodal|多模态|benchmark|训练|training/i)],['products','产品与智能体',match(/agent|智能体|工具|产品|coding|code|编程|launch|发布|release/i)],['official','官方动态',official],['context','产业与观点',()=>true]],
@@ -101,7 +103,7 @@ function sectionDefinitions(topic){
 function sectionFor(article,topic){return sectionDefinitions(topic).find(section=>section.test(article));}
 function boardLink(values={}){const p=Object.fromEntries(route.params);delete p.section;delete p.view;return newsLink({...p,...values});}
 function moduleRow(a,{lead=false}={}){
-  return `<li class="module-row ${reads.includes(a.id)?'read':''}"><div class="module-row-meta"><time datetime="${e(a.publishedAt)}">${e(shortTime(a))}${a.dateType==='updated'?' · 更新':''}</time><span>${e(a.source)}</span>${a.summaryZh?'<span class="module-zh">中文摘要</span>':''}</div><h3><a href="${e(articleLink(a))}">${e(displayTitle(a))}</a></h3>${lead&&(a.summaryZh||a.excerpt)?`<p>${e(summary(a))}</p>`:''}<div class="module-row-actions"><button data-save="${e(a.id)}" class="${saved[a.id]?'saved':''}" aria-label="${saved[a.id]?'取消收藏':'收藏'}：${e(displayTitle(a))}" aria-pressed="${!!saved[a.id]}">${saved[a.id]?'★':'☆'}</button><a href="${e(safeURL(a.url))}" target="_blank" rel="noopener noreferrer" data-read="${e(a.id)}">原文 ↗</a></div></li>`;
+  return `<li class="module-row ${reads.includes(a.id)?'read':''}"><div class="module-row-meta"><time datetime="${e(a.publishedAt)}">${e(shortTime(a))}${a.dateType==='updated'?' · 更新':''}</time><span>${e(a.source)}</span>${a.summaryZh?'<span class="module-zh">中文摘要</span>':''}${topics(a).includes('conflict')?sourceBadge(a):''}</div><h3><a href="${e(articleLink(a))}">${e(displayTitle(a))}</a></h3>${lead&&(a.summaryZh||a.excerpt)?`<p>${e(summary(a))}</p>`:''}<div class="module-row-actions"><button data-save="${e(a.id)}" class="${saved[a.id]?'saved':''}" aria-label="${saved[a.id]?'取消收藏':'收藏'}：${e(displayTitle(a))}" aria-pressed="${!!saved[a.id]}">${saved[a.id]?'★':'☆'}</button><a href="${e(safeURL(a.url))}" target="_blank" rel="noopener noreferrer" data-read="${e(a.id)}">原文 ↗</a></div></li>`;
 }
 function newsModule({id,title,subtitle='',items,total,href,lead=false}){
   return `<section class="news-module ${lead?'module-lead':''}" id="module-${e(id)}" aria-label="${e(title)}"><header><div><h2>${e(title)}</h2>${subtitle?`<span>${e(subtitle)}</span>`:''}</div><span class="module-total">${num(total)} 条</span></header>${items.length?`<ul class="module-rows">${items.map(a=>moduleRow(a,{lead})).join('')}</ul>`:'<p class="module-empty">当前筛选下暂无本类内容。</p>'}<a class="module-more" aria-label="${e(lead?'查看完整时间线':'查看'+title+'全部资讯')}" href="${e(href)}">${lead?'完整时间线':'查看全部'} <span aria-hidden="true">→</span></a></section>`;
@@ -109,7 +111,7 @@ function newsModule({id,title,subtitle='',items,total,href,lead=false}){
 function renderNewsBoard(items,topic){
   const seen=new Set(),take=(pool,n)=>pool.filter(a=>!seen.has(a.id)).slice(0,n).map(a=>{seen.add(a.id);return a;});
   if(topic==='all'||!TOPICS[topic]){
-    const order=['ai','stocks','hk','invest','biz','ship','research','crypto'];
+    const order=['ai','stocks','hk','conflict','invest','biz','ship','research','crypto'];
     const modules=order.map(id=>{const pool=items.filter(a=>matchesTopic(a,id));return newsModule({id,title:TOPICS[id].zh,subtitle:TOPICS[id].intro,items:take(pool,6),total:pool.length,href:boardLink({topic:id})});});
     const latest=take(items,6);
     return `<div class="news-board all-channels">${modules.join('')}${newsModule({id:'latest',title:'更多动态',subtitle:'其他近期收录 · 北京时间',items:latest,total:items.length,href:boardLink({view:'timeline',topic:''})})}</div>`;
@@ -123,7 +125,7 @@ function renderNews({home=false}={}){
   if(route.name==='saved')return renderSavedNews();
   const p=route.params,topic=p.get('topic')||'all',date=p.get('date')||'',items=filteredNews(),timeline=p.get('view')==='timeline',mode=p.get('mode')||'latest';
   const title=home?'今天，值得看什么。':topic==='all'?'资讯总览':(TOPICS[topic]?.zh||'资讯总览');
-  const intro=home?'AI、市场与商业，分区浏览，一页看全。':TOPICS[topic]?.intro||'八个频道，同一页看见不同领域的变化。';
+  const intro=home?'AI、市场、国际局势与商业，分区浏览，一页看全。':TOPICS[topic]?.intro||'九个频道，同一页看见不同领域的变化。';
   const kpis=home?`<div class="board-kpis"><span><b>${Object.keys(TOPICS).length}</b> 个频道</span><span><b>${num(data.sources.length)}</b> 个订阅入口</span><span><b>${num(data.archives.find(a=>a.date===chinaDate())?.count)}</b> 条今日收录</span><span>每小时更新 · 北京时间</span></div>`:'';
   const controls=`<div class="board-controls"><div class="board-controls-main"><div class="segmented" role="group" aria-label="展示方式"><button data-view="modules" class="${!timeline?'active':''}" aria-pressed="${!timeline}">模块总览</button><button data-view="timeline" class="${timeline?'active':''}" aria-pressed="${timeline}">时间线</button></div><details class="board-filter-details" ${window.matchMedia('(min-width:761px)').matches?'open':''}><summary>筛选${p.get('kind')||p.get('date')||p.get('zh')?' · 已选':''}</summary><div class="board-advanced"><label class="check-label"><input type="checkbox" id="chinese-only" ${p.get('zh')==='1'?'checked':''}>中文可读</label><label class="sr-only" for="news-kind">来源类型</label><select id="news-kind"><option value="">全部类型</option>${Object.entries(KIND).map(([k,v])=>`<option value="${k}" ${p.get('kind')===k?'selected':''}>${v}</option>`).join('')}</select><label class="sr-only" for="news-date">查看历史日期</label><input type="date" id="news-date" value="${e(date)}" max="${chinaDate()}" min="${e(data.archives.at(-1)?.date||'')}"></div></details><span class="count-label">当前 ${num(items.length)} 条</span></div><div class="inline-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><input id="list-search" type="search" aria-label="搜索当前列表" placeholder="搜索当前页所有模块，按 Enter 确认" value="${e(p.get('q')||'')}"></div></div>`;
   const section=sectionDefinitions(topic).find(s=>s.id===p.get('section'));
@@ -138,7 +140,7 @@ function renderNews({home=false}={}){
     content=`<div class="news-layout"><div class="news-main"><div class="toolbar"><div class="segmented" role="group" aria-label="编排方式"><button data-mode="latest" class="${mode==='latest'?'active':''}" aria-pressed="${mode==='latest'}">最新</button><button data-mode="selected" class="${mode==='selected'?'active':''}" aria-pressed="${mode==='selected'}">多源编排</button></div><span class="method-note">按发布方时间由新到旧</span></div>${rows.join('')}${items.length>pageLimit?'<button class="more-button" id="load-more">再看 24 条 ↓</button>':''}</div>${aside()}</div>`;
   }
   const jumps=!timeline&&topic!=='all'?`<nav class="module-jumps" aria-label="模块导航"><button data-module-jump="latest">最新</button>${sectionDefinitions(topic).map(def=>`<button data-module-jump="${e(def.id)}">${e(def.title)}</button>`).join('')}</nav>`:'';
-  const coverage=topic==='hk'?'<p class="board-coverage">港交所模块收录交易所新闻稿及市场通告；上市公司信息来自已接入媒体，暂未覆盖全部披露易公告。</p>':topic==='stocks'?'<p class="board-coverage">公司公告、政策与媒体报道分区展示；部分原文可能需要订阅。</p>':'';
+  const coverage=topic==='conflict'?'<p class="board-coverage">联合国机构通报与媒体报道分别标注来源。综合新闻源按冲突关键词筛选；报道和当事方说法不代表本站独立核实，事件进展请结合多个来源与发布时间阅读。</p>':topic==='hk'?'<p class="board-coverage">港交所模块收录交易所新闻稿及市场通告；上市公司信息来自已接入媒体，暂未覆盖全部披露易公告。</p>':topic==='stocks'?'<p class="board-coverage">公司公告、政策与媒体报道分区展示；部分原文可能需要订阅。</p>':'';
   return `<div class="modular-page">${heading(title,intro,'<button class="quiet-button" id="refresh-data">↻ 刷新数据</button>')}${kpis}${topicTabs(topic)}${controls}${filterNote}${notes}${jumps}${content}${coverage}<div class="board-footer"><a href="#/fx">查看主流币种汇率 →</a><a href="#/daily">阅读昨日资讯报 →</a><a href="#/sources">查看全部信源与状态 →</a><a href="#/about">收录与摘要规则 →</a></div></div>`;
 }
 
@@ -252,7 +254,7 @@ async function renderRoute({keepScroll=false}={}){
     $('#main').innerHTML=(renderers[route.name]||(()=>heading('这个页面还没有内容。','请从首页继续阅读。')))();
     if(route.name==='fx')FX.bindChart();
     if(route.name==='saved')$('#main').insertAdjacentHTML('beforeend','<button class="more-button" id="export-saved">导出收藏备份 JSON ↓</button>');
-    document.title=({home:'知新 · 多源资讯，每日有新知',news:route.params.get('topic')==='hk'?'港股资讯 · 知新':route.params.get('topic')==='stocks'?'美股资讯 · 知新':'资讯流 · 知新',daily:dailyDate()+' · 知新日报',fx:'主流币种汇率 · 知新',hot:'站内热点 · 知新',x:'X 热帖监测 · 知新',sources:'完整信源目录 · 知新',saved:'我的收藏 · 知新',article:'原文与出处 · 知新',about:'收录规则 · 知新'})[route.name]||'知新';
+    document.title=({home:'知新 · 多源资讯，每日有新知',news:route.params.get('topic')==='conflict'?'战争局势 · 知新':route.params.get('topic')==='hk'?'港股资讯 · 知新':route.params.get('topic')==='stocks'?'美股资讯 · 知新':'资讯流 · 知新',daily:dailyDate()+' · 知新日报',fx:'主流币种汇率 · 知新',hot:'站内热点 · 知新',x:'X 热帖监测 · 知新',sources:'完整信源目录 · 知新',saved:'我的收藏 · 知新',article:'原文与出处 · 知新',about:'收录规则 · 知新'})[route.name]||'知新';
     if(!keepScroll)window.scrollTo({top:0,behavior:'instant'});
   }catch{
     if(version!==routeVersion)return;
