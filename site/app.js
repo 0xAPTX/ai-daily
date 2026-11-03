@@ -88,7 +88,7 @@ function sectionDefinitions(topic){
   const market=match(/股市|恒指|恆指|恒生|恆生|恒科|科指|南向|北水|收市|收盘|收盤|开盘|開市|盘后|盤後|盘前|標普|标普|纳斯达克|納斯達克|道琼斯|道瓊斯|s&p|nasdaq|dow jones|stock market|futures|premarket|pre-market|market today/i);
   const company=match(/股價|股价|控股|集團|集团|騰訊|腾讯|美團|美团|阿里|中人壽|中國人壽|中国人寿|國泰|国泰|聯想|联想|小米|股份|财报|財報|业绩|業績|盈利|營收|营收|股權|股权|配股|招股|新股|上市|收购|收購|并购|併購|回购|回購|分红|派息|earnings|revenue|profit|dividend|buyback|guidance|acqui\w*|merger|\bipo\b/i);
   const definitions={
-    conflict:[['diplomacy','停火与外交',match(/ceasefire|peace.talk|negotiat|diploma|停火|停战|停戰|谈判|談判|外交|斡旋/i)],['humanitarian','人道与救援',match(/humanitarian|refugee|displaced|famine|aid|人道|难民|難民|流离失所|饥荒|飢荒|救援|援助/i)],['official','联合国与机构通报',official],['situation','冲突与局势动态',()=>true]],
+    conflict:[['diplomacy','停火与外交',match(/ceasefire|peace.talk|negotiat|diploma|停火|停战|停戰|谈判|談判|外交|斡旋/i)],['humanitarian','人道与救援',match(/humanitarian|refugee|displaced|famine|\baid\b|人道|难民|難民|流离失所|饥荒|飢荒|救援|援助/i)],['official','联合国与机构通报',official],['situation','冲突与局势动态',()=>true]],
     hk:[['market','盘面与资金',a=>!official(a)&&market(a)],['companies','公司与财报',a=>!String(a.sourceId||'').startsWith('hkex-')&&company(a)],['official','交易所与市场公告',official],['context','宏观与市场观察',()=>true]],
     stocks:[['market','指数与盘前动态',market],['companies','财报与公司动态',company],['official','政策与官方公告',official],['context','行业与市场观察',()=>true]],
     ai:[['models','模型与技术进展',match(/模型|model|reasoning|推理|multimodal|多模态|benchmark|训练|training/i)],['products','产品与智能体',match(/agent|智能体|工具|产品|coding|code|编程|launch|发布|release/i)],['official','官方动态',official],['context','产业与观点',()=>true]],
