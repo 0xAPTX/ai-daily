@@ -128,3 +128,18 @@ python3 -m http.server 8765 --directory site --bind 127.0.0.1
 综合新闻源按标题中的实际冲突、停火、军事行动关键词筛选，或冲突地区与外交／人道关键词共同命中；排除贸易战、价格战等比喻用法。联合国和平与安全专栏直接收录，覆盖和平进程与维和通报。现有财经新闻涉及实际冲突时也可跨频道展示。关键词分类可能误判，不保证全球冲突完整覆盖。
 
 频道提供停火与外交、人道与救援、机构通报、局势动态分区，支持原有日期、来源类型、语言、关键词筛选及收藏。日报也纳入此频道。英文摘要沿用分批生成，原文摘录与当事方说法不等于本站独立核实。
+
+## APTX 工具箱
+
+[工具箱](https://aptx.dev/#/tools) 是站内独立功能区，支持工具搜索和分类，不依赖资讯索引即可打开。桌面主导航、手机底部导航和首页均提供入口。
+
+首个工具：[照片水印](https://aptx.dev/tools/watermark/)。页面完全在本地处理照片，保留手机适配、全图平铺、批量导出及独立的网络连接限制，不加载资讯脚本。
+
+### 扩展新工具
+
+1. 在 `site/tools/<tool-id>/index.html` 添加独立工具页面，按需放置该工具的静态资源。
+2. 在 `site/tools.js` 的 `tools` 注册表补充 `id`、`name`、`category`、`description`、`href`、`tags`、`keywords` 和 `mark`。
+3. 分类、数量、搜索结果和卡片由注册表自动生成；工具页面提供返回 `../../#/tools` 的入口。
+4. 运行 `python3 scripts/version_assets.py`、相关检查后推送 `main`，沿用既有 GitHub Pages 发布和 aptx.dev 路由，无需为每个工具修改 Cloudflare。
+
+照片水印来自 [0xAPTX/photo-watermark](https://github.com/0xAPTX/photo-watermark)，本次集成基于提交 `2eb488958217f4bf1ce40399492c647181698e3d`，许可证保存在 `site/tools/watermark/LICENSE`。更新水印时同步该仓库的 `dist/index.html`，保留本站标题与返回工具箱入口。

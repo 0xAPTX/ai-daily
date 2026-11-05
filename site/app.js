@@ -62,7 +62,7 @@ function empty(title,text,link=newsLink()){return `<div class="empty"><strong>${
 function heading(title,subtitle,action=''){return `<div class="page-heading"><div><h1>${e(title)}</h1><p>${e(subtitle)}</p></div>${action}</div>`;}
 function topicTabs(topic='all'){return `<div class="topic-tabs" role="group" aria-label="资讯频道"><button class="topic-tab ${topic==='all'?'active':''}" data-topic="all" aria-pressed="${topic==='all'}">全部</button>${Object.entries(TOPICS).map(([id,t])=>`<button class="topic-tab ${topic===id?'active':''}" data-topic="${id}" aria-pressed="${topic===id}">${t.name}<span class="sr-only"> · ${t.zh}</span></button>`).join('')}</div>`;}
 function hotTags(){if(data.hotTags)return data.hotTags;const m=new Map();for(const a of recentItems().filter(a=>Date.now()-new Date(a.publishedAt)<86400000))for(const tag of a.tags||[]){if(!m.has(tag))m.set(tag,[]);m.get(tag).push(a);}return [...m].map(([tag,articles])=>({tag,count:articles.length,sourceCount:new Set(articles.map(a=>a.sourceId)).size,articles:articles.slice(0,4)})).sort((a,b)=>b.count-a.count);}
-function renderHome(){return renderNews({home:true});}
+function renderHome(){return renderNews({home:true})+Toolbox.teaser();}
 function summaryStatus(){const s=data.summaryService;if(!s)return '<p class="method-note">中文摘要服务等待首次运行。</p>';return `<div class="summary-status"><span class="summary-badge">中文摘要</span><span>近期英文资讯已覆盖 ${num(s.recentSummarized)} / ${num(s.recentEnglish)} 条 · 分批补充${s.status==='error'?' · 最近生成失败，保留已有摘要':''}</span><a href="#/about">生成规则 ↗</a></div>`;}
 function newsPool(){const date=route.params.get('date');return date?(archiveCache.get(date)||[]):data.articles;}
 function filteredNews(){
@@ -218,6 +218,7 @@ function updateShell(){
   $('#saved-count').textContent=Object.keys(saved).length;
   document.querySelectorAll('[data-nav]').forEach(a=>{const active=a.dataset.nav===route.name;a.classList.toggle('active',active);if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
   document.querySelectorAll('[data-mobile]').forEach(a=>a.classList.toggle('active',a.dataset.mobile===route.name));
+  if(route.name==='tools'){$('#live-status').textContent='APTX 工具箱 · 打开即用 · 支持手机';return;}
   if(!data){$('#live-status').textContent='汇率观察 · 欧洲央行参考汇率 · 每半小时检查';return;}
   const healthy=data.stats.healthySources,quiet=data.stats.quietSources,failed=data.sources.length-healthy-quiet;
   $('#live-status').textContent=`${healthy} 个来源读取有内容${failed?' · '+failed+' 个本次未成功':''} · 最近采集 ${time(data.lastSuccessfulAt||data.generatedAt)}`;
@@ -230,6 +231,12 @@ async function renderRoute({keepScroll=false}={}){
   }
   const version=++routeVersion;updateShell();
   try{
+    if(route.name==='tools'){
+      $('#main').innerHTML=Toolbox.render(route.params);
+      document.title='实用工具箱 · APTX';
+      if(!keepScroll)window.scrollTo({top:0,behavior:'instant'});
+      return;
+    }
     if(route.name==='fx'){
       const params=new URLSearchParams(route.params);
       document.title='主流币种汇率 · 知新';
@@ -311,6 +318,8 @@ document.addEventListener('change',event=>{
   if(mappings[t.id]){pageLimit=24;updateParams({[mappings[t.id]]:t.value});}
   if(t.id==='chinese-only')updateParams({zh:t.checked?'1':'0'});
 });
+document.addEventListener('submit',event=>{if(event.target.id==='tool-search-form'){event.preventDefault();updateParams({q:$('#tool-search').value});}});
+document.addEventListener('click',event=>{const button=event.target.closest('[data-tool-category]');if(button)updateParams({category:button.dataset.toolCategory});});
 document.addEventListener('input',event=>{if(event.target.id==='fx-amount')FX.convert();});
 document.addEventListener('keydown',event=>{
   if((event.metaKey||event.ctrlKey)&&event.key.toLowerCase()==='k'){event.preventDefault();openSearch();return;}
