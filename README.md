@@ -133,7 +133,7 @@ python3 -m http.server 8765 --directory site --bind 127.0.0.1
 
 [工具箱](https://aptx.dev/#/tools) 是站内独立功能区，支持工具搜索和分类，不依赖资讯索引即可打开。桌面主导航、手机底部导航和首页均提供入口。
 
-首个工具：[照片水印](https://aptx.dev/tools/watermark/)。页面完全在本地处理照片，保留手机适配、全图平铺、批量导出及独立的网络连接限制，不加载资讯脚本。
+首个工具：[照片增加水印](https://aptx.dev/tools/watermark/)。页面完全在本地处理照片，保留手机适配、全图平铺、批量导出及独立的网络连接限制，不加载资讯脚本。
 
 ### 扩展新工具
 
@@ -142,4 +142,4 @@ python3 -m http.server 8765 --directory site --bind 127.0.0.1
 3. 分类、数量、搜索结果和卡片由注册表自动生成；工具页面提供返回 `../../#/tools` 的入口。
 4. 运行 `python3 scripts/version_assets.py`、相关检查后推送 `main`，沿用既有 GitHub Pages 发布和 aptx.dev 路由，无需为每个工具修改 Cloudflare。
 
-照片水印来自 [0xAPTX/photo-watermark](https://github.com/0xAPTX/photo-watermark)，本次集成基于提交 `2eb488958217f4bf1ce40399492c647181698e3d`，许可证保存在 `site/tools/watermark/LICENSE`。更新水印时同步该仓库的 `dist/index.html`，保留本站标题与返回工具箱入口。
+照片增加水印来自 [0xAPTX/photo-watermark](https://github.com/0xAPTX/photo-watermark)，本次集成基于提交 `2eb488958217f4bf1ce40399492c647181698e3d`，许可证保存在 `site/tools/watermark/LICENSE`。更新水印时同步该仓库的 `dist/index.html`，保留本站标题与返回工具箱入口。
