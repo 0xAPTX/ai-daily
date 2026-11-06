@@ -9,6 +9,8 @@ ROOT = Path(__file__).resolve().parents[1]
 def main():
     from build_fx_bootstrap import build
     build()
+    from build_stocks_bootstrap import build as build_stocks
+    build_stocks()
     path = ROOT / 'site/index.html'
     original = text = path.read_text()
     for name in ('app.js', 'routing.js', 'fx.js', 'stocks.js', 'tools.js', 'style.css'):

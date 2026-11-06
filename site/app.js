@@ -231,7 +231,7 @@ async function renderRoute({keepScroll=false}={}){
   try{
     if(route.name==='stocks'){
       document.title='股票价格 · 知新';
-      $('#main').innerHTML='<div class="loading" role="status">正在读取股票报价…</div>';
+      if(!StockPrices.ready())$('#main').innerHTML='<div class="loading" role="status">正在读取股票报价…</div>';
       await StockPrices.load();
       if(version!==routeVersion)return;
       $('#main').innerHTML=StockPrices.render(route.params);
@@ -294,7 +294,6 @@ function findArticle(id){return records.get(id)||saved[id];}
 function shiftDay(direction){const date=route.name==='daily'?dailyDate():(route.params.get('date')||chinaDate());const d=new Date(date+'T12:00:00+08:00');d.setUTCDate(d.getUTCDate()+(direction==='next'?1:-1));updateParams({date:chinaDate(d)});}
 document.addEventListener('click',async event=>{
   const t=event.target;
-  const stockMarket=t.closest('[data-stock-market]');if(stockMarket){updateParams({market:stockMarket.dataset.stockMarket,q:''});return;}
   if(t.closest('#stock-refresh')){const button=t.closest('#stock-refresh');button.disabled=true;try{await StockPrices.load(true);await renderRoute({keepScroll:true});toast('已读取最新发布快照，行情时间见表格。');}catch{button.disabled=false;toast('读取失败，保留当前显示的报价。');}return;}
   const fxFrom=t.closest('[data-fx-from]');if(fxFrom){updateParams({from:fxFrom.dataset.fxFrom});return;}
   const fxPeriod=t.closest('[data-fx-period]');if(fxPeriod){updateParams({period:fxPeriod.dataset.fxPeriod});return;}
