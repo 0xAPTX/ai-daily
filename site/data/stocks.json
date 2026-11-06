@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+  "checkedAt": "2026-11-06T18:35:46.714420+00:00",
   "markets": [
     {
       "id": "cn",
@@ -20,7 +20,7 @@
           "changePercent": 0.06887052341597588,
           "quotedAt": "2026-11-06T07:00:00+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -35,7 +35,7 @@
           "changePercent": -3.7264258123153815,
           "quotedAt": "2026-11-06T07:04:58+00:00",
           "exchange": "SHZ",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -50,7 +50,7 @@
           "changePercent": -1.1826086956521653,
           "quotedAt": "2026-11-06T07:04:33+00:00",
           "exchange": "SHZ",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -65,7 +65,7 @@
           "changePercent": 0.2759889604415866,
           "quotedAt": "2026-11-06T07:00:00+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -80,7 +80,7 @@
           "changePercent": 1.4604810996563522,
           "quotedAt": "2026-11-06T07:04:42+00:00",
           "exchange": "SHZ",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -95,7 +95,7 @@
           "changePercent": 0.7992477668077091,
           "quotedAt": "2026-11-06T07:00:02+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -110,7 +110,7 @@
           "changePercent": 1.0778443113772518,
           "quotedAt": "2026-11-06T07:00:00+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -125,7 +125,7 @@
           "changePercent": 2.1440823327615766,
           "quotedAt": "2026-11-06T07:00:01+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -140,7 +140,7 @@
           "changePercent": 1.1816838995568624,
           "quotedAt": "2026-11-06T07:00:01+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -155,7 +155,7 @@
           "changePercent": 0.41379310344829,
           "quotedAt": "2026-11-06T07:00:01+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -170,7 +170,7 @@
           "changePercent": 3.2422186751795756,
           "quotedAt": "2026-11-06T07:00:00+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -185,7 +185,7 @@
           "changePercent": 0.9683666881859176,
           "quotedAt": "2026-11-06T07:00:00+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -200,7 +200,7 @@
           "changePercent": 2.1516393442623016,
           "quotedAt": "2026-11-06T07:00:01+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -215,7 +215,7 @@
           "changePercent": 1.5693659761456313,
           "quotedAt": "2026-11-06T07:00:00+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -230,7 +230,7 @@
           "changePercent": 1.679527916477519,
           "quotedAt": "2026-11-06T07:04:03+00:00",
           "exchange": "SHZ",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -245,7 +245,7 @@
           "changePercent": 0.8268733850129273,
           "quotedAt": "2026-11-06T07:04:09+00:00",
           "exchange": "SHZ",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -260,7 +260,7 @@
           "changePercent": -0.6330783434449927,
           "quotedAt": "2026-11-06T07:04:45+00:00",
           "exchange": "SHZ",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -275,7 +275,7 @@
           "changePercent": 0.3646563814866832,
           "quotedAt": "2026-11-06T07:00:02+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -290,7 +290,7 @@
           "changePercent": -1.5926071569013045,
           "quotedAt": "2026-11-06T07:04:09+00:00",
           "exchange": "SHZ",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -305,7 +305,7 @@
           "changePercent": 0.18971903514319877,
           "quotedAt": "2026-11-06T07:00:02+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         }
       ]
@@ -328,7 +328,7 @@
           "changePercent": -2.462825278810399,
           "quotedAt": "2026-11-06T08:08:50+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -343,7 +343,7 @@
           "changePercent": -3.8496791934005348,
           "quotedAt": "2026-11-06T08:08:50+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -358,7 +358,7 @@
           "changePercent": 0.12453300124533051,
           "quotedAt": "2026-11-06T08:08:50+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -373,7 +373,7 @@
           "changePercent": -2.9392971246006483,
           "quotedAt": "2026-11-06T08:08:50+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -388,7 +388,7 @@
           "changePercent": -2.551381998582558,
           "quotedAt": "2026-11-06T08:08:50+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -403,7 +403,7 @@
           "changePercent": -0.5267778753292429,
           "quotedAt": "2026-11-06T08:08:50+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -418,7 +418,7 @@
           "changePercent": 0.4008016032064132,
           "quotedAt": "2026-11-06T08:08:50+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -433,7 +433,7 @@
           "changePercent": -3.037817730936143,
           "quotedAt": "2026-11-06T08:08:50+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -448,7 +448,7 @@
           "changePercent": -1.30434782608696,
           "quotedAt": "2026-11-06T08:08:50+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -463,7 +463,7 @@
           "changePercent": -4.042105263157902,
           "quotedAt": "2026-11-06T08:08:50+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -478,7 +478,7 @@
           "changePercent": -1.632653061224476,
           "quotedAt": "2026-11-06T08:08:50+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -493,7 +493,7 @@
           "changePercent": -2.0475561426684274,
           "quotedAt": "2026-11-06T08:08:50+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -508,7 +508,7 @@
           "changePercent": -2.1774856203779835,
           "quotedAt": "2026-11-06T08:08:50+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -523,7 +523,7 @@
           "changePercent": -0.5072923272035457,
           "quotedAt": "2026-11-06T08:08:50+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -538,7 +538,7 @@
           "changePercent": -2.2807906741003525,
           "quotedAt": "2026-11-06T08:08:50+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -553,7 +553,7 @@
           "changePercent": -0.24600246002460802,
           "quotedAt": "2026-11-06T08:08:50+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -568,7 +568,7 @@
           "changePercent": 0.8591065292096189,
           "quotedAt": "2026-11-06T08:08:50+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -583,7 +583,7 @@
           "changePercent": 0.4770992366412097,
           "quotedAt": "2026-11-06T08:08:50+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -598,7 +598,7 @@
           "changePercent": -0.561272217025266,
           "quotedAt": "2026-11-06T08:08:50+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -613,7 +613,7 @@
           "changePercent": -0.1263157894736855,
           "quotedAt": "2026-11-06T08:08:50+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         }
       ]
@@ -630,13 +630,13 @@
           "name": "苹果",
           "url": "https://finance.yahoo.com/quote/AAPL/",
           "currency": "USD",
-          "price": 344.375,
+          "price": 344.4,
           "previousClose": 344.17,
-          "change": 0.20499999999998408,
-          "changePercent": 0.05956358776186832,
-          "quotedAt": "2026-11-06T18:29:59+00:00",
+          "change": 0.22999999999996135,
+          "changePercent": 0.06682743992794116,
+          "quotedAt": "2026-11-06T18:35:45+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -645,13 +645,13 @@
           "name": "微软",
           "url": "https://finance.yahoo.com/quote/MSFT/",
           "currency": "USD",
-          "price": 533.045,
+          "price": 533.11,
           "previousClose": 535.93,
-          "change": -2.884999999999991,
-          "changePercent": -0.5383165711939975,
-          "quotedAt": "2026-11-06T18:29:59+00:00",
+          "change": -2.8199999999999363,
+          "changePercent": -0.5261881215830266,
+          "quotedAt": "2026-11-06T18:35:46+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -660,13 +660,13 @@
           "name": "英伟达",
           "url": "https://finance.yahoo.com/quote/NVDA/",
           "currency": "USD",
-          "price": 186.295,
+          "price": 187.185,
           "previousClose": 181.6,
-          "change": 4.694999999999993,
-          "changePercent": 2.5853524229074942,
-          "quotedAt": "2026-11-06T18:30:01+00:00",
+          "change": 5.585000000000008,
+          "changePercent": 3.0754405286343767,
+          "quotedAt": "2026-11-06T18:35:42+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -675,13 +675,13 @@
           "name": "亚马逊",
           "url": "https://finance.yahoo.com/quote/AMZN/",
           "currency": "USD",
-          "price": 262.26,
+          "price": 262.905,
           "previousClose": 260.21,
-          "change": 2.0500000000000114,
-          "changePercent": 0.7878252180930856,
-          "quotedAt": "2026-11-06T18:30:00+00:00",
+          "change": 2.694999999999993,
+          "changePercent": 1.0357019330540673,
+          "quotedAt": "2026-11-06T18:35:39+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -690,13 +690,13 @@
           "name": "Alphabet",
           "url": "https://finance.yahoo.com/quote/GOOGL/",
           "currency": "USD",
-          "price": 285.528,
+          "price": 285.829,
           "previousClose": 282.57,
-          "change": 2.958000000000027,
-          "changePercent": 1.0468202569275054,
-          "quotedAt": "2026-11-06T18:30:01+00:00",
+          "change": 3.2590000000000146,
+          "changePercent": 1.1533425345932047,
+          "quotedAt": "2026-11-06T18:35:45+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -705,13 +705,13 @@
           "name": "Meta",
           "url": "https://finance.yahoo.com/quote/META/",
           "currency": "USD",
-          "price": 617.74,
+          "price": 618.235,
           "previousClose": 605.08,
-          "change": 12.659999999999968,
-          "changePercent": 2.092285317643938,
-          "quotedAt": "2026-11-06T18:29:59+00:00",
+          "change": 13.154999999999973,
+          "changePercent": 2.1740926819594053,
+          "quotedAt": "2026-11-06T18:35:45+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -720,13 +720,13 @@
           "name": "特斯拉",
           "url": "https://finance.yahoo.com/quote/TSLA/",
           "currency": "USD",
-          "price": 358.92,
+          "price": 360.625,
           "previousClose": 343.69,
-          "change": 15.230000000000018,
-          "changePercent": 4.431318921120786,
-          "quotedAt": "2026-11-06T18:29:54+00:00",
+          "change": 16.935000000000002,
+          "changePercent": 4.9274055107800585,
+          "quotedAt": "2026-11-06T18:35:45+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -735,13 +735,13 @@
           "name": "超微半导体",
           "url": "https://finance.yahoo.com/quote/AMD/",
           "currency": "USD",
-          "price": 438.85,
+          "price": 441.605,
           "previousClose": 404.4,
-          "change": 34.450000000000045,
-          "changePercent": 8.51879327398617,
-          "quotedAt": "2026-11-06T18:30:01+00:00",
+          "change": 37.20500000000004,
+          "changePercent": 9.200049455984182,
+          "quotedAt": "2026-11-06T18:35:46+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -750,13 +750,13 @@
           "name": "博通",
           "url": "https://finance.yahoo.com/quote/AVGO/",
           "currency": "USD",
-          "price": 290.64,
+          "price": 291.71,
           "previousClose": 291.53,
-          "change": -0.8899999999999864,
-          "changePercent": -0.30528590539566913,
-          "quotedAt": "2026-11-06T18:30:00+00:00",
+          "change": 0.18000000000000682,
+          "changePercent": 0.061743216821597,
+          "quotedAt": "2026-11-06T18:35:46+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -765,13 +765,13 @@
           "name": "甲骨文",
           "url": "https://finance.yahoo.com/quote/ORCL/",
           "currency": "USD",
-          "price": 113.661,
+          "price": 114.668,
           "previousClose": 115.16,
-          "change": -1.4989999999999952,
-          "changePercent": -1.3016672455713696,
-          "quotedAt": "2026-11-06T18:30:00+00:00",
+          "change": -0.4919999999999902,
+          "changePercent": -0.42723167766585135,
+          "quotedAt": "2026-11-06T18:35:46+00:00",
           "exchange": "NYQ",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -780,13 +780,13 @@
           "name": "台积电 ADR",
           "url": "https://finance.yahoo.com/quote/TSM/",
           "currency": "USD",
-          "price": 372.9,
+          "price": 374.15,
           "previousClose": 353.1,
-          "change": 19.799999999999955,
-          "changePercent": 5.607476635513997,
-          "quotedAt": "2026-11-06T18:30:01+00:00",
+          "change": 21.049999999999955,
+          "changePercent": 5.961483998867156,
+          "quotedAt": "2026-11-06T18:35:45+00:00",
           "exchange": "NYQ",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -795,13 +795,13 @@
           "name": "奈飞",
           "url": "https://finance.yahoo.com/quote/NFLX/",
           "currency": "USD",
-          "price": 63.8,
+          "price": 63.84,
           "previousClose": 65.56,
-          "change": -1.7600000000000051,
-          "changePercent": -2.684563758389269,
-          "quotedAt": "2026-11-06T18:29:55+00:00",
+          "change": -1.7199999999999989,
+          "changePercent": -2.623550945698594,
+          "quotedAt": "2026-11-06T18:35:45+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -810,13 +810,13 @@
           "name": "Adobe",
           "url": "https://finance.yahoo.com/quote/ADBE/",
           "currency": "USD",
-          "price": 240.9,
+          "price": 240.57,
           "previousClose": 246.44,
-          "change": -5.539999999999992,
-          "changePercent": -2.2480116864145416,
-          "quotedAt": "2026-11-06T18:29:52+00:00",
+          "change": -5.8700000000000045,
+          "changePercent": -2.381918519720827,
+          "quotedAt": "2026-11-06T18:35:44+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -825,13 +825,13 @@
           "name": "Salesforce",
           "url": "https://finance.yahoo.com/quote/CRM/",
           "currency": "USD",
-          "price": 215.06,
+          "price": 214.755,
           "previousClose": 222.41,
-          "change": -7.349999999999994,
-          "changePercent": -3.3047075221437905,
-          "quotedAt": "2026-11-06T18:30:01+00:00",
+          "change": -7.655000000000001,
+          "changePercent": -3.4418416438109833,
+          "quotedAt": "2026-11-06T18:35:46+00:00",
           "exchange": "NYQ",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -840,13 +840,13 @@
           "name": "Palantir",
           "url": "https://finance.yahoo.com/quote/PLTR/",
           "currency": "USD",
-          "price": 160.135,
+          "price": 160.47,
           "previousClose": 154.99,
-          "change": 5.144999999999982,
-          "changePercent": 3.3195690044518944,
-          "quotedAt": "2026-11-06T18:30:00+00:00",
+          "change": 5.47999999999999,
+          "changePercent": 3.535711981418155,
+          "quotedAt": "2026-11-06T18:35:46+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -855,13 +855,13 @@
           "name": "英特尔",
           "url": "https://finance.yahoo.com/quote/INTC/",
           "currency": "USD",
-          "price": 56.01,
+          "price": 56.47,
           "previousClose": 52.25,
-          "change": 3.759999999999998,
-          "changePercent": 7.196172248803823,
-          "quotedAt": "2026-11-06T18:30:01+00:00",
+          "change": 4.219999999999999,
+          "changePercent": 8.076555023923436,
+          "quotedAt": "2026-11-06T18:35:47+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -870,13 +870,13 @@
           "name": "高通",
           "url": "https://finance.yahoo.com/quote/QCOM/",
           "currency": "USD",
-          "price": 164.25,
+          "price": 165.0,
           "previousClose": 156.75,
-          "change": 7.5,
-          "changePercent": 4.784688995215314,
-          "quotedAt": "2026-11-06T18:29:59+00:00",
+          "change": 8.25,
+          "changePercent": 5.263157894736836,
+          "quotedAt": "2026-11-06T18:35:46+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -885,13 +885,13 @@
           "name": "摩根大通",
           "url": "https://finance.yahoo.com/quote/JPM/",
           "currency": "USD",
-          "price": 336.675,
+          "price": 337.26,
           "previousClose": 337.34,
-          "change": -0.6649999999999636,
-          "changePercent": -0.19713049149224782,
-          "quotedAt": "2026-11-06T18:29:58+00:00",
+          "change": -0.07999999999998408,
+          "changePercent": -0.023714946344932653,
+          "quotedAt": "2026-11-06T18:35:43+00:00",
           "exchange": "NYQ",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -900,13 +900,13 @@
           "name": "Visa",
           "url": "https://finance.yahoo.com/quote/V/",
           "currency": "USD",
-          "price": 423.27,
+          "price": 423.515,
           "previousClose": 422.59,
-          "change": 0.6800000000000068,
-          "changePercent": 0.16091246834994966,
-          "quotedAt": "2026-11-06T18:29:51+00:00",
+          "change": 0.9250000000000114,
+          "changePercent": 0.2188882841524853,
+          "quotedAt": "2026-11-06T18:35:47+00:00",
           "exchange": "NYQ",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -915,13 +915,13 @@
           "name": "沃尔玛",
           "url": "https://finance.yahoo.com/quote/WMT/",
           "currency": "USD",
-          "price": 126.24,
+          "price": 126.13,
           "previousClose": 127.72,
-          "change": -1.480000000000004,
-          "changePercent": -1.1587848418415314,
-          "quotedAt": "2026-11-06T18:30:00+00:00",
+          "change": -1.5900000000000034,
+          "changePercent": -1.2449107422486727,
+          "quotedAt": "2026-11-06T18:35:46+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         }
       ]
@@ -944,7 +944,7 @@
           "changePercent": -6.352357320099255,
           "quotedAt": "2026-11-06T06:30:08+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -959,7 +959,7 @@
           "changePercent": -10.443037974683545,
           "quotedAt": "2026-11-06T06:30:05+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -974,7 +974,7 @@
           "changePercent": -4.7700170357751315,
           "quotedAt": "2026-11-06T06:30:08+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -989,7 +989,7 @@
           "changePercent": 2.866414277988105,
           "quotedAt": "2026-11-06T06:30:06+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -1004,7 +1004,7 @@
           "changePercent": -2.4566473988439252,
           "quotedAt": "2026-11-06T06:30:10+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -1019,7 +1019,7 @@
           "changePercent": -0.49603174603174427,
           "quotedAt": "2026-11-06T06:30:19+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -1034,7 +1034,7 @@
           "changePercent": -4.120879120879117,
           "quotedAt": "2026-11-06T06:30:26+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -1049,7 +1049,7 @@
           "changePercent": -3.821656050955413,
           "quotedAt": "2026-11-06T06:30:03+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -1064,7 +1064,7 @@
           "changePercent": -2.2547914317925577,
           "quotedAt": "2026-11-06T06:30:24+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -1079,7 +1079,7 @@
           "changePercent": -3.1078610603290646,
           "quotedAt": "2026-11-06T06:30:04+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -1094,7 +1094,7 @@
           "changePercent": -0.2631578947368429,
           "quotedAt": "2026-11-06T06:30:27+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -1109,7 +1109,7 @@
           "changePercent": -1.8604651162790753,
           "quotedAt": "2026-11-06T06:30:29+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -1124,7 +1124,7 @@
           "changePercent": -8.055009823182713,
           "quotedAt": "2026-11-06T06:30:05+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -1139,7 +1139,7 @@
           "changePercent": -5.691056910569103,
           "quotedAt": "2026-11-06T06:30:01+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -1154,7 +1154,7 @@
           "changePercent": -2.941176470588236,
           "quotedAt": "2026-11-06T06:30:09+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -1169,7 +1169,7 @@
           "changePercent": -9.330628803245434,
           "quotedAt": "2026-11-06T06:30:19+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -1184,7 +1184,7 @@
           "changePercent": -3.289473684210531,
           "quotedAt": "2026-11-06T06:30:22+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -1199,7 +1199,7 @@
           "changePercent": 0.31055900621117516,
           "quotedAt": "2026-11-06T06:30:14+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -1214,7 +1214,7 @@
           "changePercent": 2.895752895752901,
           "quotedAt": "2026-11-06T06:30:07+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         },
         {
@@ -1229,7 +1229,7 @@
           "changePercent": -1.115894178125132,
           "quotedAt": "2026-11-06T06:30:17+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T18:30:00.602336+00:00",
+          "checkedAt": "2026-11-06T18:35:46.714420+00:00",
           "status": "ok"
         }
       ]
