@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-11-06T04:06:45.530073+00:00",
+  "checkedAt": "2026-11-06T04:14:56.202816+00:00",
   "markets": [
     {
       "id": "cn",
@@ -20,7 +20,7 @@
           "changePercent": -0.7190082644628171,
           "quotedAt": "2026-11-06T03:30:00+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-06T04:06:45.530073+00:00",
+          "checkedAt": "2026-11-06T04:14:56.202816+00:00",
           "status": "ok"
         },
         {
@@ -33,9 +33,9 @@
           "previousClose": 264.06,
           "change": -10.72999999999999,
           "changePercent": -4.063470423388615,
-          "quotedAt": "2026-11-06T03:50:58+00:00",
+          "quotedAt": "2026-11-06T03:58:58+00:00",
           "exchange": "SHZ",
-          "checkedAt": "2026-11-06T04:06:45.530073+00:00",
+          "checkedAt": "2026-11-06T04:14:56.202816+00:00",
           "status": "ok"
         },
         {
@@ -48,9 +48,9 @@
           "previousClose": 86.25,
           "change": -0.8599999999999994,
           "changePercent": -0.9971014492753616,
-          "quotedAt": "2026-11-06T03:51:33+00:00",
+          "quotedAt": "2026-11-06T03:59:33+00:00",
           "exchange": "SHZ",
-          "checkedAt": "2026-11-06T04:06:45.530073+00:00",
+          "checkedAt": "2026-11-06T04:14:56.202816+00:00",
           "status": "ok"
         },
         {
@@ -65,7 +65,7 @@
           "changePercent": -0.3495860165593445,
           "quotedAt": "2026-11-06T03:30:00+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-06T04:06:45.530073+00:00",
+          "checkedAt": "2026-11-06T04:14:56.202816+00:00",
           "status": "ok"
         },
         {
@@ -78,9 +78,9 @@
           "previousClose": 11.64,
           "change": 0.11999999999999922,
           "changePercent": 1.0309278350515427,
-          "quotedAt": "2026-11-06T03:51:42+00:00",
+          "quotedAt": "2026-11-06T03:59:42+00:00",
           "exchange": "SHZ",
-          "checkedAt": "2026-11-06T04:06:45.530073+00:00",
+          "checkedAt": "2026-11-06T04:14:56.202816+00:00",
           "status": "ok"
         }
       ]
@@ -101,9 +101,9 @@
           "previousClose": 430.4,
           "change": -9.199999999999989,
           "changePercent": -2.1375464684014855,
-          "quotedAt": "2026-11-06T03:51:42+00:00",
+          "quotedAt": "2026-11-06T03:59:53+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T04:06:45.530073+00:00",
+          "checkedAt": "2026-11-06T04:14:56.202816+00:00",
           "status": "ok"
         },
         {
@@ -112,13 +112,13 @@
           "name": "阿里巴巴",
           "url": "https://finance.yahoo.com/quote/9988.HK/",
           "currency": "HKD",
-          "price": 104.7,
+          "price": 105.0,
           "previousClose": 109.1,
-          "change": -4.3999999999999915,
-          "changePercent": -4.032997250229142,
-          "quotedAt": "2026-11-06T03:51:43+00:00",
+          "change": -4.099999999999994,
+          "changePercent": -3.758020164986242,
+          "quotedAt": "2026-11-06T03:59:50+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T04:06:45.530073+00:00",
+          "checkedAt": "2026-11-06T04:14:56.202816+00:00",
           "status": "ok"
         },
         {
@@ -127,13 +127,13 @@
           "name": "美团",
           "url": "https://finance.yahoo.com/quote/3690.HK/",
           "currency": "HKD",
-          "price": 80.75,
+          "price": 80.8,
           "previousClose": 80.3,
-          "change": 0.45000000000000284,
-          "changePercent": 0.5603985056039873,
-          "quotedAt": "2026-11-06T03:51:44+00:00",
+          "change": 0.5,
+          "changePercent": 0.6226650062266526,
+          "quotedAt": "2026-11-06T03:59:50+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T04:06:45.530073+00:00",
+          "checkedAt": "2026-11-06T04:14:56.202816+00:00",
           "status": "ok"
         },
         {
@@ -142,13 +142,13 @@
           "name": "小米集团",
           "url": "https://finance.yahoo.com/quote/1810.HK/",
           "currency": "HKD",
-          "price": 30.98,
+          "price": 31.18,
           "previousClose": 31.3,
-          "change": -0.3200000000000003,
-          "changePercent": -1.0223642172523917,
-          "quotedAt": "2026-11-06T03:51:45+00:00",
+          "change": -0.120000000000001,
+          "changePercent": -0.3833865814696469,
+          "quotedAt": "2026-11-06T03:59:55+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T04:06:45.530073+00:00",
+          "checkedAt": "2026-11-06T04:14:56.202816+00:00",
           "status": "ok"
         },
         {
@@ -157,13 +157,13 @@
           "name": "汇丰控股",
           "url": "https://finance.yahoo.com/quote/0005.HK/",
           "currency": "HKD",
-          "price": 138.5,
+          "price": 138.6,
           "previousClose": 141.1,
-          "change": -2.5999999999999943,
-          "changePercent": -1.842664776754066,
-          "quotedAt": "2026-11-06T03:51:29+00:00",
+          "change": -2.5,
+          "changePercent": -1.7717930545712246,
+          "quotedAt": "2026-11-06T03:59:50+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-06T04:06:45.530073+00:00",
+          "checkedAt": "2026-11-06T04:14:56.202816+00:00",
           "status": "ok"
         }
       ]
@@ -186,7 +186,7 @@
           "changePercent": -1.5278532803067124,
           "quotedAt": "2026-11-05T21:00:01+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-06T04:06:45.530073+00:00",
+          "checkedAt": "2026-11-06T04:14:56.202816+00:00",
           "status": "ok"
         },
         {
@@ -201,7 +201,7 @@
           "changePercent": -3.5750269881252295,
           "quotedAt": "2026-11-05T21:00:01+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-06T04:06:45.530073+00:00",
+          "checkedAt": "2026-11-06T04:14:56.202816+00:00",
           "status": "ok"
         },
         {
@@ -216,7 +216,7 @@
           "changePercent": -9.258981661919751,
           "quotedAt": "2026-11-05T21:00:01+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-06T04:06:45.530073+00:00",
+          "checkedAt": "2026-11-06T04:14:56.202816+00:00",
           "status": "ok"
         },
         {
@@ -231,7 +231,7 @@
           "changePercent": -2.1877231891140103,
           "quotedAt": "2026-11-05T21:00:02+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-06T04:06:45.530073+00:00",
+          "checkedAt": "2026-11-06T04:14:56.202816+00:00",
           "status": "ok"
         },
         {
@@ -246,7 +246,7 @@
           "changePercent": -2.2012252102585395,
           "quotedAt": "2026-11-05T21:00:01+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-06T04:06:45.530073+00:00",
+          "checkedAt": "2026-11-06T04:14:56.202816+00:00",
           "status": "ok"
         },
         {
@@ -261,7 +261,7 @@
           "changePercent": -3.9555555555555455,
           "quotedAt": "2026-11-05T21:00:02+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-06T04:06:45.530073+00:00",
+          "checkedAt": "2026-11-06T04:14:56.202816+00:00",
           "status": "ok"
         },
         {
@@ -276,7 +276,7 @@
           "changePercent": -10.773903787741112,
           "quotedAt": "2026-11-05T21:00:01+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-06T04:06:45.530073+00:00",
+          "checkedAt": "2026-11-06T04:14:56.202816+00:00",
           "status": "ok"
         }
       ]
@@ -293,13 +293,13 @@
           "name": "三星电子",
           "url": "https://finance.yahoo.com/quote/005930.KS/",
           "currency": "KRW",
-          "price": 189900.0,
+          "price": 189800.0,
           "previousClose": 201500.0,
-          "change": -11600.0,
-          "changePercent": -5.756823821339951,
-          "quotedAt": "2026-11-06T03:46:45+00:00",
+          "change": -11700.0,
+          "changePercent": -5.8064516129032295,
+          "quotedAt": "2026-11-06T03:54:55+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T04:06:45.530073+00:00",
+          "checkedAt": "2026-11-06T04:14:56.202816+00:00",
           "status": "ok"
         },
         {
@@ -308,13 +308,13 @@
           "name": "SK海力士",
           "url": "https://finance.yahoo.com/quote/000660.KS/",
           "currency": "KRW",
-          "price": 1160000.0,
+          "price": 1155000.0,
           "previousClose": 1264000.0,
-          "change": -104000.0,
-          "changePercent": -8.227848101265822,
-          "quotedAt": "2026-11-06T03:46:45+00:00",
+          "change": -109000.0,
+          "changePercent": -8.623417721518988,
+          "quotedAt": "2026-11-06T03:54:56+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T04:06:45.530073+00:00",
+          "checkedAt": "2026-11-06T04:14:56.202816+00:00",
           "status": "ok"
         },
         {
@@ -327,9 +327,9 @@
           "previousClose": 293500.0,
           "change": -12000.0,
           "changePercent": -4.088586030664398,
-          "quotedAt": "2026-11-06T03:46:45+00:00",
+          "quotedAt": "2026-11-06T03:54:55+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T04:06:45.530073+00:00",
+          "checkedAt": "2026-11-06T04:14:56.202816+00:00",
           "status": "ok"
         },
         {
@@ -338,13 +338,13 @@
           "name": "NAVER",
           "url": "https://finance.yahoo.com/quote/035420.KS/",
           "currency": "KRW",
-          "price": 188200.0,
+          "price": 188500.0,
           "previousClose": 184900.0,
-          "change": 3300.0,
-          "changePercent": 1.7847485127095775,
-          "quotedAt": "2026-11-06T03:46:43+00:00",
+          "change": 3600.0,
+          "changePercent": 1.946998377501341,
+          "quotedAt": "2026-11-06T03:54:54+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T04:06:45.530073+00:00",
+          "checkedAt": "2026-11-06T04:14:56.202816+00:00",
           "status": "ok"
         },
         {
@@ -353,13 +353,13 @@
           "name": "LG新能源",
           "url": "https://finance.yahoo.com/quote/373220.KS/",
           "currency": "KRW",
-          "price": 343000.0,
+          "price": 342000.0,
           "previousClose": 346000.0,
-          "change": -3000.0,
-          "changePercent": -0.8670520231213841,
-          "quotedAt": "2026-11-06T03:46:44+00:00",
+          "change": -4000.0,
+          "changePercent": -1.1560693641618491,
+          "quotedAt": "2026-11-06T03:54:54+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-06T04:06:45.530073+00:00",
+          "checkedAt": "2026-11-06T04:14:56.202816+00:00",
           "status": "ok"
         }
       ]
