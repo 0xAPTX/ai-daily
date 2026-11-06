@@ -44,7 +44,7 @@ jobs:
       - name: Test feed processing
         run: python -m unittest discover -s tests -v
       - name: Test custom-domain routing
-        run: node --test cloudflare/test_proxy.mjs tests/test_fx*.cjs tests/test_routing.cjs
+        run: node --test cloudflare/test_proxy.mjs tests/test_fx*.cjs tests/test_routing.cjs tests/test_stocks.cjs
       - name: Sync X following twice daily (opt-in, budget guarded)
         if: env.FX_ONLY != 'true' && (github.event_name == 'workflow_dispatch' || github.event.schedule == '43 11,23 * * *')
         env:
@@ -55,6 +55,8 @@ jobs:
         run: python scripts/collect.py
       - name: Collect official daily exchange rates
         run: python scripts/collect_fx.py
+      - name: Collect delayed stock prices across four markets
+        run: python scripts/collect_stocks.py
       - name: Decide whether Chinese briefs need refreshing
         id: summaries
         run: |

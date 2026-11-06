@@ -1,5 +1,9 @@
 # 知新 · 多源资讯站
 
+股票价格入口：[四市场股票价格](https://aptx.dev/stocks/)。包含 A股、港股、美股、韩股的 22 只代表性股票，分别以 CNY、HKD、USD、KRW 显示最新价、较前收盘涨跌和行情时间。支持预设名单内的名称／代码查找及涨跌幅排序。
+
+`scripts/collect_stocks.py` 读取 Yahoo Finance 公开 chart 报价，在原有每小时第 17、47 分钟的工作流中检查并发布。页面显示延迟快照而非实时推送，所有行情时间统一为北京时间；休市时显示最近报价。单股读取失败保留旧报价并标注，从未成功读取时显示“—”。无需新接口密钥，公开接口及定时调度可能延迟或失败。观察名单由采集脚本的 `MARKETS` 维护，当前搜索覆盖该名单。
+
 在 GitHub Pages 上运行的个人阅读站，组织方式参考 [wqu.guru](https://wqu.guru/)，直接采集各发布方公开来源。网站地址：[打开知新首页](https://aptx.dev/) · [原 GitHub Pages 入口](https://0xaptx.github.io/ai-daily/)
 
 自定义域名首页：[aptx.dev](https://aptx.dev/)；资讯入口：[www.aptx.dev/newsHub/](https://aptx.dev/newsHub/)。首页地址保持为 `https://aptx.dev/`；`www` 入口统一跳转到该域名，频道、日报与文章链接保持可用，原 GitHub Pages 地址继续可用。该入口通过 Cloudflare Pages Function 读取已发布的 GitHub Pages 内容，仍由原有 GitHub Actions 更新资讯；部署说明见 [cloudflare/README.md](cloudflare/README.md)。如果此前访问过旧的 301 跳转，可先使用此处末尾带 `/` 的入口避开浏览器旧缓存。

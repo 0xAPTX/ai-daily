@@ -1,6 +1,6 @@
 'use strict';
 const SiteRoutes = (() => {
-  const names = ['news','fx','tools','daily','hot','x','sources','saved','about','article'];
+  const names = ['news','fx','stocks','tools','daily','hot','x','sources','saved','about','article'];
   const clean = ['aptx.dev','www.aptx.dev','localhost','127.0.0.1'].includes(location.hostname);
   let changed = () => {};
   function href(path='', params={}) {
