@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
-from save_history import run_git, save_history
+from save_history import run_git, save_history, PATHS
 
 
 class HistoryTests(unittest.TestCase):
@@ -23,6 +23,9 @@ class HistoryTests(unittest.TestCase):
                      'site/sources.opml', 'x-watchlist.json', 'imports/0xaptx-following.json',
                      'README.md']:
             self.write(self.worker, name, 'initial\n')
+        for name in PATHS:
+            if name.endswith('/index.html'):
+                self.write(self.worker, name, 'initial\n')
         run_git(['add', '.'], self.worker)
         run_git(['commit', '-m', 'Initial source and data'], self.worker)
         run_git(['push', 'origin', 'main'], self.worker)

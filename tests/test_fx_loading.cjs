@@ -12,6 +12,7 @@ test('FX opens without the news index; switching away from a pending year never 
   let releaseIndex;
   const pendingIndex=new Promise(resolve=>{releaseIndex=resolve;});
   const ctx=vm.createContext({URLSearchParams,AbortController,setTimeout,clearTimeout,
+    history:{replaceState(){}},
     location:{hash:'#/fx?period=1y',hostname:'localhost',pathname:'/',search:''},
     localStorage:{getItem(){return null;},setItem(){}},
     document:{querySelector:s=>s==='.fx-chart-wrap'?null:node(s),querySelectorAll:()=>[],addEventListener(){},documentElement:{dataset:{}},title:''},
@@ -26,6 +27,7 @@ test('FX opens without the news index; switching away from a pending year never 
     }
   });
   vm.runInContext(fs.readFileSync('site/fx.js','utf8'),ctx);
+  vm.runInContext(fs.readFileSync('site/routing.js','utf8'),ctx);
   vm.runInContext(fs.readFileSync('site/app.js','utf8'),ctx);
   for(let i=0;i<4;i++)await tick();
   assert.ok(!urls.some(u=>u.includes('/feed.json?')));

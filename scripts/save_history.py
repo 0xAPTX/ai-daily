@@ -6,6 +6,7 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 PATHS = ['site/index.html', 'site/data', 'site/feed.xml', 'site/sources.opml',
          'x-watchlist.json', 'imports/0xaptx-following.json']
+PATHS += ['site/'+name+'/index.html' for name in ('news','fx','tools','daily','hot','x','sources','saved','about','article')]
 
 
 def run_git(args, root, check=True):

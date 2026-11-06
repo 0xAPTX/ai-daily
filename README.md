@@ -143,3 +143,9 @@ python3 -m http.server 8765 --directory site --bind 127.0.0.1
 4. 运行 `python3 scripts/version_assets.py`、相关检查后推送 `main`，沿用既有 GitHub Pages 发布和 aptx.dev 路由，无需为每个工具修改 Cloudflare。
 
 照片增加水印来自 [0xAPTX/photo-watermark](https://github.com/0xAPTX/photo-watermark)，本次集成基于提交 `2eb488958217f4bf1ce40399492c647181698e3d`，许可证保存在 `site/tools/watermark/LICENSE`。更新水印时同步该仓库的 `dist/index.html`，保留本站标题与返回工具箱入口。
+
+## 简洁网址
+
+自定义域名使用普通路径，例如 `/news/`、`/fx/`、`/daily/` 和 `/tools/`；筛选条件保留在查询参数中。原来的 `#/…` 链接打开后自动转换，GitHub Pages 原入口仍兼容井号链接。文章链接使用 `/article/?date=…&id=…`，可直接打开与刷新。
+
+`scripts/version_assets.py` 在更新静态资源版本后生成各板块的 HTML 入口，随原有 GitHub Pages 流程发布；`save_history.py` 同时提交这些入口，确保汇率内嵌快照与首页一致。既有 Cloudflare 代理可直接读取这些静态入口，无需修改域名配置。

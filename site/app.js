@@ -35,11 +35,11 @@ function source(id){return data.sources.find(s=>s.id===id);}
 function topics(a){return Array.isArray(a.topics)?a.topics:[source(a.sourceId)?.topic||'ai'];}
 function visible(a){return a&&a.id&&a.title&&a.url&&!hiddenSources.includes(a.sourceId);}
 function recentItems(){return data.articles.filter(visible);}
-function articleLink(a){return `#/article/${a.date}/${a.id}`;}
-function newsLink(params={}){const q=new URLSearchParams(Object.entries(params).filter(([,v])=>v!==''&&v!=null));return '#/news'+(q.size?'?'+q:'');}
-function linkFor(path, params={}){const q=new URLSearchParams(Object.entries(params).filter(([,v])=>v!==''&&v!=null));return '#/'+path+(q.size?'?'+q:'');}
-function getRoute(){const value=location.hash.slice(1)||'/';const [path,query]=value.split('?');const parts=path.split('/').filter(Boolean);return {name:parts[0]||'home',parts,params:new URLSearchParams(query||'')};}
-function updateParams(values){const p=new URLSearchParams(route.params);for(const[k,v]of Object.entries(values)){if(v===''||v==null||v===false)p.delete(k);else p.set(k,String(v));}location.hash='/'+route.name+(p.size?'?'+p:'');}
+function articleLink(a){return SiteRoutes.href(`article/${a.date}/${a.id}`);}
+function newsLink(params={}){return SiteRoutes.href('news',params);}
+function linkFor(path,params={}){return SiteRoutes.href(path,params);}
+function getRoute(){return SiteRoutes.current();}
+function updateParams(values){const p=new URLSearchParams(route.params);for(const[k,v]of Object.entries(values)){if(v===''||v==null||v===false)p.delete(k);else p.set(k,String(v));}SiteRoutes.go(SiteRoutes.href(route.name==='home'?'':route.name,Object.fromEntries(p)));}
 function sourceBadge(a){return `<span class="kind ${e(a.kind||source(a.sourceId)?.kind||'official')}">${e(KIND[a.kind||source(a.sourceId)?.kind]||'来源原文')}</span>`;}
 function tagLinks(a){return (a.tags||[]).slice(0,4).map(t=>`<a href="${e(newsLink({tag:t}))}">#${e(t)}</a>`).join('');}
 function matchesTopic(a,topic){return !topic||topic==='all'||topics(a).includes(topic);}
@@ -215,6 +215,7 @@ async function ensureArchive(date){
   const response=await fetch(`./data/archive/${date}.json`);if(!response.ok)throw new Error('Archive unavailable');const value=await response.json();if(!Array.isArray(value.articles))throw new Error('Invalid archive');archiveCache.set(date,value.articles);for(const a of value.articles)records.set(a.id,a);
 }
 function updateShell(){
+  SiteRoutes.normalizeLinks();
   $('#saved-count').textContent=Object.keys(saved).length;
   document.querySelectorAll('[data-nav]').forEach(a=>{const active=a.dataset.nav===route.name;a.classList.toggle('active',active);if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
   document.querySelectorAll('[data-mobile]').forEach(a=>a.classList.toggle('active',a.dataset.mobile===route.name));
@@ -225,14 +226,10 @@ function updateShell(){
 }
 async function renderRoute({keepScroll=false}={}){
   route=getRoute();
-  // Keep the public homepage URL clean without changing deep links or filters.
-  if(location.hostname==='aptx.dev'&&location.pathname==='/'&&route.name==='home'&&!route.params.size&&location.hash){
-    history.replaceState(history.state,'',location.pathname+location.search);
-  }
   const version=++routeVersion;updateShell();
   try{
     if(route.name==='tools'){
-      $('#main').innerHTML=Toolbox.render(route.params);
+      $('#main').innerHTML=Toolbox.render(route.params);SiteRoutes.normalizeLinks();
       document.title='实用工具箱 · APTX';
       if(!keepScroll)window.scrollTo({top:0,behavior:'instant'});
       return;
@@ -259,6 +256,7 @@ async function renderRoute({keepScroll=false}={}){
     if(version!==routeVersion)return;
     const renderers={home:renderHome,news:renderNews,fx:()=>FX.render(route.params),daily:renderDaily,sources:renderSources,hot:renderHot,x:renderX,article:renderArticle,saved:renderNews,about:renderAbout};
     $('#main').innerHTML=(renderers[route.name]||(()=>heading('这个页面还没有内容。','请从首页继续阅读。')))();
+    SiteRoutes.normalizeLinks();
     if(route.name==='fx')FX.bindChart();
     if(route.name==='saved')$('#main').insertAdjacentHTML('beforeend','<button class="more-button" id="export-saved">导出收藏备份 JSON ↓</button>');
     document.title=({home:'知新 · 多源资讯，每日有新知',news:route.params.get('topic')==='conflict'?'战争局势 · 知新':route.params.get('topic')==='hk'?'港股资讯 · 知新':route.params.get('topic')==='stocks'?'美股资讯 · 知新':'资讯流 · 知新',daily:dailyDate()+' · 知新日报',fx:'主流币种汇率 · 知新',hot:'站内热点 · 知新',x:'X 热帖监测 · 知新',sources:'完整信源目录 · 知新',saved:'我的收藏 · 知新',article:'原文与出处 · 知新',about:'收录规则 · 知新'})[route.name]||'知新';
@@ -296,7 +294,7 @@ document.addEventListener('click',async event=>{
   const view=t.closest('[data-view]');if(view){pageLimit=24;updateParams({view:view.dataset.view==='modules'?'':'timeline',section:''});return;}
   const mode=t.closest('[data-mode]');if(mode){updateParams({mode:mode.dataset.mode==='latest'?'':mode.dataset.mode});return;}
   const save=t.closest('[data-save]');if(save){const id=save.dataset.save;if(saved[id]){delete saved[id];toast('已取消收藏');}else{const a=findArticle(id);if(a)saved[id]=a;toast(storageOK?'已收藏 · 保存在当前浏览器':'已加入本次收藏');}persist();await renderRoute({keepScroll:true});return;}
-  const copy=t.closest('[data-copy]');if(copy){const a=findArticle(copy.dataset.copy);if(a){const url=new URL(location.href);url.hash=articleLink(a).slice(1);try{await navigator.clipboard.writeText(url.href);toast('链接已复制');}catch{toast('复制不可用，可打开详情后复制浏览器地址。');}}return;}
+  const copy=t.closest('[data-copy]');if(copy){const a=findArticle(copy.dataset.copy);if(a){const url=new URL(articleLink(a),location.href);try{await navigator.clipboard.writeText(url.href);toast('链接已复制');}catch{toast('复制不可用，可打开详情后复制浏览器地址。');}}return;}
   const read=t.closest('[data-read]');if(read&&!reads.includes(read.dataset.read)){reads.push(read.dataset.read);persist();}
   const mute=t.closest('[data-mute]');if(mute){const id=mute.dataset.mute;if(hiddenSources.includes(id))hiddenSources=hiddenSources.filter(x=>x!==id);else hiddenSources.push(id);persist();await renderRoute({keepScroll:true});return;}
   if(t.closest('#restore-sources')){hiddenSources=[];persist();renderRoute({keepScroll:true});}
@@ -330,7 +328,7 @@ document.addEventListener('keydown',event=>{
 $('#open-search').addEventListener('click',openSearch);$('#close-search').addEventListener('click',()=>$('#search-dialog').close());$('#global-search').addEventListener('input',searchResults);
 $('#search-dialog').addEventListener('click',event=>{if(event.target===$('#search-dialog'))$('#search-dialog').close();});
 $('#theme-toggle').addEventListener('click',()=>{const next=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=next;try{localStorage.setItem('zhixin-theme',JSON.stringify(next));}catch{}});
-window.addEventListener('hashchange',()=>{pageLimit=24;renderRoute();});
+SiteRoutes.install(()=>{pageLimit=24;renderRoute();});
 $('#year').textContent=new Date().getFullYear();
 async function start(){await renderRoute();}
 start();
