@@ -48,5 +48,6 @@ class StocksTests(unittest.TestCase):
 
     def test_four_markets_have_unique_symbols_and_expected_currencies(self):
         self.assertEqual([m['currency'] for m in stocks.MARKETS], ['CNY','HKD','USD','KRW'])
+        self.assertEqual([len(m['stocks']) for m in stocks.MARKETS], [20,20,20,20])
         symbols = [s[0] for m in stocks.MARKETS for s in m['stocks']]
         self.assertEqual(len(symbols), len(set(symbols)))

@@ -6,7 +6,7 @@ const StockPrices = (() => {
   const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const number=(value,digits=2)=>Number.isFinite(value)?value.toLocaleString('zh-CN',{minimumFractionDigits:digits,maximumFractionDigits:digits}):'—';
   const stamp=value=>value?new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(value)):'暂无报价';
-  const change=(value,suffix='')=>Number.isFinite(value)?`${value>0?'+':''}${number(value)}${suffix}`:'—';
+  const change=(value,suffix='',digits=2)=>Number.isFinite(value)?`${value>0?'+':''}${number(value,digits)}${suffix}`:'—';
   async function load(force=false){
     if(data&&!force)return;
     if(!pending)pending=(async()=>{const r=await fetch('./data/stocks.json'+(force?'?t='+Date.now():''),{cache:force?'no-store':'default'});if(!r.ok)throw new Error('Quotes unavailable');const value=await r.json();if(!valid(value))throw new Error('Invalid quotes');data=value;})();
@@ -24,7 +24,7 @@ const StockPrices = (() => {
       const body=rows.map(s=>{
         const tone=s.change>0?'positive':s.change<0?'negative':'neutral';
         const status=s.status==='stale'?'读取失败，保留旧报价':s.status==='unavailable'?'报价暂不可用':'';
-        return `<tr><th scope="row"><a href="${escape(s.url)}" target="_blank" rel="noopener noreferrer"><strong>${escape(s.name)}</strong><small>${escape(s.code)}</small></a><time datetime="${escape(s.quotedAt||'')}">${escape(stamp(s.quotedAt))}</time>${status?`<small class="stock-row-status">${status}</small>`:''}</th><td class="stock-price">${number(s.price,market.currency==='KRW'?0:2)}<small class="${tone}">${change(s.change)}</small></td><td class="stock-percent ${tone}">${change(s.changePercent,'%')}</td></tr>`;
+        return `<tr><th scope="row"><a href="${escape(s.url)}" target="_blank" rel="noopener noreferrer"><strong>${escape(s.name)}</strong></a><div class="stock-row-meta"><span>${escape(s.code)}</span><time datetime="${escape(s.quotedAt||'')}">${escape(stamp(s.quotedAt))}</time></div>${status?`<small class="stock-row-status">${status}</small>`:''}</th><td class="stock-price">${number(s.price,market.currency==='KRW'?0:2)}<small class="${tone}">${change(s.change,'',market.currency==='KRW'?0:2)}</small></td><td class="stock-percent ${tone}">${change(s.changePercent,'%')}</td></tr>`;
       }).join('');
       return `<section class="stock-market-panel" aria-label="${escape(market.name)}股票价格"><header><h2>${escape(market.name)}<span>${escape(market.currency)}</span></h2><small>${rows.length} 只</small></header><div class="stock-panel-table" tabindex="0" role="region" aria-label="${escape(market.name)}报价列表"><table class="stock-table"><thead><tr><th>股票 / 时间</th><th>最新价 / 涨跌额</th><th>涨跌幅</th></tr></thead><tbody>${body||'<tr><td colspan="3" class="stock-no-match">没有匹配的股票</td></tr>'}</tbody></table></div></section>`;
     }).join('');
