@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>% 1024 计算器 · APTX 工具箱</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { margin: 0; font: 16px/1.6 system-ui, sans-serif; }
+    main { max-width: 36rem; margin: 3rem auto; padding: 0 1.25rem; }
+    label, input { display: block; }
+    input { box-sizing: border-box; width: 100%; margin: .5rem 0 1rem; }
+    input, button { font: inherit; padding: .5rem .75rem; }
+    output { font-weight: 700; font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body>
+  <main>
+    <a href="../../#/tools">← 返回工具箱</a>
+    <h1>% 1024 计算器</h1>
+    <form novalidate>
+      <label for="integer">ID 或十进制整数</label>
+      <input id="integer" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="例如 9007199254740993">
+      <button type="submit">计算余数</button>
+      <p>余数 <output for="integer" aria-live="polite">—</output></p>
+    </form>
+    <p>支持长整数，输入仅在当前浏览器中计算。</p>
+  </main>
+  <script>
+    const form = document.querySelector('form');
+    const input = document.getElementById('integer');
+    const result = document.querySelector('output');
+
+    input.addEventListener('input', () => {
+      result.textContent = '—';
+    });
+
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      const value = input.value.trim();
+      result.textContent = /^[+-]?\d+$/.test(value)
+        ? String(BigInt(value) % 1024n)
+        : '请输入十进制整数';
+    });
+  </script>
+</body>
+</html>
