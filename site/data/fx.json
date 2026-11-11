@@ -4,8 +4,8 @@
   "asOf": "2026-11-11",
   "previousDate": "2026-11-10",
   "base": "EUR",
-  "checkedAt": "2026-11-11T22:00:22+00:00",
-  "lastSuccessfulAt": "2026-11-11T22:00:22+00:00",
+  "checkedAt": "2026-11-11T23:07:18+00:00",
+  "lastSuccessfulAt": "2026-11-11T23:07:18+00:00",
   "source": {
     "name": "欧洲央行 ECB",
     "url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html",
