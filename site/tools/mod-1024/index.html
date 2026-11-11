@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>% 1024 计算器 · APTX 工具箱</title>
+  <title>取余计算器 · APTX 工具箱</title>
   <style>
     :root {
       color-scheme: light dark;
@@ -40,6 +40,7 @@
       background: var(--panel);
       box-shadow: 0 14px 40px light-dark(#2329360b, #0003);
     }
+    .divisor-label { margin-top: 14px; }
     label { display: block; margin-bottom: 8px; font-size: .875rem; font-weight: 650; }
     input, button { min-height: 48px; border-radius: 10px; font: inherit; }
     input {
@@ -73,7 +74,7 @@
       border-radius: 12px;
     }
     .result span { font-size: .875rem; font-weight: 650; }
-    output { font: 700 2.25rem/1.15 ui-monospace, monospace; }
+    output { overflow-wrap: anywhere; font: 700 2.25rem/1.15 ui-monospace, monospace; }
     output[data-error] { font: 650 .875rem/1.5 system-ui, sans-serif; }
     .note { margin-top: 14px; }
     @media (max-width: 520px) {
@@ -87,25 +88,29 @@
     <a class="back" href="../../#/tools">← 返回工具箱</a>
     <header>
       <span class="eyebrow">APTX / TOOLBOX</span>
-      <h1>% 1024 计算器</h1>
-      <p>粘贴 ID 或整数，计算除以 1024 的余数。</p>
+      <h1>取余计算器</h1>
+      <p>粘贴 ID 或整数，输入除数即可计算余数。</p>
     </header>
     <form novalidate>
       <div>
         <label for="integer">ID 或十进制整数</label>
         <input id="integer" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="例如 9007199254740993">
+        <label class="divisor-label" for="divisor">除数</label>
+        <input id="divisor" type="text" inputmode="numeric" value="1024" autocomplete="off" spellcheck="false">
         <button type="submit">计算余数</button>
       </div>
-      <p class="result"><span>余数</span><output for="integer" aria-live="polite">—</output></p>
+      <p class="result"><span>余数</span><output for="integer divisor" aria-live="polite">—</output></p>
     </form>
     <p class="note">支持长 ID · 仅在浏览器本地计算</p>
   </main>
   <script>
     const form = document.querySelector('form');
     const input = document.getElementById('integer');
+    const divisor = document.getElementById('divisor');
+    const integerPattern = /^[+-]?\d+$/;
     const result = document.querySelector('output');
 
-    input.addEventListener('input', () => {
+    form.addEventListener('input', () => {
       result.removeAttribute('data-error');
       result.textContent = '—';
     });
@@ -113,11 +118,19 @@
     form.addEventListener('submit', event => {
       event.preventDefault();
       const value = input.value.trim();
-      const valid = /^[+-]?\d+$/.test(value);
-      result.toggleAttribute('data-error', !valid);
-      result.textContent = valid
-        ? String(BigInt(value) % 1024n)
-        : '请输入十进制整数';
+      const divisorText = divisor.value.trim();
+      let error = '';
+
+      if (!integerPattern.test(value)) {
+        error = '请输入十进制整数';
+      } else if (!integerPattern.test(divisorText)) {
+        error = '除数必须是十进制整数';
+      } else if (BigInt(divisorText) === 0n) {
+        error = '除数不能为 0';
+      }
+
+      result.toggleAttribute('data-error', Boolean(error));
+      result.textContent = error || String(BigInt(value) % BigInt(divisorText));
     });
   </script>
 </body>
