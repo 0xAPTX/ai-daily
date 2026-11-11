@@ -2,136 +2,15 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>取余计算器 · APTX 工具箱</title>
-  <style>
-    :root {
-      color-scheme: light dark;
-      --canvas: light-dark(#f7f7f4, #151619);
-      --panel: light-dark(#fff, #1d2025);
-      --text: light-dark(#20242b, #f0f1f4);
-      --muted: light-dark(#5d6470, #afb6c2);
-      --line: light-dark(#dedfe3, #383e48);
-      --accent: light-dark(#a73d25, #ffad97);
-      --result: light-dark(#fff1ea, #392621);
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background: var(--canvas);
-      color: var(--text);
-      font: 16px/1.6 system-ui, sans-serif;
-    }
-    main { width: min(740px, calc(100% - 32px)); margin: clamp(24px, 8vw, 88px) auto; }
-    .back { color: var(--muted); font-size: .875rem; text-decoration: none; }
-    .back:hover { color: var(--accent); text-decoration: underline; }
-    header { margin: 36px 0 24px; }
-    .eyebrow { color: var(--accent); font: 700 .75rem/1.5 ui-monospace, monospace; letter-spacing: .13em; }
-    h1 { margin: .35rem 0; font-size: clamp(2rem, 6vw, 3rem); line-height: 1.2; letter-spacing: -.04em; }
-    header p, .note { margin: 0; color: var(--muted); font-size: .875rem; }
-    form {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(140px, 29%);
-      align-items: stretch;
-      gap: 24px;
-      padding: clamp(16px, 4vw, 28px);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      background: var(--panel);
-      box-shadow: 0 14px 40px light-dark(#2329360b, #0003);
-    }
-    .divisor-label { margin-top: 14px; }
-    label { display: block; margin-bottom: 8px; font-size: .875rem; font-weight: 650; }
-    input, button { min-height: 48px; border-radius: 10px; font: inherit; }
-    input {
-      width: 100%;
-      padding: 0 12px;
-      color: var(--text);
-      background: var(--canvas);
-      border: 1px solid var(--line);
-      font-family: ui-monospace, monospace;
-    }
-    input::placeholder { color: var(--muted); opacity: 1; }
-    button {
-      margin-top: 12px;
-      padding: 0 18px;
-      border: 0;
-      background: var(--accent);
-      color: light-dark(#fff, #201411);
-      font-weight: 650;
-      cursor: pointer;
-    }
-    button:hover { filter: brightness(.9); }
-    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-    .result {
-      display: grid;
-      align-content: center;
-      gap: 5px;
-      margin: 0;
-      padding: 16px;
-      background: var(--result);
-      color: var(--accent);
-      border-radius: 12px;
-    }
-    .result span { font-size: .875rem; font-weight: 650; }
-    output { overflow-wrap: anywhere; font: 700 2.25rem/1.15 ui-monospace, monospace; }
-    output[data-error] { font: 650 .875rem/1.5 system-ui, sans-serif; }
-    .note { margin-top: 14px; }
-    @media (max-width: 520px) {
-      form { grid-template-columns: 1fr; gap: 16px; }
-      button { width: 100%; }
-    }
-  </style>
+  <title>取余计算器已迁移</title>
+  <script>
+    const target = new URL('../remainder/', location.href);
+    target.search = location.search;
+    target.hash = location.hash;
+    location.replace(target.href);
+  </script>
 </head>
 <body>
-  <main>
-    <a class="back" href="../../#/tools">← 返回工具箱</a>
-    <header>
-      <span class="eyebrow">APTX / TOOLBOX</span>
-      <h1>取余计算器</h1>
-      <p>粘贴 ID 或整数，输入除数即可计算余数。</p>
-    </header>
-    <form novalidate>
-      <div>
-        <label for="integer">ID 或十进制整数</label>
-        <input id="integer" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="例如 9007199254740993">
-        <label class="divisor-label" for="divisor">除数</label>
-        <input id="divisor" type="text" inputmode="numeric" value="1024" autocomplete="off" spellcheck="false">
-        <button type="submit">计算余数</button>
-      </div>
-      <p class="result"><span>余数</span><output for="integer divisor" aria-live="polite">—</output></p>
-    </form>
-    <p class="note">支持长 ID · 仅在浏览器本地计算</p>
-  </main>
-  <script>
-    const form = document.querySelector('form');
-    const input = document.getElementById('integer');
-    const divisor = document.getElementById('divisor');
-    const integerPattern = /^[+-]?\d+$/;
-    const result = document.querySelector('output');
-
-    form.addEventListener('input', () => {
-      result.removeAttribute('data-error');
-      result.textContent = '—';
-    });
-
-    form.addEventListener('submit', event => {
-      event.preventDefault();
-      const value = input.value.trim();
-      const divisorText = divisor.value.trim();
-      let error = '';
-
-      if (!integerPattern.test(value)) {
-        error = '请输入十进制整数';
-      } else if (!integerPattern.test(divisorText)) {
-        error = '除数必须是十进制整数';
-      } else if (BigInt(divisorText) === 0n) {
-        error = '除数不能为 0';
-      }
-
-      result.toggleAttribute('data-error', Boolean(error));
-      result.textContent = error || String(BigInt(value) % BigInt(divisorText));
-    });
-  </script>
+  <a href="https://aptx.dev/tools/remainder/">打开取余计算器</a>
 </body>
 </html>

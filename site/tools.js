@@ -3,7 +3,7 @@
 window.Toolbox = (() => {
   const tools = Object.freeze([
     {id:'watermark',name:'照片增加水印',category:'图片处理',description:'给照片加上用途说明或署名。支持全图平铺、批量导出，手机也能用。',href:'./tools/watermark/',tags:['本地处理','支持多选','无需登录'],keywords:'图片 照片 水印 隐私 证件 署名 批量 watermark',mark:'印'},
-    {id:'mod-1024',name:'取余计算器',category:'开发工具',description:'粘贴 ID 或整数，自定义除数并精确计算余数。',href:'./tools/mod-1024/',tags:['支持长 ID','本地计算'],keywords:'取模 余数 1024 oec_id tt_uid modulo',mark:'%'},
+    {id:'remainder',name:'取余计算器',category:'开发工具',description:'粘贴 ID 或整数，自定义除数并精确计算余数。',href:'./tools/remainder/',tags:['支持长 ID','本地计算'],keywords:'取模 余数 1024 oec_id tt_uid modulo',mark:'%'},
   ]);
   const escape = text => String(text).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   function card(tool){return `<a class="tool-card" href="${escape(tool.href)}"><span class="tool-mark" aria-hidden="true">${escape(tool.mark)}</span><div class="tool-card-heading"><h2>${escape(tool.name)}</h2><span aria-hidden="true">↗</span></div><p>${escape(tool.description)}</p><div class="tool-tags">${tool.tags.map(tag=>`<span>${escape(tag)}</span>`).join('')}</div><span class="tool-card-action">打开工具 <span aria-hidden="true">→</span></span></a>`;}
