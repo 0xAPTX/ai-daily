@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+  "checkedAt": "2026-11-24T10:57:09.272587+00:00",
   "markets": [
     {
       "id": "cn",
@@ -14,13 +14,13 @@
           "name": "贵州茅台",
           "url": "https://finance.yahoo.com/quote/600519.SS/",
           "currency": "CNY",
-          "price": 1458.99,
+          "price": 1460.0,
           "previousClose": 1439.0,
-          "change": 19.99000000000001,
-          "changePercent": 1.3891591382904744,
-          "quotedAt": "2026-11-24T06:51:23+00:00",
+          "change": 21.0,
+          "changePercent": 1.459346768589298,
+          "quotedAt": "2026-11-24T07:00:02+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -29,13 +29,13 @@
           "name": "宁德时代",
           "url": "https://finance.yahoo.com/quote/300750.SZ/",
           "currency": "CNY",
-          "price": 227.71,
+          "price": 227.37,
           "previousClose": 227.39,
-          "change": 0.3200000000000216,
-          "changePercent": 0.1407273846695256,
-          "quotedAt": "2026-11-24T06:51:22+00:00",
+          "change": -0.01999999999998181,
+          "changePercent": -0.00879546154183286,
+          "quotedAt": "2026-11-24T07:04:49+00:00",
           "exchange": "SHZ",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -44,13 +44,13 @@
           "name": "比亚迪",
           "url": "https://finance.yahoo.com/quote/002594.SZ/",
           "currency": "CNY",
-          "price": 75.9,
+          "price": 75.96,
           "previousClose": 78.04,
-          "change": -2.1400000000000006,
-          "changePercent": -2.742183495643258,
-          "quotedAt": "2026-11-24T06:51:24+00:00",
+          "change": -2.0800000000000125,
+          "changePercent": -2.665299846232716,
+          "quotedAt": "2026-11-24T07:04:09+00:00",
           "exchange": "SHZ",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -59,13 +59,13 @@
           "name": "中国平安",
           "url": "https://finance.yahoo.com/quote/601318.SS/",
           "currency": "CNY",
-          "price": 54.92,
+          "price": 54.88,
           "previousClose": 53.7,
-          "change": 1.2199999999999989,
-          "changePercent": 2.271880819366845,
-          "quotedAt": "2026-11-24T06:51:23+00:00",
+          "change": 1.1799999999999997,
+          "changePercent": 2.19739292364991,
+          "quotedAt": "2026-11-24T07:00:02+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -74,13 +74,13 @@
           "name": "平安银行",
           "url": "https://finance.yahoo.com/quote/000001.SZ/",
           "currency": "CNY",
-          "price": 12.29,
+          "price": 12.3,
           "previousClose": 12.34,
-          "change": -0.05000000000000071,
-          "changePercent": -0.4051863857374438,
-          "quotedAt": "2026-11-24T06:51:24+00:00",
+          "change": -0.03999999999999915,
+          "changePercent": -0.32414910858994395,
+          "quotedAt": "2026-11-24T07:04:39+00:00",
           "exchange": "SHZ",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -89,13 +89,13 @@
           "name": "招商银行",
           "url": "https://finance.yahoo.com/quote/600036.SS/",
           "currency": "CNY",
-          "price": 43.48,
+          "price": 43.52,
           "previousClose": 43.26,
-          "change": 0.21999999999999886,
-          "changePercent": 0.5085529357373941,
-          "quotedAt": "2026-11-24T06:51:25+00:00",
+          "change": 0.2600000000000051,
+          "changePercent": 0.6010171058714819,
+          "quotedAt": "2026-11-24T07:00:01+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -104,13 +104,13 @@
           "name": "工商银行",
           "url": "https://finance.yahoo.com/quote/601398.SS/",
           "currency": "CNY",
-          "price": 9.23,
+          "price": 9.22,
           "previousClose": 9.15,
-          "change": 0.08000000000000007,
-          "changePercent": 0.8743169398907069,
-          "quotedAt": "2026-11-24T06:51:23+00:00",
+          "change": 0.07000000000000028,
+          "changePercent": 0.7650273224043769,
+          "quotedAt": "2026-11-24T07:00:02+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -119,13 +119,13 @@
           "name": "建设银行",
           "url": "https://finance.yahoo.com/quote/601939.SS/",
           "currency": "CNY",
-          "price": 12.41,
+          "price": 12.43,
           "previousClose": 12.39,
-          "change": 0.019999999999999574,
-          "changePercent": 0.16142050040355294,
-          "quotedAt": "2026-11-24T06:51:23+00:00",
+          "change": 0.03999999999999915,
+          "changePercent": 0.32284100080710587,
+          "quotedAt": "2026-11-24T07:00:02+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -134,13 +134,13 @@
           "name": "中国银行",
           "url": "https://finance.yahoo.com/quote/601988.SS/",
           "currency": "CNY",
-          "price": 7.5,
+          "price": 7.51,
           "previousClose": 7.39,
-          "change": 0.11000000000000032,
-          "changePercent": 1.4884979702300516,
-          "quotedAt": "2026-11-24T06:51:22+00:00",
+          "change": 0.1200000000000001,
+          "changePercent": 1.6238159675236785,
+          "quotedAt": "2026-11-24T07:00:01+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -149,13 +149,13 @@
           "name": "农业银行",
           "url": "https://finance.yahoo.com/quote/601288.SS/",
           "currency": "CNY",
-          "price": 7.92,
+          "price": 7.93,
           "previousClose": 7.83,
-          "change": 0.08999999999999986,
-          "changePercent": 1.1494252873563093,
-          "quotedAt": "2026-11-24T06:51:24+00:00",
+          "change": 0.09999999999999964,
+          "changePercent": 1.2771392081736943,
+          "quotedAt": "2026-11-24T07:00:01+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -164,13 +164,13 @@
           "name": "中国移动",
           "url": "https://finance.yahoo.com/quote/600941.SS/",
           "currency": "CNY",
-          "price": 107.34,
+          "price": 107.77,
           "previousClose": 107.75,
-          "change": -0.4099999999999966,
-          "changePercent": -0.38051044083526886,
-          "quotedAt": "2026-11-24T06:51:23+00:00",
+          "change": 0.01999999999999602,
+          "changePercent": 0.01856148491878873,
+          "quotedAt": "2026-11-24T07:00:02+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -179,13 +179,13 @@
           "name": "中国海油",
           "url": "https://finance.yahoo.com/quote/600938.SS/",
           "currency": "CNY",
-          "price": 29.55,
+          "price": 29.66,
           "previousClose": 30.1,
-          "change": -0.5500000000000007,
-          "changePercent": -1.82724252491695,
-          "quotedAt": "2026-11-24T06:51:25+00:00",
+          "change": -0.4400000000000013,
+          "changePercent": -1.46179401993356,
+          "quotedAt": "2026-11-24T07:00:01+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -194,13 +194,13 @@
           "name": "长江电力",
           "url": "https://finance.yahoo.com/quote/600900.SS/",
           "currency": "CNY",
-          "price": 31.56,
+          "price": 31.64,
           "previousClose": 31.35,
-          "change": 0.2099999999999973,
-          "changePercent": 0.6698564593301315,
-          "quotedAt": "2026-11-24T06:51:24+00:00",
+          "change": 0.28999999999999915,
+          "changePercent": 0.9250398724082842,
+          "quotedAt": "2026-11-24T07:00:00+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -209,13 +209,13 @@
           "name": "中国神华",
           "url": "https://finance.yahoo.com/quote/601088.SS/",
           "currency": "CNY",
-          "price": 50.97,
+          "price": 50.91,
           "previousClose": 51.03,
-          "change": -0.060000000000002274,
-          "changePercent": -0.11757789535568053,
-          "quotedAt": "2026-11-24T06:51:25+00:00",
+          "change": -0.12000000000000455,
+          "changePercent": -0.23515579071134995,
+          "quotedAt": "2026-11-24T07:00:01+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -224,13 +224,13 @@
           "name": "美的集团",
           "url": "https://finance.yahoo.com/quote/000333.SZ/",
           "currency": "CNY",
-          "price": 94.09,
+          "price": 94.23,
           "previousClose": 94.13,
-          "change": -0.03999999999999204,
-          "changePercent": -0.04249442260702008,
-          "quotedAt": "2026-11-24T06:51:24+00:00",
+          "change": 0.10000000000000853,
+          "changePercent": 0.1062360565175835,
+          "quotedAt": "2026-11-24T07:04:03+00:00",
           "exchange": "SHZ",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -239,13 +239,13 @@
           "name": "格力电器",
           "url": "https://finance.yahoo.com/quote/000651.SZ/",
           "currency": "CNY",
-          "price": 40.57,
+          "price": 40.5,
           "previousClose": 40.65,
-          "change": -0.0799999999999983,
-          "changePercent": -0.19680196801967753,
-          "quotedAt": "2026-11-24T06:51:24+00:00",
+          "change": -0.14999999999999858,
+          "changePercent": -0.36900369003689537,
+          "quotedAt": "2026-11-24T07:04:33+00:00",
           "exchange": "SHZ",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -254,13 +254,13 @@
           "name": "五粮液",
           "url": "https://finance.yahoo.com/quote/000858.SZ/",
           "currency": "CNY",
-          "price": 71.38,
+          "price": 71.35,
           "previousClose": 72.49,
-          "change": -1.1099999999999994,
-          "changePercent": -1.5312456890605564,
-          "quotedAt": "2026-11-24T06:51:24+00:00",
+          "change": -1.1400000000000006,
+          "changePercent": -1.5726307076838197,
+          "quotedAt": "2026-11-24T07:04:24+00:00",
           "exchange": "SHZ",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -269,13 +269,13 @@
           "name": "海天味业",
           "url": "https://finance.yahoo.com/quote/603288.SS/",
           "currency": "CNY",
-          "price": 35.78,
+          "price": 35.9,
           "previousClose": 35.99,
-          "change": -0.21000000000000085,
-          "changePercent": -0.5834954153931649,
-          "quotedAt": "2026-11-24T06:51:23+00:00",
+          "change": -0.09000000000000341,
+          "changePercent": -0.25006946373993255,
+          "quotedAt": "2026-11-24T07:00:01+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -284,13 +284,13 @@
           "name": "立讯精密",
           "url": "https://finance.yahoo.com/quote/002475.SZ/",
           "currency": "CNY",
-          "price": 48.14,
+          "price": 48.1,
           "previousClose": 46.26,
-          "change": 1.8800000000000026,
-          "changePercent": 4.063986165153488,
-          "quotedAt": "2026-11-24T06:51:24+00:00",
+          "change": 1.8400000000000034,
+          "changePercent": 3.977518374405542,
+          "quotedAt": "2026-11-24T07:04:48+00:00",
           "exchange": "SHZ",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -299,13 +299,13 @@
           "name": "中芯国际",
           "url": "https://finance.yahoo.com/quote/688981.SS/",
           "currency": "CNY",
-          "price": 126.03,
+          "price": 126.51,
           "previousClose": 121.6,
-          "change": 4.430000000000007,
-          "changePercent": 3.643092105263168,
-          "quotedAt": "2026-11-24T06:51:22+00:00",
+          "change": 4.910000000000011,
+          "changePercent": 4.037828947368438,
+          "quotedAt": "2026-11-24T07:00:01+00:00",
           "exchange": "SHH",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         }
       ]
@@ -322,13 +322,13 @@
           "name": "腾讯控股",
           "url": "https://finance.yahoo.com/quote/0700.HK/",
           "currency": "HKD",
-          "price": 342.6,
+          "price": 341.6,
           "previousClose": 344.0,
-          "change": -1.3999999999999773,
-          "changePercent": -0.40697674418603835,
-          "quotedAt": "2026-11-24T06:51:24+00:00",
+          "change": -2.3999999999999773,
+          "changePercent": -0.6976744186046435,
+          "quotedAt": "2026-11-24T08:08:08+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -337,13 +337,13 @@
           "name": "阿里巴巴",
           "url": "https://finance.yahoo.com/quote/9988.HK/",
           "currency": "HKD",
-          "price": 82.35,
+          "price": 82.2,
           "previousClose": 83.05,
-          "change": -0.7000000000000028,
-          "changePercent": -0.8428657435279985,
-          "quotedAt": "2026-11-24T06:51:25+00:00",
+          "change": -0.8499999999999943,
+          "changePercent": -1.0234798314268434,
+          "quotedAt": "2026-11-24T08:08:08+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -352,13 +352,13 @@
           "name": "美团",
           "url": "https://finance.yahoo.com/quote/3690.HK/",
           "currency": "HKD",
-          "price": 64.9,
+          "price": 64.2,
           "previousClose": 66.4,
-          "change": -1.5,
-          "changePercent": -2.259036144578308,
-          "quotedAt": "2026-11-24T06:51:22+00:00",
+          "change": -2.200000000000003,
+          "changePercent": -3.3132530120482007,
+          "quotedAt": "2026-11-24T08:08:08+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -367,13 +367,13 @@
           "name": "小米集团",
           "url": "https://finance.yahoo.com/quote/1810.HK/",
           "currency": "HKD",
-          "price": 26.28,
+          "price": 26.5,
           "previousClose": 27.52,
-          "change": -1.2399999999999984,
-          "changePercent": -4.505813953488369,
-          "quotedAt": "2026-11-24T06:51:24+00:00",
+          "change": -1.0199999999999996,
+          "changePercent": -3.7063953488372103,
+          "quotedAt": "2026-11-24T08:08:08+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -382,13 +382,13 @@
           "name": "汇丰控股",
           "url": "https://finance.yahoo.com/quote/0005.HK/",
           "currency": "HKD",
-          "price": 130.9,
+          "price": 130.6,
           "previousClose": 129.6,
-          "change": 1.3000000000000114,
-          "changePercent": 1.0030864197530853,
-          "quotedAt": "2026-11-24T06:50:24+00:00",
+          "change": 1.0,
+          "changePercent": 0.7716049382715973,
+          "quotedAt": "2026-11-24T08:08:08+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -397,13 +397,13 @@
           "name": "京东集团",
           "url": "https://finance.yahoo.com/quote/9618.HK/",
           "currency": "HKD",
-          "price": 97.2,
+          "price": 97.05,
           "previousClose": 97.55,
-          "change": -0.3499999999999943,
-          "changePercent": -0.35879036391593955,
-          "quotedAt": "2026-11-24T06:51:20+00:00",
+          "change": -0.5,
+          "changePercent": -0.5125576627370565,
+          "quotedAt": "2026-11-24T08:08:08+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -412,13 +412,13 @@
           "name": "网易",
           "url": "https://finance.yahoo.com/quote/9999.HK/",
           "currency": "HKD",
-          "price": 155.7,
+          "price": 156.0,
           "previousClose": 159.5,
-          "change": -3.8000000000000114,
-          "changePercent": -2.3824451410658365,
-          "quotedAt": "2026-11-24T06:51:26+00:00",
+          "change": -3.5,
+          "changePercent": -2.1943573667711602,
+          "quotedAt": "2026-11-24T08:08:08+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -427,13 +427,13 @@
           "name": "百度集团",
           "url": "https://finance.yahoo.com/quote/9888.HK/",
           "currency": "HKD",
-          "price": 62.15,
+          "price": 62.4,
           "previousClose": 63.55,
-          "change": -1.3999999999999986,
-          "changePercent": -2.202989771833197,
-          "quotedAt": "2026-11-24T06:50:50+00:00",
+          "change": -1.1499999999999986,
+          "changePercent": -1.8095987411486991,
+          "quotedAt": "2026-11-24T08:08:08+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -442,13 +442,13 @@
           "name": "哔哩哔哩",
           "url": "https://finance.yahoo.com/quote/9626.HK/",
           "currency": "HKD",
-          "price": 82.8,
+          "price": 83.45,
           "previousClose": 84.9,
-          "change": -2.1000000000000085,
-          "changePercent": -2.473498233215554,
-          "quotedAt": "2026-11-24T06:51:16+00:00",
+          "change": -1.4500000000000028,
+          "changePercent": -1.7078916372202602,
+          "quotedAt": "2026-11-24T08:08:08+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -457,13 +457,13 @@
           "name": "中芯国际",
           "url": "https://finance.yahoo.com/quote/0981.HK/",
           "currency": "HKD",
-          "price": 49.2,
+          "price": 49.0,
           "previousClose": 48.74,
-          "change": 0.46000000000000085,
-          "changePercent": 0.943783340172355,
-          "quotedAt": "2026-11-24T06:51:24+00:00",
+          "change": 0.259999999999998,
+          "changePercent": 0.5334427574887224,
+          "quotedAt": "2026-11-24T08:08:08+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -472,13 +472,13 @@
           "name": "快手",
           "url": "https://finance.yahoo.com/quote/1024.HK/",
           "currency": "HKD",
-          "price": 19.62,
+          "price": 19.73,
           "previousClose": 20.1,
-          "change": -0.4800000000000004,
-          "changePercent": -2.3880597014925398,
-          "quotedAt": "2026-11-24T06:51:12+00:00",
+          "change": -0.370000000000001,
+          "changePercent": -1.8407960199005036,
+          "quotedAt": "2026-11-24T08:08:08+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -487,13 +487,13 @@
           "name": "比亚迪股份",
           "url": "https://finance.yahoo.com/quote/1211.HK/",
           "currency": "HKD",
-          "price": 60.25,
+          "price": 60.3,
           "previousClose": 61.2,
-          "change": -0.9500000000000028,
-          "changePercent": -1.552287581699352,
-          "quotedAt": "2026-11-24T06:51:21+00:00",
+          "change": -0.9000000000000057,
+          "changePercent": -1.4705882352941235,
+          "quotedAt": "2026-11-24T08:08:08+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -506,9 +506,9 @@
           "previousClose": 42.84,
           "change": -0.5600000000000023,
           "changePercent": -1.3071895424836666,
-          "quotedAt": "2026-11-24T06:51:18+00:00",
+          "quotedAt": "2026-11-24T08:08:08+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -517,13 +517,13 @@
           "name": "友邦保险",
           "url": "https://finance.yahoo.com/quote/1299.HK/",
           "currency": "HKD",
-          "price": 74.45,
+          "price": 74.0,
           "previousClose": 74.0,
-          "change": 0.45000000000000284,
-          "changePercent": 0.6081081081081186,
-          "quotedAt": "2026-11-24T06:51:23+00:00",
+          "change": 0.0,
+          "changePercent": 0.0,
+          "quotedAt": "2026-11-24T08:08:08+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -532,13 +532,13 @@
           "name": "香港交易所",
           "url": "https://finance.yahoo.com/quote/0388.HK/",
           "currency": "HKD",
-          "price": 354.2,
+          "price": 352.6,
           "previousClose": 351.4,
-          "change": 2.8000000000000114,
-          "changePercent": 0.7968127490039834,
-          "quotedAt": "2026-11-24T06:51:15+00:00",
+          "change": 1.2000000000000455,
+          "changePercent": 0.34149117814457064,
+          "quotedAt": "2026-11-24T08:08:08+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -547,13 +547,13 @@
           "name": "中国移动",
           "url": "https://finance.yahoo.com/quote/0941.HK/",
           "currency": "HKD",
-          "price": 78.85,
+          "price": 78.75,
           "previousClose": 78.95,
-          "change": -0.10000000000000853,
-          "changePercent": -0.1266624445851905,
-          "quotedAt": "2026-11-24T06:51:06+00:00",
+          "change": -0.20000000000000284,
+          "changePercent": -0.2533248891703699,
+          "quotedAt": "2026-11-24T08:08:08+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -562,13 +562,13 @@
           "name": "中国海洋石油",
           "url": "https://finance.yahoo.com/quote/0883.HK/",
           "currency": "HKD",
-          "price": 20.8,
+          "price": 20.86,
           "previousClose": 21.28,
-          "change": -0.4800000000000004,
-          "changePercent": -2.2556390977443663,
-          "quotedAt": "2026-11-24T06:51:24+00:00",
+          "change": -0.4200000000000017,
+          "changePercent": -1.9736842105263275,
+          "quotedAt": "2026-11-24T08:08:08+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -577,13 +577,13 @@
           "name": "建设银行",
           "url": "https://finance.yahoo.com/quote/0939.HK/",
           "currency": "HKD",
-          "price": 10.33,
+          "price": 10.25,
           "previousClose": 10.31,
-          "change": 0.019999999999999574,
-          "changePercent": 0.19398642095052043,
-          "quotedAt": "2026-11-24T06:51:24+00:00",
+          "change": -0.0600000000000005,
+          "changePercent": -0.5819592628516057,
+          "quotedAt": "2026-11-24T08:08:08+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -592,13 +592,13 @@
           "name": "中国平安",
           "url": "https://finance.yahoo.com/quote/2318.HK/",
           "currency": "HKD",
-          "price": 50.4,
+          "price": 50.2,
           "previousClose": 49.7,
-          "change": 0.6999999999999957,
-          "changePercent": 1.4084507042253502,
-          "quotedAt": "2026-11-24T06:51:18+00:00",
+          "change": 0.5,
+          "changePercent": 1.0060362173038184,
+          "quotedAt": "2026-11-24T08:08:08+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -607,13 +607,13 @@
           "name": "理想汽车",
           "url": "https://finance.yahoo.com/quote/2015.HK/",
           "currency": "HKD",
-          "price": 41.0,
+          "price": 41.38,
           "previousClose": 41.62,
-          "change": -0.6199999999999974,
-          "changePercent": -1.4896684286400674,
-          "quotedAt": "2026-11-24T06:51:21+00:00",
+          "change": -0.23999999999999488,
+          "changePercent": -0.5766458433445365,
+          "quotedAt": "2026-11-24T08:08:08+00:00",
           "exchange": "HKG",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         }
       ]
@@ -636,7 +636,7 @@
           "changePercent": 1.9033162073797127,
           "quotedAt": "2026-11-23T21:00:01+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -651,7 +651,7 @@
           "changePercent": 1.6469908362915842,
           "quotedAt": "2026-11-23T21:00:01+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -666,7 +666,7 @@
           "changePercent": 31.482514140046213,
           "quotedAt": "2026-11-23T21:00:01+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -681,7 +681,7 @@
           "changePercent": 3.4721659508953895,
           "quotedAt": "2026-11-23T21:00:01+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -696,7 +696,7 @@
           "changePercent": 6.3364619849975545,
           "quotedAt": "2026-11-23T21:00:01+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -711,7 +711,7 @@
           "changePercent": 6.554454033235868,
           "quotedAt": "2026-11-23T21:00:01+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -726,7 +726,7 @@
           "changePercent": 11.462610606673994,
           "quotedAt": "2026-11-23T21:00:00+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -741,7 +741,7 @@
           "changePercent": 6.8498315228916695,
           "quotedAt": "2026-11-23T21:00:01+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -756,7 +756,7 @@
           "changePercent": 3.0025294832626948,
           "quotedAt": "2026-11-23T21:00:01+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -771,7 +771,7 @@
           "changePercent": 12.343116908785468,
           "quotedAt": "2026-11-23T21:05:19+00:00",
           "exchange": "NYQ",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -786,7 +786,7 @@
           "changePercent": 14.084904772363615,
           "quotedAt": "2026-11-23T21:00:02+00:00",
           "exchange": "NYQ",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -801,7 +801,7 @@
           "changePercent": 2.414947999294914,
           "quotedAt": "2026-11-23T21:00:01+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -816,7 +816,7 @@
           "changePercent": 2.8799779523218882,
           "quotedAt": "2026-11-23T21:00:01+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -831,7 +831,7 @@
           "changePercent": 2.679658952496955,
           "quotedAt": "2026-11-23T21:00:03+00:00",
           "exchange": "NYQ",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -846,7 +846,7 @@
           "changePercent": 11.060004181476057,
           "quotedAt": "2026-11-23T21:00:01+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -861,7 +861,7 @@
           "changePercent": 16.341653666146637,
           "quotedAt": "2026-11-23T21:00:01+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -876,7 +876,7 @@
           "changePercent": 10.297452314259026,
           "quotedAt": "2026-11-23T21:00:00+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -891,7 +891,7 @@
           "changePercent": 1.9740443757447101,
           "quotedAt": "2026-11-23T21:00:02+00:00",
           "exchange": "NYQ",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -906,7 +906,7 @@
           "changePercent": 1.8737402642645673,
           "quotedAt": "2026-11-23T21:00:03+00:00",
           "exchange": "NYQ",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -921,7 +921,7 @@
           "changePercent": 1.2739351309105196,
           "quotedAt": "2026-11-23T21:00:01+00:00",
           "exchange": "NMS",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         }
       ]
@@ -944,7 +944,7 @@
           "changePercent": 6.7042253521126804,
           "quotedAt": "2026-11-24T06:30:09+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -959,7 +959,7 @@
           "changePercent": 6.728110599078341,
           "quotedAt": "2026-11-24T06:30:12+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -974,7 +974,7 @@
           "changePercent": 11.111111111111116,
           "quotedAt": "2026-11-24T06:30:01+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -989,7 +989,7 @@
           "changePercent": 4.066666666666663,
           "quotedAt": "2026-11-24T06:30:29+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -1004,7 +1004,7 @@
           "changePercent": 7.8902229845626115,
           "quotedAt": "2026-11-24T06:30:09+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -1019,7 +1019,7 @@
           "changePercent": 10.64814814814814,
           "quotedAt": "2026-11-24T06:30:21+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -1034,7 +1034,7 @@
           "changePercent": 14.513556618819766,
           "quotedAt": "2026-11-24T06:30:01+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -1049,7 +1049,7 @@
           "changePercent": 5.358385525400133,
           "quotedAt": "2026-11-24T06:30:27+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -1064,7 +1064,7 @@
           "changePercent": 5.2247873633049835,
           "quotedAt": "2026-11-24T06:30:16+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -1079,7 +1079,7 @@
           "changePercent": 5.360824742268044,
           "quotedAt": "2026-11-24T06:30:10+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -1094,7 +1094,7 @@
           "changePercent": 0.15527950310558758,
           "quotedAt": "2026-11-24T06:30:23+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -1109,7 +1109,7 @@
           "changePercent": 3.4653465346534684,
           "quotedAt": "2026-11-24T06:30:04+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -1124,7 +1124,7 @@
           "changePercent": 13.636363636363647,
           "quotedAt": "2026-11-24T06:30:23+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -1139,7 +1139,7 @@
           "changePercent": 10.851505711318786,
           "quotedAt": "2026-11-24T06:30:20+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -1154,7 +1154,7 @@
           "changePercent": 9.21739130434782,
           "quotedAt": "2026-11-24T06:30:30+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -1169,7 +1169,7 @@
           "changePercent": 7.9345088161209,
           "quotedAt": "2026-11-24T06:30:15+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -1184,7 +1184,7 @@
           "changePercent": 4.929577464788726,
           "quotedAt": "2026-11-24T06:30:10+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -1199,7 +1199,7 @@
           "changePercent": 4.835924006908465,
           "quotedAt": "2026-11-24T06:30:06+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -1214,7 +1214,7 @@
           "changePercent": 2.505694760820054,
           "quotedAt": "2026-11-24T06:30:15+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         },
         {
@@ -1229,7 +1229,7 @@
           "changePercent": 4.944586530264283,
           "quotedAt": "2026-11-24T06:30:15+00:00",
           "exchange": "KSC",
-          "checkedAt": "2026-11-24T07:06:25.657569+00:00",
+          "checkedAt": "2026-11-24T10:57:09.272587+00:00",
           "status": "ok"
         }
       ]
