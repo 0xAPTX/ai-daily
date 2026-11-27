@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "status": "ok",
-  "asOf": "2026-11-26",
-  "previousDate": "2026-11-25",
+  "asOf": "2026-11-27",
+  "previousDate": "2026-11-26",
   "base": "EUR",
-  "checkedAt": "2026-11-27T14:26:15+00:00",
-  "lastSuccessfulAt": "2026-11-27T14:26:15+00:00",
+  "checkedAt": "2026-11-27T19:58:29+00:00",
+  "lastSuccessfulAt": "2026-11-27T19:58:29+00:00",
   "source": {
     "name": "欧洲央行 ECB",
     "url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html",
@@ -1353,11 +1353,31 @@
         "SGD": 1.4163,
         "THB": 37.386
       }
+    },
+    {
+      "date": "2026-11-27",
+      "rates": {
+        "EUR": 1.0,
+        "USD": 1.0957,
+        "JPY": 174.81,
+        "GBP": 0.83504,
+        "CHF": 0.9157,
+        "AUD": 1.6431,
+        "CAD": 1.5608,
+        "CNY": 7.2912,
+        "HKD": 8.5774,
+        "INR": 101.904,
+        "KRW": 1462.65,
+        "MYR": 4.517,
+        "NZD": 1.999,
+        "SGD": 1.4132,
+        "THB": 37.177
+      }
     }
   ],
   "longHistory": {
     "status": "ok",
     "startDate": "2016-01-04",
-    "asOf": "2026-11-26"
+    "asOf": "2026-11-27"
   }
 }
